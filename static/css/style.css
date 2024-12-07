@@ -78,6 +78,8 @@ body {
 
 .search-box input::placeholder {
     color: rgba(255, 255, 255, 0.9);
+    font-style: italic;
+    font-family: inherit;
 }
 
 .search-box input:focus {
