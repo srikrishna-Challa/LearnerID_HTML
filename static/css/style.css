@@ -158,6 +158,11 @@ body {
 }
 
 /* Responsive */
+.text-light {
+    color: var(--text-color) !important;
+    opacity: 0.95;
+}
+
 @media (max-width: 768px) {
     .hero {
         padding: 3rem 0;
