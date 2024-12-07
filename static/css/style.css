@@ -1,12 +1,13 @@
 :root {
     /* Common variables */
-    --primary-color: #0066FF;
+    --primary-color: #0052CC;
     
     /* Dark theme (default) */
     --bg-color: #121212;
     --surface-color: #1E1E1E;
     --text-color: #ffffff;
     --text-muted: rgba(255, 255, 255, 0.85);
+    --sidebar-width: 240px;
     
     /* Theme transition */
     transition: background-color 0.3s ease, color 0.3s ease;
@@ -27,6 +28,75 @@ body {
     display: flex;
     flex-direction: column;
     transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Left Sidebar */
+.left-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background-color: var(--surface-color);
+    padding: 2rem 1rem;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.sidebar-header {
+    padding: 0 1rem;
+    margin-bottom: 2rem;
+}
+
+.sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 100%;
+}
+
+.sidebar-nav .nav-item {
+    padding: 0.5rem 1rem;
+}
+
+.sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-nav .nav-link:hover {
+    color: var(--text-color);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.signup-btn {
+    background: linear-gradient(135deg, var(--primary-color), #0066FF);
+    color: white !important;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.signup-btn:hover {
+    background: linear-gradient(135deg, #0066FF, var(--primary-color));
+    transform: translateY(-1px);
+}
+
+/* Main content adjustment */
+main {
+    margin-left: var(--sidebar-width);
+    padding: 2rem;
 }
 
 /* Navbar */

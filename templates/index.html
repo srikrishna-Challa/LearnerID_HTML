@@ -1,45 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container">
+<nav class="left-sidebar">
+    <div class="sidebar-header">
         <a class="navbar-brand" href="#">LearnerID</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <button id="theme-toggle" class="btn btn-outline-light btn-sm me-3">
-                        <i class="theme-icon">🌙</i>
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/about">About Us</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/how-it-works">How it works</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/signup">Signup</a>
-                </li>
-            </ul>
-        </div>
     </div>
+    <ul class="sidebar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="/"><i class="fas fa-house"></i> Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> About Us</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/how-it-works"><i class="fas fa-cog"></i> How it Works</a>
+        </li>
+        <li class="nav-item mt-auto">
+            <button id="theme-toggle" class="btn btn-outline-light btn-sm">
+                <i class="theme-icon">🌙</i>
+            </button>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link signup-btn" href="/signup">Sign up</a>
+        </li>
+    </ul>
 </nav>
 
 <main>
     <section class="hero">
         <div class="container text-center">
-            <h1 class="display-4">Your Skills. Your Growth.<span class="text-primary">Unified</span></h1>
+            <h1 class="display-4">Your Skills. Your Growth. Your Choice. Everything <span class="text-primary">Unified</span></h1>
             
             <div class="search-container">
                 <div class="search-box">
-                    <input type="text" class="form-control" placeholder="Build your learning plan with AI. Enter a topic you want to learn">
-                    <button class="btn btn-primary">Go</button>
+                    <input type="text" class="form-control" placeholder="What do you want to learn? LearnerID AI is here to help you">
+                    <button class="btn btn-primary">Generate learning plan</button>
                 </div>
                 
                 <div class="popular-searches mt-4">
