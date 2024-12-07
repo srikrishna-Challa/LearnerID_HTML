@@ -33,6 +33,22 @@ const modal = document.getElementById('learningLevelModal');
 const searchGoBtn = document.querySelector('.search-box .btn-primary');
 const modalCloseBtn = document.querySelector('.modal-close');
 const nextBtn = document.getElementById('nextButton');
+function showQuestionnaire() {
+    currentStep = 1;
+    showSlide(currentStep);
+    updateProgressIndicator();
+    updateNavigationButtons();
+    showModal();
+}
+
+// Update theme icon with null check
+function updateThemeIcon() {
+    const icon = document.querySelector('.theme-icon');
+    if (icon) {
+        icon.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? '🌙' : '☀️';
+    }
+}
+
 const prevBtn = document.getElementById('prevButton');
 
 let currentStep = 1;
@@ -147,6 +163,11 @@ if (nextBtn) {
 if (prevBtn) {
     prevBtn.addEventListener('click', handlePrevious);
 }
+
+// Add click handlers for suggestion tags
+document.querySelectorAll('.topic-pill').forEach(tag => {
+    tag.addEventListener('click', showQuestionnaire);
+});
 
 // Add animation to search box on focus
 const searchInput = document.querySelector('.search-box input');
