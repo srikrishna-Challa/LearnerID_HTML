@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">LearnerID</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/how-it-works">How it works</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/signup">Signup</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <section class="hero">
+        <div class="container text-center">
+            <h1 class="display-4">Your Skills. Your Growth.<span class="text-primary">Unified</span></h1>
+            <p class="lead text-muted mb-5">Discover personalized learning paths tailored to your goals. Start your journey today.</p>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" class="form-control" placeholder="Search anything...">
+                    <button class="btn btn-primary">Go</button>
+                </div>
+                
+                <div class="popular-searches mt-4">
+                    <button class="btn btn-outline-secondary me-2">I want to learn Python programming</button>
+                    <button class="btn btn-outline-secondary me-2">I want to learn JavaScript</button>
+                    <button class="btn btn-outline-secondary">I want to learn React</button>
+                </div>
+            </div>
+            
+            <div class="trending-topics mt-5">
+                <h6 class="text-muted mb-3">Trending Topics</h6>
+                <div class="topics">
+                    <span class="topic-pill">HTML</span>
+                    <span class="topic-pill">JavaScript Basics</span>
+                    <span class="topic-pill">React</span>
+                    <span class="topic-pill">Python Programming</span>
+                    <span class="topic-pill">JavaScript</span>
+                </div>
+            </div>
+            
+            <div class="cta-buttons mt-5">
+                <p class="text-muted mb-3">Join our community to track your progress and get personalized recommendations</p>
+                <button class="btn btn-primary me-2">Get Started</button>
+                <button class="btn btn-outline-light">Sign In</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer mt-auto py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <h5>About</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Our Story</a></li>
+                    <li><a href="#">Team</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h5>What We Offer</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Courses</a></li>
+                    <li><a href="#">Tutorials</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h5>Careers</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Open Positions</a></li>
+                    <li><a href="#">Culture</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h5>For Enterprise</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Solutions</a></li>
+                    <li><a href="#">Contact Sales</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}

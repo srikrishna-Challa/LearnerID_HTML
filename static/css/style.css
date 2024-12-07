@@ -1,0 +1,159 @@
+:root {
+    --primary-color: #0066FF;
+    --dark-bg: #121212;
+    --surface-color: #1E1E1E;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--dark-bg);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+    padding: 1rem 0;
+    background-color: transparent;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color) !important;
+}
+
+/* Hero Section */
+.hero {
+    padding: 6rem 0;
+}
+
+.display-4 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+    margin-left: 0.5rem;
+}
+
+/* Search Box */
+.search-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-box {
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.5rem;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    color: #fff;
+}
+
+.search-box input:focus {
+    background: transparent;
+    color: #fff;
+    box-shadow: none;
+}
+
+/* Popular Searches */
+.popular-searches .btn-outline-secondary {
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+}
+
+.popular-searches .btn-outline-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Trending Topics */
+.topics {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.topic-pill {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.topic-pill:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+}
+
+.btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--surface-color);
+    padding: 4rem 0;
+    margin-top: auto;
+}
+
+.footer h5 {
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.footer ul li {
+    margin-bottom: 0.75rem;
+}
+
+.footer a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero {
+        padding: 3rem 0;
+    }
+    
+    .popular-searches {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .topics {
+        gap: 0.5rem;
+    }
+}
