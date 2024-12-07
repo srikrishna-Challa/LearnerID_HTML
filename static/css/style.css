@@ -582,3 +582,22 @@ body {
         font-size: 0.85rem;
     }
 }
+/* Other Language Input */
+#otherLanguageInput {
+    margin-top: 1rem;
+}
+
+#otherLanguageInput input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--text-muted);
+    border-radius: 8px;
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+#otherLanguageInput input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}

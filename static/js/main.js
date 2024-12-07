@@ -36,7 +36,7 @@ const nextBtn = document.getElementById('nextButton');
 const prevBtn = document.getElementById('prevButton');
 
 let currentStep = 1;
-const totalSteps = 3;
+const totalSteps = 7;
 
 function updateProgressIndicator() {
     document.querySelectorAll('.progress-step').forEach((step, index) => {
@@ -81,10 +81,20 @@ function hideModal() {
 }
 
 function saveAnswers() {
+    const contentLanguageRadio = document.querySelector('input[name="contentLanguage"]:checked');
+    const otherLanguageInput = document.querySelector('#otherLanguageInput input');
+    const languageValue = contentLanguageRadio.value === 'other' && otherLanguageInput
+        ? otherLanguageInput.value
+        : contentLanguageRadio.value;
+
     const answers = {
         level: document.querySelector('input[name="level"]:checked').value,
         goal: document.querySelector('input[name="goal"]:checked')?.value,
-        style: document.querySelector('input[name="style"]:checked')?.value
+        style: document.querySelector('input[name="style"]:checked')?.value,
+        timeCommitment: document.querySelector('input[name="timeCommitment"]:checked')?.value,
+        targetOutcome: document.querySelector('input[name="targetOutcome"]:checked')?.value,
+        contentLanguage: languageValue,
+        budget: document.querySelector('input[name="budget"]:checked')?.value
     };
     localStorage.setItem('learningPreferences', JSON.stringify(answers));
 }
@@ -116,6 +126,17 @@ if (searchGoBtn) {
 }
 
 if (modalCloseBtn) {
+// Handle "Other" language option
+const languageRadios = document.querySelectorAll('input[name="contentLanguage"]');
+const otherLanguageInput = document.getElementById('otherLanguageInput');
+
+if (languageRadios && otherLanguageInput) {
+    languageRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            otherLanguageInput.style.display = e.target.value === 'other' ? 'block' : 'none';
+        });
+    });
+}
     modalCloseBtn.addEventListener('click', hideModal);
 }
 
