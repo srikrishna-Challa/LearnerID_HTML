@@ -76,6 +76,10 @@ body {
     color: #fff;
 }
 
+.search-box input::placeholder {
+    color: rgba(255, 255, 255, 0.9);
+}
+
 .search-box input:focus {
     background: transparent;
     color: #fff;
