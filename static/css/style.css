@@ -605,48 +605,54 @@ body {
     outline: none;
     border-color: var(--primary-color);
 }
-.scroll-container {
+.scroll-container, .topics {
     display: flex;
     overflow-x: auto;
-    gap: 0.5rem;
-    padding: 0.5rem 0;
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-color) var(--surface-color);
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    gap: 1rem;
+    padding: 1rem;
+    -webkit-overflow-scrolling: touch;
 }
 
-.scroll-container::-webkit-scrollbar {
-    height: 4px;
+.topic-pill {
+    scroll-snap-align: start;
+    min-width: max-content;
+    padding: 0.5rem 1.25rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2rem;
+    transition: all 0.3s ease;
 }
 
-.scroll-container::-webkit-scrollbar-track {
-    background: var(--surface-color);
-    border-radius: 4px;
-}
-
-.scroll-container::-webkit-scrollbar-thumb {
+.topic-pill:hover {
     background: var(--primary-color);
-    border-radius: 4px;
+    transform: translateY(-2px);
 }
 
-.topics {
-    overflow-x: auto;
-    padding: 0.5rem 0;
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-color) var(--surface-color);
+/* Add scroll indicators */
+.categories-section {
+    position: relative;
 }
 
-.topics::-webkit-scrollbar {
-    height: 4px;
+.categories-section::before,
+.categories-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50px;
+    pointer-events: none;
+    z-index: 1;
 }
 
-.topics::-webkit-scrollbar-track {
-    background: var(--surface-color);
-    border-radius: 4px;
+.categories-section::before {
+    left: 0;
+    background: linear-gradient(to right, var(--surface-color), transparent);
 }
 
-.topics::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 4px;
+.categories-section::after {
+    right: 0;
+    background: linear-gradient(to left, var(--surface-color), transparent);
 }
 
 .popular-searches .btn-outline-secondary,
