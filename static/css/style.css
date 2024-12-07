@@ -1,16 +1,32 @@
 :root {
+    /* Common variables */
     --primary-color: #0066FF;
-    --dark-bg: #121212;
+    
+    /* Dark theme (default) */
+    --bg-color: #121212;
     --surface-color: #1E1E1E;
+    --text-color: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.85);
+    
+    /* Theme transition */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+:root[data-theme="light"] {
+    --bg-color: #ffffff;
+    --surface-color: #f5f5f5;
+    --text-color: #121212;
+    --text-muted: rgba(0, 0, 0, 0.7);
 }
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--dark-bg);
-    color: #fff;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Navbar */
@@ -69,7 +85,7 @@ body {
 /* Popular Searches */
 .popular-searches .btn-outline-secondary {
     border-color: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-muted);
     padding: 0.5rem 1rem;
     border-radius: 25px;
 }
@@ -132,7 +148,7 @@ body {
 }
 
 .footer a {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-muted);
     text-decoration: none;
     transition: color 0.3s ease;
 }
