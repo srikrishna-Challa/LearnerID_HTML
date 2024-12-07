@@ -193,8 +193,8 @@ if (modal) {
 // Add scroll functionality for arrows
 document.querySelectorAll('.scroll-arrow').forEach(arrow => {
     arrow.addEventListener('click', () => {
-        const container = arrow.closest('.topics-container').querySelector('.topics');
-        const scrollAmount = 300; // Adjust as needed
+        const container = arrow.closest('.scroll-container-wrapper').querySelector('.scroll-container');
+        const scrollAmount = container.offsetWidth * 0.8;
         
         if (arrow.classList.contains('left-arrow')) {
             container.scrollBy({
@@ -209,3 +209,11 @@ document.querySelectorAll('.scroll-arrow').forEach(arrow => {
         }
     });
 });
+
+// Fix theme icon error
+const setThemeIcon = () => {
+    const icon = document.querySelector('.theme-icon');
+    if (icon) {
+        icon.textContent = localStorage.getItem('theme') === 'light' ? '🌙' : '☀️';
+    }
+};
