@@ -69,36 +69,122 @@
         </div>
     </section>
 </main>
-    <!-- Learning Level Modal -->
+    <!-- Multi-step Questionnaire Modal -->
     <div class="modal" id="learningLevelModal">
         <div class="modal-content">
             <button class="modal-close">&times;</button>
-            <h2>Select Your Learning Level</h2>
-            <p class="modal-subtitle">Choose the level that best matches your current knowledge and experience</p>
+            <div class="progress-indicator">
+                <div class="progress-step active" data-step="1">1</div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="2">2</div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="3">3</div>
+            </div>
             
-            <form class="level-form">
+            <!-- Step 1: Learning Level -->
+            <div class="question-slide" data-step="1">
+                <h2>Select Your Learning Level</h2>
+                <p class="modal-subtitle">Choose the level that best matches your current knowledge and experience</p>
                 <div class="radio-group">
                     <label class="radio-label">
                         <input type="radio" name="level" value="beginner" checked>
                         <span class="radio-custom"></span>
                         Beginner
                     </label>
-                    
                     <label class="radio-label">
                         <input type="radio" name="level" value="intermediate">
                         <span class="radio-custom"></span>
                         Intermediate
                     </label>
-                    
                     <label class="radio-label">
                         <input type="radio" name="level" value="advanced">
                         <span class="radio-custom"></span>
                         Advanced
                     </label>
                 </div>
-                
-                <button type="button" class="btn btn-primary w-100" id="nextButton">Next</button>
-            </form>
+            </div>
+
+            <!-- Step 2: Learning Goals -->
+            <div class="question-slide" data-step="2" style="display: none;">
+                <h2>What Are Your Learning Goals?</h2>
+                <p class="modal-subtitle">Select the primary goal for your learning journey</p>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="goal" value="new_skill" checked>
+                        <span class="radio-custom"></span>
+                        Develop a new skill
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="goal" value="career">
+                        <span class="radio-custom"></span>
+                        Advance in my career
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="goal" value="certification">
+                        <span class="radio-custom"></span>
+                        Prepare for a certification or exam
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="goal" value="job_role">
+                        <span class="radio-custom"></span>
+                        Start a new job role
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="goal" value="portfolio">
+                        <span class="radio-custom"></span>
+                        Build a project or portfolio
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="goal" value="personal">
+                        <span class="radio-custom"></span>
+                        Learn out of personal interest
+                    </label>
+                </div>
+            </div>
+
+            <!-- Step 3: Learning Style -->
+            <div class="question-slide" data-step="3" style="display: none;">
+                <h2>How Do You Prefer to Learn?</h2>
+                <p class="modal-subtitle">Choose your preferred learning style</p>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="style" value="video" checked>
+                        <span class="radio-custom"></span>
+                        Video Tutorials
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="style" value="reading">
+                        <span class="radio-custom"></span>
+                        Reading Articles and Books
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="style" value="interactive">
+                        <span class="radio-custom"></span>
+                        Interactive Exercises or Coding Challenges
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="style" value="instructor">
+                        <span class="radio-custom"></span>
+                        Instructor-led Courses
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="style" value="projects">
+                        <span class="radio-custom"></span>
+                        Hands-on Projects
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="style" value="group">
+                        <span class="radio-custom"></span>
+                        Group Learning or Discussions
+                    </label>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="modal-navigation">
+                <button type="button" class="btn btn-secondary" id="prevButton" style="display: none;">Previous</button>
+                <button type="button" class="btn btn-primary" id="nextButton">Next</button>
+            </div>
         </div>
     </div>
 
