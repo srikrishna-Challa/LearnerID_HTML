@@ -190,3 +190,22 @@ if (modal) {
         }
     });
 }
+// Add scroll functionality for arrows
+document.querySelectorAll('.scroll-arrow').forEach(arrow => {
+    arrow.addEventListener('click', () => {
+        const container = arrow.closest('.topics-container').querySelector('.topics');
+        const scrollAmount = 300; // Adjust as needed
+        
+        if (arrow.classList.contains('left-arrow')) {
+            container.scrollBy({
+                left: -scrollAmount,
+                behavior: 'smooth'
+            });
+        } else {
+            container.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    });
+});

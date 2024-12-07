@@ -605,6 +605,50 @@ body {
     outline: none;
     border-color: var(--primary-color);
 }
+.topics-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.scroll-arrow {
+    position: absolute;
+    z-index: 2;
+    background: var(--primary-color);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+}
+
+.scroll-arrow:hover {
+    opacity: 0.8;
+}
+
+.left-arrow {
+    left: 0;
+}
+
+.right-arrow {
+    right: 0;
+}
+
+.topics {
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    padding: 0 40px;
+}
+
+.topics::-webkit-scrollbar {
+    display: none;
+}
 .scroll-container, .topics {
     display: flex;
     overflow-x: auto;
