@@ -69,6 +69,38 @@
         </div>
     </section>
 </main>
+    <!-- Learning Level Modal -->
+    <div class="modal" id="learningLevelModal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h2>Select Your Learning Level</h2>
+            <p class="modal-subtitle">Choose the level that best matches your current knowledge and experience</p>
+            
+            <form class="level-form">
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="level" value="beginner" checked>
+                        <span class="radio-custom"></span>
+                        Beginner
+                    </label>
+                    
+                    <label class="radio-label">
+                        <input type="radio" name="level" value="intermediate">
+                        <span class="radio-custom"></span>
+                        Intermediate
+                    </label>
+                    
+                    <label class="radio-label">
+                        <input type="radio" name="level" value="advanced">
+                        <span class="radio-custom"></span>
+                        Advanced
+                    </label>
+                </div>
+                
+                <button type="button" class="btn btn-primary w-100" id="nextButton">Next</button>
+            </form>
+        </div>
+    </div>
 
 <footer class="footer mt-auto py-5">
     <div class="container">
