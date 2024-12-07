@@ -30,6 +30,13 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Theme toggle wrapper */
+.theme-toggle-wrapper {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1001;
+}
 /* Left Sidebar */
 .left-sidebar {
     position: fixed;
@@ -81,11 +88,13 @@ body {
 }
 
 .signup-btn {
+    font-size: 1.1rem;
+    padding: 0.75rem 1.5rem;
+    margin-top: auto;
     background: linear-gradient(135deg, var(--primary-color), #0066FF);
     color: white !important;
     border-radius: 8px;
     text-align: center;
-    margin-top: 1rem;
 }
 
 .signup-btn:hover {
@@ -106,6 +115,7 @@ main {
 }
 
 .navbar-brand {
+    font-size: 1.8rem;
     font-weight: 700;
     color: var(--primary-color) !important;
 }
@@ -116,8 +126,9 @@ main {
 }
 
 .display-4 {
+    font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .text-primary {

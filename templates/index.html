@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="theme-toggle-wrapper">
+    <button id="theme-toggle" class="btn btn-outline-light btn-sm">
+        <i class="theme-icon">🌙</i>
+    </button>
+</div>
+
 <nav class="left-sidebar">
     <div class="sidebar-header">
         <a class="navbar-brand" href="#">LearnerID</a>
@@ -16,11 +22,6 @@
             <a class="nav-link" href="/how-it-works"><i class="fas fa-cog"></i> How it Works</a>
         </li>
         <li class="nav-item mt-auto">
-            <button id="theme-toggle" class="btn btn-outline-light btn-sm">
-                <i class="theme-icon">🌙</i>
-            </button>
-        </li>
-        <li class="nav-item">
             <a class="nav-link signup-btn" href="/signup">Sign up</a>
         </li>
     </ul>
@@ -34,20 +35,8 @@
             <div class="search-container">
                 <div class="search-box">
                     <input type="text" class="form-control" placeholder="What do you want to learn? LearnerID AI is here to help you">
-                    <button class="btn btn-primary">Generate learning plan</button>
                 </div>
-                
-                <div class="popular-searches mt-4">
-                    <div class="scroll-container-wrapper">
-                        <button class="scroll-arrow left-arrow">&lt;</button>
-                        <div class="scroll-container">
-                            <button class="btn btn-outline-secondary" onclick="showQuestionnaire()">I want to learn Python programming</button>
-                            <button class="btn btn-outline-secondary" onclick="showQuestionnaire()">I want to learn JavaScript</button>
-                            <button class="btn btn-outline-secondary" onclick="showQuestionnaire()">I want to learn React</button>
-                        </div>
-                        <button class="scroll-arrow right-arrow">&gt;</button>
-                    </div>
-                </div>
+                <button class="btn btn-primary mt-3 generate-btn">Generate learning plan</button>
             </div>
             
             <div class="section-divider mt-5 mb-5">
@@ -58,268 +47,267 @@
                 <h6 class="text-light mb-3">Create your own learning plan</h6>
                 <div class="topics">
                     <span class="topic-pill" onclick="showQuestionnaire()">Technology and Computer Science</span>
-                    <span class="topic-pill" onclick="showQuestionnaire()">Business and Management</span>
+                    <span class="topic-pill" onclick="showQuestionnaire()">Business Management</span>
                     <span class="topic-pill" onclick="showQuestionnaire()">Data Science and Analytics</span>
                     <span class="topic-pill" onclick="showQuestionnaire()">Engineering</span>
                     <span class="topic-pill" onclick="showQuestionnaire()">Accounting and Finance</span>
-                    <span class="topic-pill" onclick="showQuestionnaire()">Web Development</span>
                 </div>
-            </div>
-            
-            </div>
-    </section>
-</main>
-    <!-- Multi-step Questionnaire Modal -->
-    <div class="modal" id="learningLevelModal">
-        <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <div class="progress-indicator">
-                <div class="progress-step active" data-step="1">1</div>
-                <div class="progress-line"></div>
-                <div class="progress-step" data-step="2">2</div>
-                <div class="progress-line"></div>
-                <div class="progress-step" data-step="3">3</div>
-                <div class="progress-line"></div>
-                <div class="progress-step" data-step="4">4</div>
-                <div class="progress-line"></div>
-                <div class="progress-step" data-step="5">5</div>
-                <div class="progress-line"></div>
-                <div class="progress-step" data-step="6">6</div>
-                <div class="progress-line"></div>
-                <div class="progress-step" data-step="7">7</div>
-            </div>
-            
-            <!-- Step 1: Learning Level -->
-            <div class="question-slide" data-step="1">
-                <h2>Select Your Learning Level</h2>
-                <p class="modal-subtitle">Choose the level that best matches your current knowledge and experience</p>
-                <div class="radio-group">
-                    <label class="radio-label">
-                        <input type="radio" name="level" value="beginner" checked>
-                        <span class="radio-custom"></span>
-                        Beginner
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="level" value="intermediate">
-                        <span class="radio-custom"></span>
-                        Intermediate
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="level" value="advanced">
-                        <span class="radio-custom"></span>
-                        Advanced
-                    </label>
-                </div>
-            </div>
-
-            <!-- Step 2: Learning Goals -->
-            <div class="question-slide" data-step="2" style="display: none;">
-                <h2>What Are Your Learning Goals?</h2>
-                <p class="modal-subtitle">Select the primary goal for your learning journey</p>
-                <div class="radio-group">
-                    <label class="radio-label">
-                        <input type="radio" name="goal" value="new_skill" checked>
-                        <span class="radio-custom"></span>
-                        Develop a new skill
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="goal" value="career">
-                        <span class="radio-custom"></span>
-                        Advance in my career
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="goal" value="certification">
-                        <span class="radio-custom"></span>
-                        Prepare for a certification or exam
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="goal" value="job_role">
-                        <span class="radio-custom"></span>
-                        Start a new job role
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="goal" value="portfolio">
-                        <span class="radio-custom"></span>
-                        Build a project or portfolio
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="goal" value="personal">
-                        <span class="radio-custom"></span>
-                        Learn out of personal interest
-                    </label>
-                </div>
-            </div>
-
-            <!-- Step 3: Learning Style -->
-            <div class="question-slide" data-step="3" style="display: none;">
-                <h2>How Do You Prefer to Learn?</h2>
-                <p class="modal-subtitle">Choose your preferred learning style</p>
-                <div class="radio-group">
-                    <label class="radio-label">
-                        <input type="radio" name="style" value="video" checked>
-                        <span class="radio-custom"></span>
-                        Video Tutorials
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="style" value="reading">
-                        <span class="radio-custom"></span>
-                        Reading Articles and Books
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="style" value="interactive">
-                        <span class="radio-custom"></span>
-                        Interactive Exercises or Coding Challenges
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="style" value="instructor">
-                        <span class="radio-custom"></span>
-                        Instructor-led Courses
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="style" value="projects">
-                        <span class="radio-custom"></span>
-                        Hands-on Projects
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="style" value="group">
-                        <span class="radio-custom"></span>
-                        Group Learning or Discussions
-                    </label>
-                </div>
-            </div>
-
-            <!-- Step 4: Time Commitment -->
-            <div class="question-slide" data-step="4" style="display: none;">
-                <h2>How Much Time Can You Commit?</h2>
-                <p class="modal-subtitle">Select your weekly time commitment for learning</p>
-                <div class="radio-group">
-                    <label class="radio-label">
-                        <input type="radio" name="timeCommitment" value="less_than_2" checked>
-                        <span class="radio-custom"></span>
-                        Less than 2 hours
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="timeCommitment" value="2_to_5">
-                        <span class="radio-custom"></span>
-                        2–5 hours
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="timeCommitment" value="5_to_10">
-                        <span class="radio-custom"></span>
-                        5–10 hours
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="timeCommitment" value="more_than_10">
-                        <span class="radio-custom"></span>
-                        More than 10 hours
-                    </label>
-                </div>
-            </div>
-
-            <!-- Step 5: Target Outcome -->
-            <div class="question-slide" data-step="5" style="display: none;">
-                <h2>What's Your Target Outcome?</h2>
-                <p class="modal-subtitle">Choose your primary learning objective</p>
-                <div class="radio-group">
-                    <label class="radio-label">
-                        <input type="radio" name="targetOutcome" value="basics" checked>
-                        <span class="radio-custom"></span>
-                        Master the basics of a subject
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="targetOutcome" value="expertise">
-                        <span class="radio-custom"></span>
-                        Gain in-depth expertise in a particular area
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="targetOutcome" value="interviews">
-                        <span class="radio-custom"></span>
-                        Prepare for interviews
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="targetOutcome" value="project">
-                        <span class="radio-custom"></span>
-                        Launch or enhance a project/startup
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="targetOutcome" value="certificate">
-                        <span class="radio-custom"></span>
-                        Earn a certificate or degree
-                    </label>
-                </div>
-            </div>
-
-            <!-- Step 6: Content Language -->
-            <div class="question-slide" data-step="6" style="display: none;">
-                <h2>Preferred Content Language</h2>
-                <p class="modal-subtitle">Select your preferred language for learning materials</p>
-                <div class="radio-group">
-                    <label class="radio-label">
-                        <input type="radio" name="contentLanguage" value="english" checked>
-                        <span class="radio-custom"></span>
-                        English
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="contentLanguage" value="spanish">
-                        <span class="radio-custom"></span>
-                        Spanish
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="contentLanguage" value="french">
-                        <span class="radio-custom"></span>
-                        French
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="contentLanguage" value="mandarin">
-                        <span class="radio-custom"></span>
-                        Mandarin
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="contentLanguage" value="other">
-                        <span class="radio-custom"></span>
-                        Other
-                    </label>
-                </div>
-                <div id="otherLanguageInput" style="display: none;">
-                    <input type="text" class="form-control" placeholder="Please specify your preferred language">
-                </div>
-            </div>
-
-            <!-- Step 7: Budget -->
-            <div class="question-slide" data-step="7" style="display: none;">
-                <h2>What's Your Learning Budget?</h2>
-                <p class="modal-subtitle">Select your preferred budget range for learning resources</p>
-                <div class="radio-group">
-                    <label class="radio-label">
-                        <input type="radio" name="budget" value="free" checked>
-                        <span class="radio-custom"></span>
-                        Free only
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="budget" value="up_to_50">
-                        <span class="radio-custom"></span>
-                        Up to $50
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="budget" value="up_to_200">
-                        <span class="radio-custom"></span>
-                        Up to $200
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="budget" value="no_limit">
-                        <span class="radio-custom"></span>
-                        No limit, as long as the content is high-quality
-                    </label>
-                </div>
-            </div>
-
-            <!-- Navigation Buttons -->
-            <div class="modal-navigation">
-                <button type="button" class="btn btn-secondary" id="prevButton" style="display: none;">Previous</button>
-                <button type="button" class="btn btn-primary" id="nextButton">Next</button>
             </div>
         </div>
+    </section>
+</main>
+
+<!-- Multi-step Questionnaire Modal -->
+<div class="modal" id="learningLevelModal">
+    <div class="modal-content">
+        <button class="modal-close">&times;</button>
+        <div class="progress-indicator">
+            <div class="progress-step active" data-step="1">1</div>
+            <div class="progress-line"></div>
+            <div class="progress-step" data-step="2">2</div>
+            <div class="progress-line"></div>
+            <div class="progress-step" data-step="3">3</div>
+            <div class="progress-line"></div>
+            <div class="progress-step" data-step="4">4</div>
+            <div class="progress-line"></div>
+            <div class="progress-step" data-step="5">5</div>
+            <div class="progress-line"></div>
+            <div class="progress-step" data-step="6">6</div>
+            <div class="progress-line"></div>
+            <div class="progress-step" data-step="7">7</div>
+        </div>
+        
+        <!-- Step 1: Learning Level -->
+        <div class="question-slide" data-step="1">
+            <h2>Select Your Learning Level</h2>
+            <p class="modal-subtitle">Choose the level that best matches your current knowledge and experience</p>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="level" value="beginner" checked>
+                    <span class="radio-custom"></span>
+                    Beginner
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="level" value="intermediate">
+                    <span class="radio-custom"></span>
+                    Intermediate
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="level" value="advanced">
+                    <span class="radio-custom"></span>
+                    Advanced
+                </label>
+            </div>
+        </div>
+
+        <!-- Step 2: Learning Goals -->
+        <div class="question-slide" data-step="2" style="display: none;">
+            <h2>What Are Your Learning Goals?</h2>
+            <p class="modal-subtitle">Select the primary goal for your learning journey</p>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="goal" value="new_skill" checked>
+                    <span class="radio-custom"></span>
+                    Develop a new skill
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="goal" value="career">
+                    <span class="radio-custom"></span>
+                    Advance in my career
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="goal" value="certification">
+                    <span class="radio-custom"></span>
+                    Prepare for a certification or exam
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="goal" value="job_role">
+                    <span class="radio-custom"></span>
+                    Start a new job role
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="goal" value="portfolio">
+                    <span class="radio-custom"></span>
+                    Build a project or portfolio
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="goal" value="personal">
+                    <span class="radio-custom"></span>
+                    Learn out of personal interest
+                </label>
+            </div>
+        </div>
+
+        <!-- Step 3: Learning Style -->
+        <div class="question-slide" data-step="3" style="display: none;">
+            <h2>How Do You Prefer to Learn?</h2>
+            <p class="modal-subtitle">Choose your preferred learning style</p>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="style" value="video" checked>
+                    <span class="radio-custom"></span>
+                    Video Tutorials
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="style" value="reading">
+                    <span class="radio-custom"></span>
+                    Reading Articles and Books
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="style" value="interactive">
+                    <span class="radio-custom"></span>
+                    Interactive Exercises or Coding Challenges
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="style" value="instructor">
+                    <span class="radio-custom"></span>
+                    Instructor-led Courses
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="style" value="projects">
+                    <span class="radio-custom"></span>
+                    Hands-on Projects
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="style" value="group">
+                    <span class="radio-custom"></span>
+                    Group Learning or Discussions
+                </label>
+            </div>
+        </div>
+
+        <!-- Step 4: Time Commitment -->
+        <div class="question-slide" data-step="4" style="display: none;">
+            <h2>How Much Time Can You Commit?</h2>
+            <p class="modal-subtitle">Select your weekly time commitment for learning</p>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="timeCommitment" value="less_than_2" checked>
+                    <span class="radio-custom"></span>
+                    Less than 2 hours
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="timeCommitment" value="2_to_5">
+                    <span class="radio-custom"></span>
+                    2–5 hours
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="timeCommitment" value="5_to_10">
+                    <span class="radio-custom"></span>
+                    5–10 hours
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="timeCommitment" value="more_than_10">
+                    <span class="radio-custom"></span>
+                    More than 10 hours
+                </label>
+            </div>
+        </div>
+
+        <!-- Step 5: Target Outcome -->
+        <div class="question-slide" data-step="5" style="display: none;">
+            <h2>What's Your Target Outcome?</h2>
+            <p class="modal-subtitle">Choose your primary learning objective</p>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="targetOutcome" value="basics" checked>
+                    <span class="radio-custom"></span>
+                    Master the basics of a subject
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="targetOutcome" value="expertise">
+                    <span class="radio-custom"></span>
+                    Gain in-depth expertise in a particular area
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="targetOutcome" value="interviews">
+                    <span class="radio-custom"></span>
+                    Prepare for interviews
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="targetOutcome" value="project">
+                    <span class="radio-custom"></span>
+                    Launch or enhance a project/startup
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="targetOutcome" value="certificate">
+                    <span class="radio-custom"></span>
+                    Earn a certificate or degree
+                </label>
+            </div>
+        </div>
+
+        <!-- Step 6: Content Language -->
+        <div class="question-slide" data-step="6" style="display: none;">
+            <h2>Preferred Content Language</h2>
+            <p class="modal-subtitle">Select your preferred language for learning materials</p>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="contentLanguage" value="english" checked>
+                    <span class="radio-custom"></span>
+                    English
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="contentLanguage" value="spanish">
+                    <span class="radio-custom"></span>
+                    Spanish
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="contentLanguage" value="french">
+                    <span class="radio-custom"></span>
+                    French
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="contentLanguage" value="mandarin">
+                    <span class="radio-custom"></span>
+                    Mandarin
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="contentLanguage" value="other">
+                    <span class="radio-custom"></span>
+                    Other
+                </label>
+            </div>
+            <div id="otherLanguageInput" style="display: none;">
+                <input type="text" class="form-control" placeholder="Please specify your preferred language">
+            </div>
+        </div>
+
+        <!-- Step 7: Budget -->
+        <div class="question-slide" data-step="7" style="display: none;">
+            <h2>What's Your Learning Budget?</h2>
+            <p class="modal-subtitle">Select your preferred budget range for learning resources</p>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="budget" value="free" checked>
+                    <span class="radio-custom"></span>
+                    Free only
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="budget" value="up_to_50">
+                    <span class="radio-custom"></span>
+                    Up to $50
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="budget" value="up_to_200">
+                    <span class="radio-custom"></span>
+                    Up to $200
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="budget" value="no_limit">
+                    <span class="radio-custom"></span>
+                    No limit, as long as the content is high-quality
+                </label>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="modal-navigation">
+            <button type="button" class="btn btn-secondary" id="prevButton" style="display: none;">Previous</button>
+            <button type="button" class="btn btn-primary" id="nextButton">Next</button>
+        </div>
     </div>
+</div>
 
 <footer class="footer mt-auto py-5">
     <div class="container">
