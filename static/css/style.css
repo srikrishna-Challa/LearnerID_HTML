@@ -605,3 +605,51 @@ body {
     outline: none;
     border-color: var(--primary-color);
 }
+.scroll-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--surface-color);
+}
+
+.scroll-container::-webkit-scrollbar {
+    height: 4px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+    background: var(--surface-color);
+    border-radius: 4px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.topics {
+    overflow-x: auto;
+    padding: 0.5rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--surface-color);
+}
+
+.topics::-webkit-scrollbar {
+    height: 4px;
+}
+
+.topics::-webkit-scrollbar-track {
+    background: var(--surface-color);
+    border-radius: 4px;
+}
+
+.topics::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.popular-searches .btn-outline-secondary,
+.topic-pill {
+    flex-shrink: 0;
+}
