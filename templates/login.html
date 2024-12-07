@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <h2>Welcome Back</h2>
+        <p class="auth-subtitle">Enter your credentials to sign in to your account</p>
+
+        <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                <label class="form-check-label" for="remember">Remember me</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Sign In</button>
+
+            <div class="social-auth-divider">
+                <span>OR CONTINUE WITH</span>
+            </div>
+
+            <div class="social-auth-buttons">
+                <button type="button" class="btn btn-social btn-google">
+                    <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20">
+                    Continue with Google
+                </button>
+                <button type="button" class="btn btn-social btn-linkedin">
+                    <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" width="20" height="20">
+                    Continue with LinkedIn
+                </button>
+            </div>
+
+            <p class="auth-footer">
+                Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a>
+            </p>
+        </form>
+    </div>
+</div>
+{% endblock %}

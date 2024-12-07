@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <h2>Create an Account</h2>
+        <p class="auth-subtitle">Enter your details below to create your account</p>
+
+        <form method="POST" action="{{ url_for('signup') }}" class="auth-form">
+            <div class="form-group">
+                <label for="username">Username <span class="required">*</span></label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Choose a username" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="first_name">First Name <span class="required">*</span></label>
+                    <input type="text" id="first_name" name="first_name" class="form-control" placeholder="Enter your first name" required>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="last_name">Last Name <span class="required">*</span></label>
+                    <input type="text" id="last_name" name="last_name" class="form-control" placeholder="Enter your last name" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email <span class="required">*</span></label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="mobile">Mobile Number <span class="required">*</span></label>
+                <input type="tel" id="mobile" name="mobile" class="form-control" placeholder="Enter your mobile number" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password <span class="required">*</span></label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Create Account</button>
+
+            <div class="social-auth-divider">
+                <span>OR CONTINUE WITH</span>
+            </div>
+
+            <div class="social-auth-buttons">
+                <button type="button" class="btn btn-social btn-google">
+                    <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20">
+                    Continue with Google
+                </button>
+                <button type="button" class="btn btn-social btn-linkedin">
+                    <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" width="20" height="20">
+                    Continue with LinkedIn
+                </button>
+            </div>
+
+            <p class="auth-footer">
+                Already have an account? <a href="{{ url_for('login') }}">Sign in</a>
+            </p>
+        </form>
+    </div>
+</div>
+{% endblock %}
