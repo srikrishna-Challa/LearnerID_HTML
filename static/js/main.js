@@ -3,7 +3,9 @@ function setTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
     const icon = document.querySelector('.theme-icon');
-    icon.textContent = theme === 'light' ? '🌙' : '☀️';
+    if (icon) {
+        icon.textContent = theme === 'light' ? '🌙' : '☀️';
+    }
 }
 
 // Initialize theme

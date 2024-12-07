@@ -2,16 +2,14 @@
 
 {% block content %}
 <div class="auth-container">
+    <a href="{{ url_for('index') }}" class="home-link">
+        <h3 class="logo">LearnerID</h3>
+    </a>
     <div class="auth-box">
         <h2>Create an Account</h2>
         <p class="auth-subtitle">Enter your details below to create your account</p>
 
         <form method="POST" action="{{ url_for('signup') }}" class="auth-form">
-            <div class="form-group">
-                <label for="username">Username <span class="required">*</span></label>
-                <input type="text" id="username" name="username" class="form-control" placeholder="Choose a username" required>
-            </div>
-
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="first_name">First Name <span class="required">*</span></label>

@@ -33,7 +33,6 @@ def login():
 def signup():
     if request.method == 'POST':
         # Handle signup form submission here
-        username = request.form.get('username')
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
         email = request.form.get('email')

@@ -160,6 +160,23 @@ body {
 /* Responsive */
 /* Authentication Pages */
 .auth-container {
+.home-link {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    text-decoration: none;
+}
+
+.home-link .logo {
+    color: var(--text-color);
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.home-link:hover .logo {
+    color: var(--primary-color);
+}
+
     min-height: 100vh;
     display: flex;
     align-items: center;
