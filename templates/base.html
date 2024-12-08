@@ -4,28 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}LearnerID{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        primary: '#0052CC',
-                        surface: '#1A1A1A',
-                        background: '#121212'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif']
+                        'primary': '#0052CC',
+                        'surface': '#1A1A1A',
+                        'background': '#121212'
                     }
                 }
             }
         }
     </script>
-    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-background text-white">
+<body class="bg-background text-white min-h-screen">
     {% block content %}{% endblock %}
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
