@@ -949,8 +949,82 @@ main {
 
 /* Base mobile styles */
 @media (max-width: 768px) {
-    :root {
-        --sidebar-width: 100%;
+    body {
+        background: var(--surface-color);
+        padding: 1rem;
+    }
+
+    main {
+        background: var(--background-color);
+        margin: 0;
+        padding: 2rem;
+        border-radius: 32px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        min-height: calc(100vh - 2rem);
+        position: relative;
+    }
+
+    .navbar-brand {
+        font-size: 2rem;
+        position: absolute;
+        top: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .theme-toggle-wrapper {
+        top: 2rem;
+        right: 2rem;
+    }
+
+    .display-4 {
+        font-size: 1.8rem;
+        margin-top: 5rem;
+        margin-bottom: 2rem;
+        line-height: 1.3;
+    }
+
+    .search-container {
+        margin-bottom: 3rem;
+    }
+
+    .search-box {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 0.75rem;
+    }
+
+    .topics {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        padding: 0;
+    }
+
+    .topic-pill {
+        width: 100%;
+        text-align: center;
+        white-space: normal;
+        height: auto;
+        padding: 1rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
+    }
+
+    .section-divider {
+        margin: 3rem 0;
+    }
+
+    .categories-section h4 {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .footer-links {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .left-sidebar {
@@ -961,40 +1035,6 @@ main {
 
     .left-sidebar.active {
         transform: translateX(0);
-    }
-
-    main {
-        margin-left: 0;
-        padding: 1rem;
-    }
-
-    .search-box {
-        padding: 0.5rem;
-    }
-
-    .search-box input {
-        font-size: 0.95rem;
-    }
-
-    .display-4 {
-        font-size: 1.75rem;
-        margin-bottom: 1rem;
-    }
-
-    .topics {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        padding: 0.5rem;
-        margin: 0 -1rem;
-    }
-
-    .topic-pill {
-        white-space: nowrap;
-    }
-
-    .footer-links {
-        flex-wrap: wrap;
-        justify-content: space-around;
     }
 
     .mobile-menu-toggle {
