@@ -187,163 +187,213 @@
 
         <!-- Step 3: Learning Style -->
         <div class="question-slide" data-step="3" style="display: none;">
-            <h2>How Do You Prefer to Learn?</h2>
-            <p class="modal-subtitle">Choose your preferred learning style</p>
-            <div class="radio-group">
-                <label class="radio-label">
-                    <input type="radio" name="style" value="video" checked>
-                    <span class="radio-custom"></span>
-                    Video Tutorials
+            <h2 class="text-2xl font-bold text-white mb-4">How Do You Prefer to Learn?</h2>
+            <p class="text-white/70 mb-8">Choose your preferred learning style</p>
+            <div class="space-y-4">
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="style" value="video" checked class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Video Tutorials</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="style" value="reading">
-                    <span class="radio-custom"></span>
-                    Reading Articles and Books
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="style" value="reading" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Reading Articles and Books</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="style" value="interactive">
-                    <span class="radio-custom"></span>
-                    Interactive Exercises or Coding Challenges
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="style" value="interactive" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Interactive Exercises or Coding Challenges</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="style" value="instructor">
-                    <span class="radio-custom"></span>
-                    Instructor-led Courses
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="style" value="instructor" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Instructor-led Courses</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="style" value="projects">
-                    <span class="radio-custom"></span>
-                    Hands-on Projects
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="style" value="projects" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Hands-on Projects</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="style" value="group">
-                    <span class="radio-custom"></span>
-                    Group Learning or Discussions
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="style" value="group" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Group Learning or Discussions</span>
                 </label>
             </div>
         </div>
 
         <!-- Step 4: Time Commitment -->
         <div class="question-slide" data-step="4" style="display: none;">
-            <h2>How Much Time Can You Commit?</h2>
-            <p class="modal-subtitle">Select your weekly time commitment for learning</p>
-            <div class="radio-group">
-                <label class="radio-label">
-                    <input type="radio" name="timeCommitment" value="less_than_2" checked>
-                    <span class="radio-custom"></span>
-                    Less than 2 hours
+            <h2 class="text-2xl font-bold text-white mb-4">How Much Time Can You Commit?</h2>
+            <p class="text-white/70 mb-8">Select your weekly time commitment for learning</p>
+            <div class="space-y-4">
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="timeCommitment" value="less_than_2" checked class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Less than 2 hours</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="timeCommitment" value="2_to_5">
-                    <span class="radio-custom"></span>
-                    2–5 hours
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="timeCommitment" value="2_to_5" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">2–5 hours</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="timeCommitment" value="5_to_10">
-                    <span class="radio-custom"></span>
-                    5–10 hours
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="timeCommitment" value="5_to_10" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">5–10 hours</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="timeCommitment" value="more_than_10">
-                    <span class="radio-custom"></span>
-                    More than 10 hours
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="timeCommitment" value="more_than_10" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">More than 10 hours</span>
                 </label>
             </div>
         </div>
 
         <!-- Step 5: Target Outcome -->
         <div class="question-slide" data-step="5" style="display: none;">
-            <h2>What's Your Target Outcome?</h2>
-            <p class="modal-subtitle">Choose your primary learning objective</p>
-            <div class="radio-group">
-                <label class="radio-label">
-                    <input type="radio" name="targetOutcome" value="basics" checked>
-                    <span class="radio-custom"></span>
-                    Master the basics of a subject
+            <h2 class="text-2xl font-bold text-white mb-4">What's Your Target Outcome?</h2>
+            <p class="text-white/70 mb-8">Choose your primary learning objective</p>
+            <div class="space-y-4">
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="targetOutcome" value="basics" checked class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Master the basics of a subject</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="targetOutcome" value="expertise">
-                    <span class="radio-custom"></span>
-                    Gain in-depth expertise in a particular area
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="targetOutcome" value="expertise" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Gain in-depth expertise in a particular area</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="targetOutcome" value="interviews">
-                    <span class="radio-custom"></span>
-                    Prepare for interviews
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="targetOutcome" value="interviews" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Prepare for interviews</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="targetOutcome" value="project">
-                    <span class="radio-custom"></span>
-                    Launch or enhance a project/startup
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="targetOutcome" value="project" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Launch or enhance a project/startup</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="targetOutcome" value="certificate">
-                    <span class="radio-custom"></span>
-                    Earn a certificate or degree
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="targetOutcome" value="certificate" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Earn a certificate or degree</span>
                 </label>
             </div>
         </div>
 
         <!-- Step 6: Content Language -->
         <div class="question-slide" data-step="6" style="display: none;">
-            <h2>Preferred Content Language</h2>
-            <p class="modal-subtitle">Select your preferred language for learning materials</p>
-            <div class="radio-group">
-                <label class="radio-label">
-                    <input type="radio" name="contentLanguage" value="english" checked>
-                    <span class="radio-custom"></span>
-                    English
+            <h2 class="text-2xl font-bold text-white mb-4">Preferred Content Language</h2>
+            <p class="text-white/70 mb-8">Select your preferred language for learning materials</p>
+            <div class="space-y-4">
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="contentLanguage" value="english" checked class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">English</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="contentLanguage" value="spanish">
-                    <span class="radio-custom"></span>
-                    Spanish
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="contentLanguage" value="spanish" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Spanish</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="contentLanguage" value="french">
-                    <span class="radio-custom"></span>
-                    French
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="contentLanguage" value="french" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">French</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="contentLanguage" value="mandarin">
-                    <span class="radio-custom"></span>
-                    Mandarin
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="contentLanguage" value="mandarin" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Mandarin</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="contentLanguage" value="other">
-                    <span class="radio-custom"></span>
-                    Other
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="contentLanguage" value="other" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Other</span>
                 </label>
             </div>
-            <div id="otherLanguageInput" style="display: none;">
-                <input type="text" class="form-control" placeholder="Please specify your preferred language">
+            <div id="otherLanguageInput" style="display: none;" class="mt-4">
+                <input type="text" 
+                       class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                       placeholder="Please specify your preferred language">
             </div>
         </div>
 
         <!-- Step 7: Budget -->
         <div class="question-slide" data-step="7" style="display: none;">
-            <h2>What's Your Learning Budget?</h2>
-            <p class="modal-subtitle">Select your preferred budget range for learning resources</p>
-            <div class="radio-group">
-                <label class="radio-label">
-                    <input type="radio" name="budget" value="free" checked>
-                    <span class="radio-custom"></span>
-                    Free only
+            <h2 class="text-2xl font-bold text-white mb-4">What's Your Learning Budget?</h2>
+            <p class="text-white/70 mb-8">Select your preferred budget range for learning resources</p>
+            <div class="space-y-4">
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="budget" value="free" checked class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Free only</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="budget" value="up_to_50">
-                    <span class="radio-custom"></span>
-                    Up to $50
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="budget" value="up_to_50" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Up to $50</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="budget" value="up_to_200">
-                    <span class="radio-custom"></span>
-                    Up to $200
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="budget" value="up_to_200" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">Up to $200</span>
                 </label>
-                <label class="radio-label">
-                    <input type="radio" name="budget" value="no_limit">
-                    <span class="radio-custom"></span>
-                    No limit, as long as the content is high-quality
+                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
+                    <input type="radio" name="budget" value="no_limit" class="hidden">
+                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
+                    </div>
+                    <span class="text-white group-hover:text-primary">No limit, as long as the content is high-quality</span>
                 </label>
             </div>
         </div>

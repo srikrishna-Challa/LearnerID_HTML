@@ -19,24 +19,43 @@ document.addEventListener('DOMContentLoaded', () => {
         // Handle form submission
         searchForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            if (!searchButton.disabled && typeof showQuestionnaire === 'function') {
+            if (!searchButton.disabled) {
                 showQuestionnaire();
             }
         });
     }
-});
 
-// Add smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
+    // Radio button click handler
+    const radioGroups = document.querySelectorAll('.space-y-4');
+    radioGroups.forEach(group => {
+        const labels = group.querySelectorAll('label');
+        labels.forEach(label => {
+            label.addEventListener('click', () => {
+                // Remove selected state from all labels in group
+                labels.forEach(l => {
+                    l.classList.remove('selected');
+                    const radio = l.querySelector('input[type="radio"]');
+                    const indicator = l.querySelector('.w-3.h-3');
+                    if (indicator) indicator.classList.add('hidden');
+                });
+                
+                // Add selected state to clicked label
+                label.classList.add('selected');
+                const radio = label.querySelector('input[type="radio"]');
+                const indicator = label.querySelector('.w-3.h-3');
+                if (radio && indicator) {
+                    radio.checked = true;
+                    indicator.classList.remove('hidden');
+                }
+            });
         });
     });
 });
 
 // Questionnaire functionality
+let currentStep = 1;
+const totalSteps = 7;
+
 function showQuestionnaire() {
     const modal = document.getElementById('learningLevelModal');
     if (modal) {
@@ -49,29 +68,35 @@ function showQuestionnaire() {
     }
 }
 
-// Modal functionality
-const modal = document.getElementById('learningLevelModal');
-const modalCloseBtn = document.querySelector('.modal-close');
-const nextBtn = document.getElementById('nextButton');
-const prevBtn = document.getElementById('prevButton');
-
-let currentStep = 1;
-const totalSteps = 7;
-
 function updateProgressIndicator() {
-    document.querySelectorAll('.progress-step').forEach((step, index) => {
+    const steps = document.querySelectorAll('[data-step]');
+    const progressLine = document.querySelector('.absolute.h-0.5.bg-white\\/20');
+    
+    steps.forEach((step, index) => {
         const stepNum = index + 1;
-        step.classList.remove('active', 'completed');
-        if (stepNum === currentStep) {
-            step.classList.add('active');
-        } else if (stepNum < currentStep) {
-            step.classList.add('completed');
+        if (stepNum < currentStep) {
+            step.classList.remove('bg-white/10');
+            step.classList.add('bg-primary');
+            step.classList.remove('text-white/70');
+            step.classList.add('text-white');
+        } else if (stepNum === currentStep) {
+            step.classList.remove('bg-white/10');
+            step.classList.add('bg-primary');
+            step.classList.remove('text-white/70');
+            step.classList.add('text-white');
+        } else {
+            step.classList.remove('bg-primary');
+            step.classList.add('bg-white/10');
+            step.classList.add('text-white/70');
+            step.classList.remove('text-white');
         }
     });
-
-    document.querySelectorAll('.progress-line').forEach((line, index) => {
-        line.classList.toggle('completed', index < currentStep - 1);
-    });
+    
+    if (progressLine) {
+        progressLine.style.background = `linear-gradient(to right, 
+            #0052CC ${((currentStep - 1) / (totalSteps - 1)) * 100}%, 
+            rgba(255, 255, 255, 0.2) ${((currentStep - 1) / (totalSteps - 1)) * 100}%)`;
+    }
 }
 
 function showSlide(slideNumber) {
@@ -85,6 +110,9 @@ function showSlide(slideNumber) {
 }
 
 function updateNavigationButtons() {
+    const prevBtn = document.getElementById('prevButton');
+    const nextBtn = document.getElementById('nextButton');
+    
     if (prevBtn && nextBtn) {
         prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
         nextBtn.textContent = currentStep === totalSteps ? 'Finish' : 'Next';
@@ -92,6 +120,7 @@ function updateNavigationButtons() {
 }
 
 function hideModal() {
+    const modal = document.getElementById('learningLevelModal');
     if (modal) {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
@@ -99,6 +128,74 @@ function hideModal() {
     }
 }
 
+function handleNext() {
+    if (currentStep < totalSteps) {
+        currentStep++;
+        showSlide(currentStep);
+        updateProgressIndicator();
+        updateNavigationButtons();
+    } else {
+        saveAnswers();
+        hideModal();
+    }
+}
+
+function handlePrevious() {
+    if (currentStep > 1) {
+        currentStep--;
+        showSlide(currentStep);
+        updateProgressIndicator();
+        updateNavigationButtons();
+    }
+}
+
+// Handle "Other" language option
+document.addEventListener('DOMContentLoaded', () => {
+    const languageRadios = document.querySelectorAll('input[name="contentLanguage"]');
+    const otherLanguageInput = document.getElementById('otherLanguageInput');
+
+    if (languageRadios && otherLanguageInput) {
+        languageRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                otherLanguageInput.style.display = e.target.value === 'other' ? 'block' : 'none';
+            });
+        });
+    }
+
+    // Event listeners for modal
+    const modal = document.getElementById('learningLevelModal');
+    const closeBtn = modal?.querySelector('.fa-times')?.parentElement;
+    const nextBtn = document.getElementById('nextButton');
+    const prevBtn = document.getElementById('prevButton');
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', hideModal);
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', handleNext);
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', handlePrevious);
+    }
+
+    // Close modal when clicking outside
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+    }
+
+    // Add click handlers for topic buttons
+    document.querySelectorAll('button[onclick="showQuestionnaire()"]').forEach(button => {
+        button.addEventListener('click', showQuestionnaire);
+    });
+});
+
+// Save questionnaire answers
 function saveAnswers() {
     const contentLanguageRadio = document.querySelector('input[name="contentLanguage"]:checked');
     const otherLanguageInput = document.querySelector('#otherLanguageInput input');
@@ -116,82 +213,4 @@ function saveAnswers() {
         budget: document.querySelector('input[name="budget"]:checked')?.value
     };
     localStorage.setItem('learningPreferences', JSON.stringify(answers));
-}
-
-function handleNext() {
-    if (currentStep < totalSteps) {
-        currentStep++;
-        showSlide(currentStep);
-        updateProgressIndicator();
-        updateNavigationButtons();
-    } else {
-        saveAnswers();
-        hideModal();
-        // TODO: Implement next steps after questionnaire completion
-    }
-}
-
-function handlePrevious() {
-    if (currentStep > 1) {
-        currentStep--;
-        showSlide(currentStep);
-        updateProgressIndicator();
-        updateNavigationButtons();
-    }
-}
-
-// Handle "Other" language option
-const languageRadios = document.querySelectorAll('input[name="contentLanguage"]');
-const otherLanguageInput = document.getElementById('otherLanguageInput');
-
-if (languageRadios && otherLanguageInput) {
-    languageRadios.forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            otherLanguageInput.style.display = e.target.value === 'other' ? 'block' : 'none';
-        });
-    });
-}
-
-// Event listeners
-if (modalCloseBtn) {
-    modalCloseBtn.addEventListener('click', hideModal);
-}
-
-if (nextBtn) {
-    nextBtn.addEventListener('click', handleNext);
-}
-
-if (prevBtn) {
-    prevBtn.addEventListener('click', handlePrevious);
-}
-
-// Add click handlers for suggestion tags
-document.querySelectorAll('.topic-pill').forEach(tag => {
-    tag.addEventListener('click', showQuestionnaire);
-});
-
-// Close modal when clicking outside
-if (modal) {
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            hideModal();
-        }
-    });
-}
-
-// Mobile menu toggle functionality
-const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-const leftSidebar = document.querySelector('.left-sidebar');
-
-if (mobileMenuToggle && leftSidebar) {
-    mobileMenuToggle.addEventListener('click', () => {
-        leftSidebar.classList.toggle('active');
-    });
-
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!leftSidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-            leftSidebar.classList.remove('active');
-        }
-    });
 }
