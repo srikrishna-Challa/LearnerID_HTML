@@ -1,80 +1,87 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="theme-toggle-wrapper">
-    <button id="theme-toggle" class="btn btn-outline-light btn-sm">
-        <i class="theme-icon">🌙</i>
-    </button>
-</div>
+<button id="theme-toggle" class="fixed top-4 right-4 bg-transparent border border-white/20 rounded-lg p-2 hover:bg-white/10">
+    <i class="theme-icon">🌙</i>
+</button>
 
-<button class="mobile-menu-toggle d-md-none">
+<button class="fixed top-4 left-4 md:hidden text-white text-2xl bg-transparent border-none cursor-pointer">
     <i class="fas fa-bars"></i>
 </button>
 
-<nav class="left-sidebar">
-    <div class="sidebar-header">
-        <a class="navbar-brand" href="#">LearnerID</a>
+<nav class="fixed top-0 left-0 h-full w-64 bg-surface transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-50">
+    <div class="p-4">
+        <a class="text-3xl font-bold text-primary" href="#">LearnerID</a>
     </div>
-    <ul class="sidebar-nav">
-        <li class="nav-item">
-            <a class="nav-link" href="/"><i class="fas fa-house"></i> Home</a>
+    <ul class="space-y-2 mt-8">
+        <li>
+            <a class="flex items-center px-4 py-2 text-white/70 hover:text-white hover:bg-white/5" href="/">
+                <i class="fas fa-house mr-3"></i> Home
+            </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> About Us</a>
+        <li>
+            <a class="flex items-center px-4 py-2 text-white/70 hover:text-white hover:bg-white/5" href="/about">
+                <i class="fas fa-info-circle mr-3"></i> About Us
+            </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/how-it-works"><i class="fas fa-cog"></i> How it Works</a>
+        <li>
+            <a class="flex items-center px-4 py-2 text-white/70 hover:text-white hover:bg-white/5" href="/how-it-works">
+                <i class="fas fa-cog mr-3"></i> How it Works
+            </a>
         </li>
-        <li class="nav-item mt-auto">
-            <a class="nav-link signup-btn" href="/signup">Sign up</a>
+        <li class="mt-auto">
+            <a class="block px-4 py-2 mt-4 text-center bg-primary text-white rounded-lg hover:bg-primary/90" href="/signup">Sign up</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link login-btn" href="/login">Login</a>
+        <li>
+            <a class="block px-4 py-2 mt-2 text-center border border-white/20 text-white rounded-lg hover:bg-white/5" href="/login">Login</a>
         </li>
     </ul>
 </nav>
 
-<main>
-    <section class="hero">
-        <div class="container text-center">
-            <h1 class="display-4">Your Skills. Your Choice. Everything Unified</h1>
-            
-            <div class="search-container">
-                <div class="search-box">
-                    <input type="text" class="form-control" placeholder="Learn with the help of LearnerID AI">
-                    <button class="btn btn-primary search-action-btn" disabled>
-                        <i class="fas fa-wand-magic-sparkles"></i>
-                    </button>
-                </div>
+<main class="md:ml-64 min-h-screen bg-background p-8">
+    <section class="max-w-4xl mx-auto text-center pt-16">
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-12">Your Skills. Your Choice. Everything Unified</h1>
+        
+        <div class="w-full max-w-2xl mx-auto">
+            <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-2xl p-3">
+                <input type="text" class="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder-white/60" placeholder="Learn with the help of LearnerID AI">
+                <button class="disabled:opacity-50 p-2 bg-primary rounded-xl text-white" disabled>
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                </button>
             </div>
-            
-            <div class="section-divider mt-5 mb-5">
-                <span class="divider-text">OR</span>
+        </div>
+        
+        <div class="relative my-12">
+            <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-white/10"></div>
             </div>
-            
-            <div class="categories-section">
-                <h4 class="text-light mb-4">Create your own learning plan</h4>
-                <div class="topics">
-                    <span class="topic-pill" onclick="showQuestionnaire()">Technology and Computer Science</span>
-                    <span class="topic-pill" onclick="showQuestionnaire()">Business Management</span>
-                    <span class="topic-pill" onclick="showQuestionnaire()">Data Science and Analytics</span>
-                    <span class="topic-pill" onclick="showQuestionnaire()">Engineering</span>
-                    <span class="topic-pill" onclick="showQuestionnaire()">Accounting and Finance</span>
-                </div>
+            <div class="relative flex justify-center">
+                <span class="px-4 text-sm bg-background text-white/70">OR</span>
+            </div>
+        </div>
+        
+        <div class="mt-12">
+            <h4 class="text-2xl font-semibold text-white mb-8">Create your own learning plan</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <button onclick="showQuestionnaire()" class="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors">Technology and Computer Science</button>
+                <button onclick="showQuestionnaire()" class="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors">Business Management</button>
+                <button onclick="showQuestionnaire()" class="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors">Data Science and Analytics</button>
+                <button onclick="showQuestionnaire()" class="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors">Engineering</button>
+                <button onclick="showQuestionnaire()" class="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors">Accounting and Finance</button>
             </div>
         </div>
     </section>
 
-    <section class="footer-content mt-auto">
-        <div class="container">
-            <div class="footer-links">
-                <a href="/blogs">Blogs</a>
-                <a href="/careers">Careers</a>
-                <a href="/enterprise">Enterprise</a>
-                <a href="/contact">Contact Us</a>
+    <footer class="mt-auto pt-12 pb-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-wrap justify-center gap-8 text-white/70">
+                <a href="/blogs" class="hover:text-white transition-colors">Blogs</a>
+                <a href="/careers" class="hover:text-white transition-colors">Careers</a>
+                <a href="/enterprise" class="hover:text-white transition-colors">Enterprise</a>
+                <a href="/contact" class="hover:text-white transition-colors">Contact Us</a>
             </div>
         </div>
-    </section>
+    </footer>
 </main>
 
 <!-- Multi-step Questionnaire Modal -->
