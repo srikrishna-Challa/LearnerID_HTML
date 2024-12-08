@@ -1,49 +1,69 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="auth-container">
-    <a href="{{ url_for('index') }}" class="home-link">
-        <h3 class="logo">LearnerID</h3>
-    </a>
-    <div class="auth-box">
-        <h2>Welcome Back</h2>
-        <p class="auth-subtitle">Enter your credentials to sign in to your account</p>
+<div class="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-surface p-8 rounded-2xl">
+        <div>
+            <a href="{{ url_for('index') }}" class="text-3xl font-bold text-primary block text-center">
+                LearnerID
+            </a>
+            <h2 class="mt-6 text-2xl font-bold text-white text-center">Welcome Back</h2>
+            <p class="mt-2 text-center text-white/70">Enter your credentials to sign in to your account</p>
+        </div>
 
-        <form method="POST" action="{{ url_for('login') }}" class="auth-form">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required>
+        <form method="POST" action="{{ url_for('login') }}" class="mt-8 space-y-6">
+            <div class="space-y-4">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-white">Username</label>
+                    <input type="text" id="username" name="username" required 
+                           class="mt-1 block w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                           placeholder="Enter your username">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-white">Password</label>
+                    <input type="password" id="password" name="password" required 
+                           class="mt-1 block w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                           placeholder="Enter your password">
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" id="remember" name="remember"
+                           class="h-4 w-4 bg-white/5 border-white/10 rounded text-primary focus:ring-primary">
+                    <label for="remember" class="ml-2 block text-sm text-white/70">Remember me</label>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+            <button type="submit" 
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                Sign In
+            </button>
+
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-white/10"></div>
+                </div>
+                <div class="relative flex justify-center">
+                    <span class="px-4 text-sm bg-surface text-white/40">OR CONTINUE WITH</span>
+                </div>
             </div>
 
-            <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                <label class="form-check-label" for="remember">Remember me</label>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Sign In</button>
-
-            <div class="social-auth-divider">
-                <span>OR CONTINUE WITH</span>
-            </div>
-
-            <div class="social-auth-buttons">
-                <button type="button" class="btn btn-social btn-google">
-                    <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20">
-                    Continue with Google
+            <div class="grid grid-cols-2 gap-4">
+                <button type="button" 
+                        class="flex items-center justify-center px-4 py-2 border border-white/10 rounded-xl bg-white/5 hover:bg-white/10 text-white">
+                    <img src="https://www.google.com/favicon.ico" alt="Google" class="w-5 h-5 mr-2">
+                    Google
                 </button>
-                <button type="button" class="btn btn-social btn-linkedin">
-                    <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" width="20" height="20">
-                    Continue with LinkedIn
+                <button type="button" 
+                        class="flex items-center justify-center px-4 py-2 border border-white/10 rounded-xl bg-white/5 hover:bg-white/10 text-white">
+                    <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" class="w-5 h-5 mr-2">
+                    LinkedIn
                 </button>
             </div>
 
-            <p class="auth-footer">
-                Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a>
+            <p class="mt-4 text-center text-sm text-white/70">
+                Don't have an account? 
+                <a href="{{ url_for('signup') }}" class="font-medium text-primary hover:text-primary/90">Sign up</a>
             </p>
         </form>
     </div>
