@@ -50,6 +50,50 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
+
+    // Event listeners for modal
+    const modal = document.getElementById('learningLevelModal');
+    const closeBtn = modal?.querySelector('.fa-times')?.parentElement;
+    const nextBtn = document.getElementById('nextButton');
+    const prevBtn = document.getElementById('prevButton');
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', hideModal);
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', handleNext);
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', handlePrevious);
+    }
+
+    // Close modal when clicking outside
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+    }
+
+    // Add click handlers for topic buttons
+    document.querySelectorAll('button[onclick="showQuestionnaire()"]').forEach(button => {
+        button.addEventListener('click', showQuestionnaire);
+    });
+
+    // Handle "Other" language option
+    const languageRadios = document.querySelectorAll('input[name="contentLanguage"]');
+    const otherLanguageInput = document.getElementById('otherLanguageInput');
+
+    if (languageRadios && otherLanguageInput) {
+        languageRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                otherLanguageInput.style.display = e.target.value === 'other' ? 'block' : 'none';
+            });
+        });
+    }
 });
 
 // Questionnaire functionality
@@ -68,30 +112,28 @@ function showQuestionnaire() {
     }
 }
 
+// Update progress indicator
 function updateProgressIndicator() {
     const steps = document.querySelectorAll('[data-step]');
     const progressLine = document.querySelector('.absolute.h-0.5.bg-white\\/20');
     
-    steps.forEach((step, index) => {
+    steps.forEach(step => {
         const stepNum = parseInt(step.getAttribute('data-step'));
-        if (stepNum <= currentStep) {
+        if (stepNum < currentStep) {
             step.classList.remove('bg-white/10');
             step.classList.add('bg-primary');
-            step.classList.remove('text-white/70');
-            step.classList.add('text-white');
+        } else if (stepNum === currentStep) {
+            step.classList.remove('bg-white/10');
+            step.classList.add('bg-primary');
         } else {
             step.classList.remove('bg-primary');
             step.classList.add('bg-white/10');
-            step.classList.add('text-white/70');
-            step.classList.remove('text-white');
         }
     });
     
     if (progressLine) {
         const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
-        progressLine.style.background = `linear-gradient(to right, 
-            #0052CC ${progress}%, 
-            rgba(255, 255, 255, 0.2) ${progress}%)`;
+        progressLine.style.background = `linear-gradient(to right, #0052CC ${progress}%, rgba(255, 255, 255, 0.2) ${progress}%)`;
     }
 }
 
@@ -105,13 +147,13 @@ function showSlide(slideNumber) {
     }
 }
 
+// Update button visibility
 function updateNavigationButtons() {
     const prevBtn = document.getElementById('prevButton');
     const nextBtn = document.getElementById('nextButton');
     
     if (prevBtn && nextBtn) {
-        // Show Previous button from question 2 onwards
-        prevBtn.style.display = currentStep > 1 ? 'inline-flex' : 'none';
+        prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
         nextBtn.textContent = currentStep === totalSteps ? 'Finish' : 'Next';
     }
 }
@@ -145,52 +187,6 @@ function handlePrevious() {
         updateNavigationButtons();
     }
 }
-
-// Handle "Other" language option
-document.addEventListener('DOMContentLoaded', () => {
-    const languageRadios = document.querySelectorAll('input[name="contentLanguage"]');
-    const otherLanguageInput = document.getElementById('otherLanguageInput');
-
-    if (languageRadios && otherLanguageInput) {
-        languageRadios.forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                otherLanguageInput.style.display = e.target.value === 'other' ? 'block' : 'none';
-            });
-        });
-    }
-
-    // Event listeners for modal
-    const modal = document.getElementById('learningLevelModal');
-    const closeBtn = modal?.querySelector('.fa-times')?.parentElement;
-    const nextBtn = document.getElementById('nextButton');
-    const prevBtn = document.getElementById('prevButton');
-
-    if (closeBtn) {
-        closeBtn.addEventListener('click', hideModal);
-    }
-
-    if (nextBtn) {
-        nextBtn.addEventListener('click', handleNext);
-    }
-
-    if (prevBtn) {
-        prevBtn.addEventListener('click', handlePrevious);
-    }
-
-    // Close modal when clicking outside
-    if (modal) {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                hideModal();
-            }
-        });
-    }
-
-    // Add click handlers for topic buttons
-    document.querySelectorAll('button[onclick="showQuestionnaire()"]').forEach(button => {
-        button.addEventListener('click', showQuestionnaire);
-    });
-});
 
 // Save questionnaire answers
 function saveAnswers() {
