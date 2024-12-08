@@ -1,44 +1,54 @@
 // Theme toggle functionality
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = document.querySelector('.theme-icon');
+    const html = document.documentElement;
+    
+    function setTheme(isDark) {
+        html.classList.remove(isDark ? 'light' : 'dark');
+        html.classList.add(isDark ? 'dark' : 'light');
+        const icon = document.querySelector('.theme-icon');
+        if (icon) {
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
     
     // Set initial theme
-    const currentTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.classList.add(currentTheme);
-    themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme === 'dark');
     
+    // Toggle theme on click
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
-            const isDark = document.documentElement.classList.contains('dark');
-            document.documentElement.classList.remove('dark', 'light');
-            document.documentElement.classList.add(isDark ? 'light' : 'dark');
-            themeIcon.textContent = isDark ? '🌙' : '☀️';
-            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            const isDark = html.classList.contains('light');
+            setTheme(isDark);
         });
     }
 });
 
 // Search functionality
 document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.querySelector('.search-box input');
-    const searchButton = document.querySelector('.search-box button');
+    const searchBox = document.querySelector('.search-box');
+    if (!searchBox) return;
+
+    const searchInput = searchBox.querySelector('input');
+    const searchButton = searchBox.querySelector('button');
     
     if (searchInput && searchButton) {
-        // Set initial state
+        // Initial state
         searchButton.disabled = true;
-        searchButton.classList.add('opacity-50');
         
-        // Handle input changes
+        // Enable/disable button based on input
         searchInput.addEventListener('input', () => {
             const hasValue = searchInput.value.trim().length > 0;
             searchButton.disabled = !hasValue;
             searchButton.classList.toggle('opacity-50', !hasValue);
         });
         
-        // Handle button click
-        searchButton.addEventListener('click', () => {
-            if (searchInput.value.trim()) {
+        // Handle search action
+        searchBox.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!searchButton.disabled) {
                 showQuestionnaire();
             }
         });
