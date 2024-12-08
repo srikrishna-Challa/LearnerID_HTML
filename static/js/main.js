@@ -73,13 +73,8 @@ function updateProgressIndicator() {
     const progressLine = document.querySelector('.absolute.h-0.5.bg-white\\/20');
     
     steps.forEach((step, index) => {
-        const stepNum = index + 1;
-        if (stepNum < currentStep) {
-            step.classList.remove('bg-white/10');
-            step.classList.add('bg-primary');
-            step.classList.remove('text-white/70');
-            step.classList.add('text-white');
-        } else if (stepNum === currentStep) {
+        const stepNum = parseInt(step.getAttribute('data-step'));
+        if (stepNum <= currentStep) {
             step.classList.remove('bg-white/10');
             step.classList.add('bg-primary');
             step.classList.remove('text-white/70');
@@ -93,9 +88,10 @@ function updateProgressIndicator() {
     });
     
     if (progressLine) {
+        const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
         progressLine.style.background = `linear-gradient(to right, 
-            #0052CC ${((currentStep - 1) / (totalSteps - 1)) * 100}%, 
-            rgba(255, 255, 255, 0.2) ${((currentStep - 1) / (totalSteps - 1)) * 100}%)`;
+            #0052CC ${progress}%, 
+            rgba(255, 255, 255, 0.2) ${progress}%)`;
     }
 }
 
@@ -114,7 +110,8 @@ function updateNavigationButtons() {
     const nextBtn = document.getElementById('nextButton');
     
     if (prevBtn && nextBtn) {
-        prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
+        // Show Previous button from question 2 onwards
+        prevBtn.style.display = currentStep > 1 ? 'inline-flex' : 'none';
         nextBtn.textContent = currentStep === totalSteps ? 'Finish' : 'Next';
     }
 }
