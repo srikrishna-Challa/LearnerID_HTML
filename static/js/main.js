@@ -171,6 +171,17 @@ document.querySelectorAll('.topic-pill').forEach(tag => {
 
 // Add animation to search box on focus
 const searchInput = document.querySelector('.search-box input');
+const searchInput = document.querySelector('.search-box input');
+const searchButton = document.querySelector('.search-action-btn');
+
+if (searchInput && searchButton) {
+    searchInput.addEventListener('input', (e) => {
+        searchButton.disabled = !e.target.value.trim();
+    });
+    
+    searchButton.addEventListener('click', showQuestionnaire);
+}
+
 if (searchInput) {
     searchInput.addEventListener('focus', () => {
         searchInput.parentElement.style.transform = 'scale(1.02)';
