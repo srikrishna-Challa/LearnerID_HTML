@@ -141,9 +141,18 @@ main {
 }
 
 .search-action-btn {
-    white-space: nowrap;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     opacity: 0.5;
     transition: opacity 0.3s ease;
+}
+
+.search-action-btn i {
+    font-size: 1.2rem;
 }
 
 .search-action-btn:not(:disabled) {
@@ -461,6 +470,22 @@ main {
 }
 
 :root[data-theme="light"] .btn-social {
+.categories-section h4 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.login-btn {
+    text-align: center;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.login-btn:hover {
+    color: var(--text-color);
+}
     background-color: rgba(0, 0, 0, 0.05);
     border-color: rgba(0, 0, 0, 0.1);
 }
