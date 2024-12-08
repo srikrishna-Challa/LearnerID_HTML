@@ -1,61 +1,56 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="auth-container">
-    <a href="{{ url_for('index') }}" class="home-link">
-        <h3 class="logo">LearnerID</h3>
-    </a>
-    <div class="auth-box">
-        <h2>Create an Account</h2>
-        <p class="auth-subtitle">Enter your details below to create your account</p>
+<div class="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-surface p-8 rounded-2xl">
+        <div>
+            <a href="{{ url_for('index') }}" class="text-3xl font-bold text-primary block text-center">LearnerID</a>
+            <h2 class="mt-6 text-2xl font-bold text-white text-center">Create Account</h2>
+            <p class="mt-2 text-center text-white/70">Fill in your details to get started</p>
+        </div>
 
-        <form method="POST" action="{{ url_for('signup') }}" class="auth-form">
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="first_name">First Name <span class="required">*</span></label>
-                    <input type="text" id="first_name" name="first_name" class="form-control" placeholder="Enter your first name" required>
+        <form method="POST" action="{{ url_for('signup') }}" class="mt-8 space-y-6">
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="first_name" class="block text-sm font-medium text-white">First Name</label>
+                        <input type="text" id="first_name" name="first_name" required 
+                               class="mt-1 block w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="last_name" class="block text-sm font-medium text-white">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" required 
+                               class="mt-1 block w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                    </div>
                 </div>
 
-                <div class="form-group col-md-6">
-                    <label for="last_name">Last Name <span class="required">*</span></label>
-                    <input type="text" id="last_name" name="last_name" class="form-control" placeholder="Enter your last name" required>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-white">Email</label>
+                    <input type="email" id="email" name="email" required 
+                           class="mt-1 block w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+
+                <div>
+                    <label for="mobile" class="block text-sm font-medium text-white">Mobile Number</label>
+                    <input type="tel" id="mobile" name="mobile" required 
+                           class="mt-1 block w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-white">Password</label>
+                    <input type="password" id="password" name="password" required 
+                           class="mt-1 block w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="email">Email <span class="required">*</span></label>
-                <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
-            </div>
+            <button type="submit" 
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                Create Account
+            </button>
 
-            <div class="form-group">
-                <label for="mobile">Mobile Number <span class="required">*</span></label>
-                <input type="tel" id="mobile" name="mobile" class="form-control" placeholder="Enter your mobile number" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password <span class="required">*</span></label>
-                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Create Account</button>
-
-            <div class="social-auth-divider">
-                <span>OR CONTINUE WITH</span>
-            </div>
-
-            <div class="social-auth-buttons">
-                <button type="button" class="btn btn-social btn-google">
-                    <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20">
-                    Continue with Google
-                </button>
-                <button type="button" class="btn btn-social btn-linkedin">
-                    <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" width="20" height="20">
-                    Continue with LinkedIn
-                </button>
-            </div>
-
-            <p class="auth-footer">
-                Already have an account? <a href="{{ url_for('login') }}">Sign in</a>
+            <p class="mt-4 text-center text-sm text-white/70">
+                Already have an account? 
+                <a href="{{ url_for('login') }}" class="font-medium text-primary hover:text-primary/90">Sign in</a>
             </p>
         </form>
     </div>
