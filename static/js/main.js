@@ -1,30 +1,3 @@
-// Theme toggle functionality
-document.addEventListener('DOMContentLoaded', () => {
-    const themeToggle = document.getElementById('theme-toggle');
-    const html = document.documentElement;
-    
-    if (themeToggle) {
-        // Set initial theme
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        html.className = savedTheme;
-        const themeIcon = document.querySelector('.theme-icon');
-        if (themeIcon) {
-            themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-        }
-        
-        // Toggle theme
-        themeToggle.addEventListener('click', () => {
-            const isDark = html.classList.contains('dark');
-            html.className = isDark ? 'light' : 'dark';
-            const icon = document.querySelector('.theme-icon');
-            if (icon) {
-                icon.textContent = isDark ? '🌙' : '☀️';
-            }
-            localStorage.setItem('theme', isDark ? 'light' : 'dark');
-        });
-    }
-});
-
 // Search functionality
 document.addEventListener('DOMContentLoaded', () => {
     const searchForm = document.querySelector('.search-box');
@@ -47,14 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
         searchForm.addEventListener('submit', (e) => {
             e.preventDefault();
             if (!searchButton.disabled && typeof showQuestionnaire === 'function') {
-// Questionnaire functionality
-function showQuestionnaire() {
-    const modal = document.getElementById('learningLevelModal');
-    if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-}
                 showQuestionnaire();
             }
         });
@@ -71,27 +36,23 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Modal functionality
-const modal = document.getElementById('learningLevelModal');
-const searchGoBtn = document.querySelector('.search-box .btn-primary');
-const modalCloseBtn = document.querySelector('.modal-close');
-const nextBtn = document.getElementById('nextButton');
+// Questionnaire functionality
 function showQuestionnaire() {
-    currentStep = 1;
-    showSlide(currentStep);
-    updateProgressIndicator();
-    updateNavigationButtons();
-    showModal();
-}
-
-// Update theme icon with null check
-function updateThemeIcon() {
-    const icon = document.querySelector('.theme-icon');
-    if (icon) {
-        icon.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? '🌙' : '☀️';
+    const modal = document.getElementById('learningLevelModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        currentStep = 1;
+        showSlide(currentStep);
+        updateProgressIndicator();
+        updateNavigationButtons();
     }
 }
 
+// Modal functionality
+const modal = document.getElementById('learningLevelModal');
+const modalCloseBtn = document.querySelector('.modal-close');
+const nextBtn = document.getElementById('nextButton');
 const prevBtn = document.getElementById('prevButton');
 
 let currentStep = 1;
@@ -118,36 +79,35 @@ function showSlide(slideNumber) {
         slide.style.display = 'none';
     });
     const currentSlide = document.querySelector(`.question-slide[data-step="${slideNumber}"]`);
-    currentSlide.style.display = 'block';
+    if (currentSlide) {
+        currentSlide.style.display = 'block';
+    }
 }
 
 function updateNavigationButtons() {
-    prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
-    nextBtn.textContent = currentStep === totalSteps ? 'Finish' : 'Next';
-}
-
-function showModal() {
-    modal.classList.add('show');
-    currentStep = 1;
-    showSlide(currentStep);
-    updateProgressIndicator();
-    updateNavigationButtons();
+    if (prevBtn && nextBtn) {
+        prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
+        nextBtn.textContent = currentStep === totalSteps ? 'Finish' : 'Next';
+    }
 }
 
 function hideModal() {
-    modal.classList.remove('show');
-    currentStep = 1;
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        currentStep = 1;
+    }
 }
 
 function saveAnswers() {
     const contentLanguageRadio = document.querySelector('input[name="contentLanguage"]:checked');
     const otherLanguageInput = document.querySelector('#otherLanguageInput input');
-    const languageValue = contentLanguageRadio.value === 'other' && otherLanguageInput
+    const languageValue = contentLanguageRadio?.value === 'other' && otherLanguageInput
         ? otherLanguageInput.value
-        : contentLanguageRadio.value;
+        : contentLanguageRadio?.value;
 
     const answers = {
-        level: document.querySelector('input[name="level"]:checked').value,
+        level: document.querySelector('input[name="level"]:checked')?.value,
         goal: document.querySelector('input[name="goal"]:checked')?.value,
         style: document.querySelector('input[name="style"]:checked')?.value,
         timeCommitment: document.querySelector('input[name="timeCommitment"]:checked')?.value,
@@ -180,14 +140,6 @@ function handlePrevious() {
     }
 }
 
-if (searchGoBtn) {
-    searchGoBtn.addEventListener('click', showModal);
-}
-
-if (modalCloseBtn) {
-    modalCloseBtn.addEventListener('click', hideModal);
-}
-
 // Handle "Other" language option
 const languageRadios = document.querySelectorAll('input[name="contentLanguage"]');
 const otherLanguageInput = document.getElementById('otherLanguageInput');
@@ -198,6 +150,11 @@ if (languageRadios && otherLanguageInput) {
             otherLanguageInput.style.display = e.target.value === 'other' ? 'block' : 'none';
         });
     });
+}
+
+// Event listeners
+if (modalCloseBtn) {
+    modalCloseBtn.addEventListener('click', hideModal);
 }
 
 if (nextBtn) {
@@ -213,29 +170,6 @@ document.querySelectorAll('.topic-pill').forEach(tag => {
     tag.addEventListener('click', showQuestionnaire);
 });
 
-// Add animation to search box on focus
-const searchInput = document.querySelector('.search-box input');
-const searchButton = document.querySelector('.search-action-btn');
-
-if (searchInput && searchButton) {
-    searchInput.addEventListener('input', (e) => {
-        searchButton.disabled = !e.target.value.trim();
-    });
-    
-    searchButton.addEventListener('click', showQuestionnaire);
-}
-
-if (searchInput) {
-    searchInput.addEventListener('focus', () => {
-        searchInput.parentElement.style.transform = 'scale(1.02)';
-        searchInput.parentElement.style.transition = 'transform 0.3s ease';
-    });
-
-    searchInput.addEventListener('blur', () => {
-        searchInput.parentElement.style.transform = 'scale(1)';
-    });
-}
-
 // Close modal when clicking outside
 if (modal) {
     modal.addEventListener('click', (e) => {
@@ -244,26 +178,6 @@ if (modal) {
         }
     });
 }
-
-// Add scroll functionality for arrows
-document.querySelectorAll('.scroll-arrow').forEach(arrow => {
-    arrow.addEventListener('click', () => {
-        const container = arrow.closest('.scroll-container-wrapper').querySelector('.scroll-container');
-        const scrollAmount = container.offsetWidth * 0.8;
-        
-        if (arrow.classList.contains('left-arrow')) {
-            container.scrollBy({
-                left: -scrollAmount,
-                behavior: 'smooth'
-            });
-        } else {
-            container.scrollBy({
-                left: scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-    });
-});
 
 // Mobile menu toggle functionality
 const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
