@@ -4,22 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}LearnerID{% endblock %}</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <script>
-        window.addEventListener('load', function() {
-            tailwind.config = {
-                darkMode: 'class',
-                theme: {
-                    extend: {
-                        colors: {
-                            'primary': '#0052CC',
-                            'surface': '#1A1A1A',
-                            'background': '#121212'
-                        }
+        // Define config before loading Tailwind
+        window.tailwindConfig = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#0052CC',
+                        'surface': '#1A1A1A',
+                        'background': '#121212'
                     }
                 }
             }
-        });
+        };
+    </script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        // Apply config after Tailwind loads
+        window.tailwind.config = window.tailwindConfig;
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
