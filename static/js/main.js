@@ -1,44 +1,42 @@
-function setTheme(theme) {
-    const html = document.documentElement;
-    html.classList.remove('light', 'dark');
-    html.classList.add(theme);
-    localStorage.setItem('theme', theme);
-    
-    // Update icon
-    const icon = document.querySelector('.theme-icon');
-    if (icon) {
-        icon.textContent = theme === 'light' ? '🌙' : '☀️';
-    }
-}
-
-// Initialize theme and add event listeners
+// Theme toggle functionality
 document.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    setTheme(savedTheme);
-    
-    // Theme toggle button
     const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.querySelector('.theme-icon');
+    
+    // Set initial theme
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.classList.add(currentTheme);
+    themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+    
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-            setTheme(currentTheme);
+            const isDark = document.documentElement.classList.contains('dark');
+            document.documentElement.classList.remove('dark', 'light');
+            document.documentElement.classList.add(isDark ? 'light' : 'dark');
+            themeIcon.textContent = isDark ? '🌙' : '☀️';
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
         });
     }
+});
 
-    // Update search input and button selectors
+// Search functionality
+document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.querySelector('.search-box input');
     const searchButton = document.querySelector('.search-box button');
-
+    
     if (searchInput && searchButton) {
-        searchInput.addEventListener('input', (e) => {
-            searchButton.disabled = !e.target.value.trim();
-            if (e.target.value.trim()) {
-                searchButton.classList.remove('opacity-50');
-            } else {
-                searchButton.classList.add('opacity-50');
-            }
+        // Set initial state
+        searchButton.disabled = true;
+        searchButton.classList.add('opacity-50');
+        
+        // Handle input changes
+        searchInput.addEventListener('input', () => {
+            const hasValue = searchInput.value.trim().length > 0;
+            searchButton.disabled = !hasValue;
+            searchButton.classList.toggle('opacity-50', !hasValue);
         });
         
+        // Handle button click
         searchButton.addEventListener('click', () => {
             if (searchInput.value.trim()) {
                 showQuestionnaire();
