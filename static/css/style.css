@@ -17,26 +17,22 @@ main {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.footer-content h6 {
-    color: var(--text-color);
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem 0;
 }
 
-.footer-content ul li a {
+.footer-links a {
     color: var(--text-muted);
     text-decoration: none;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     transition: color 0.3s ease;
 }
 
-.footer-content ul li a:hover {
+.footer-links a:hover {
     color: var(--text-color);
-}
-
-.footer-content ul li:not(:last-child) {
-    margin-bottom: 0.5rem;
 }
 :root {
     /* Common variables */
