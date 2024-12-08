@@ -5,16 +5,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (themeToggle) {
         // Set initial theme
-        const currentTheme = localStorage.getItem('theme') || 'dark';
-        html.classList.add(currentTheme);
-        document.querySelector('.theme-icon').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.className = savedTheme;
+        const themeIcon = document.querySelector('.theme-icon');
+        if (themeIcon) {
+            themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
         
-        // Handle theme toggle
+        // Toggle theme
         themeToggle.addEventListener('click', () => {
             const isDark = html.classList.contains('dark');
-            html.classList.remove(isDark ? 'dark' : 'light');
-            html.classList.add(isDark ? 'light' : 'dark');
-            document.querySelector('.theme-icon').textContent = isDark ? '🌙' : '☀️';
+            html.className = isDark ? 'light' : 'dark';
+            const icon = document.querySelector('.theme-icon');
+            if (icon) {
+                icon.textContent = isDark ? '🌙' : '☀️';
+            }
             localStorage.setItem('theme', isDark ? 'light' : 'dark');
         });
     }
@@ -23,24 +28,33 @@ document.addEventListener('DOMContentLoaded', () => {
 // Search functionality
 document.addEventListener('DOMContentLoaded', () => {
     const searchForm = document.querySelector('.search-box');
-    const searchInput = document.querySelector('.search-box input');
-    const searchButton = document.querySelector('.search-box button');
+    const searchInput = searchForm?.querySelector('input');
+    const searchButton = searchForm?.querySelector('button');
     
-    if (searchInput && searchButton) {
+    if (searchForm && searchInput && searchButton) {
         // Initial state
         searchButton.disabled = true;
+        searchButton.classList.add('opacity-50');
         
-        // Handle input changes
+        // Enable/disable button based on input
         searchInput.addEventListener('input', () => {
             const hasValue = searchInput.value.trim().length > 0;
             searchButton.disabled = !hasValue;
             searchButton.classList.toggle('opacity-50', !hasValue);
         });
         
-        // Handle button click
-        searchButton.addEventListener('click', (e) => {
+        // Handle form submission
+        searchForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            if (searchInput.value.trim()) {
+            if (!searchButton.disabled && typeof showQuestionnaire === 'function') {
+// Questionnaire functionality
+function showQuestionnaire() {
+    const modal = document.getElementById('learningLevelModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+}
                 showQuestionnaire();
             }
         });
