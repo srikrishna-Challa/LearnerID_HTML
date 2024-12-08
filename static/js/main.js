@@ -142,6 +142,9 @@ if (searchGoBtn) {
 }
 
 if (modalCloseBtn) {
+    modalCloseBtn.addEventListener('click', hideModal);
+}
+
 // Handle "Other" language option
 const languageRadios = document.querySelectorAll('input[name="contentLanguage"]');
 const otherLanguageInput = document.getElementById('otherLanguageInput');
@@ -152,8 +155,6 @@ if (languageRadios && otherLanguageInput) {
             otherLanguageInput.style.display = e.target.value === 'other' ? 'block' : 'none';
         });
     });
-}
-    modalCloseBtn.addEventListener('click', hideModal);
 }
 
 if (nextBtn) {
@@ -200,6 +201,7 @@ if (modal) {
         }
     });
 }
+
 // Add scroll functionality for arrows
 document.querySelectorAll('.scroll-arrow').forEach(arrow => {
     arrow.addEventListener('click', () => {
@@ -220,10 +222,19 @@ document.querySelectorAll('.scroll-arrow').forEach(arrow => {
     });
 });
 
-// Fix theme icon error
-const setThemeIcon = () => {
-    const icon = document.querySelector('.theme-icon');
-    if (icon) {
-        icon.textContent = localStorage.getItem('theme') === 'light' ? '🌙' : '☀️';
-    }
-};
+// Mobile menu toggle functionality
+const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+const leftSidebar = document.querySelector('.left-sidebar');
+
+if (mobileMenuToggle && leftSidebar) {
+    mobileMenuToggle.addEventListener('click', () => {
+        leftSidebar.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!leftSidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+            leftSidebar.classList.remove('active');
+        }
+    });
+}
