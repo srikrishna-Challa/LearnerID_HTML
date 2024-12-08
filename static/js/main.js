@@ -1,21 +1,50 @@
-// Theme management
 function setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
+    const html = document.documentElement;
+    html.classList.remove('light', 'dark');
+    html.classList.add(theme);
     localStorage.setItem('theme', theme);
+    
+    // Update icon
     const icon = document.querySelector('.theme-icon');
     if (icon) {
         icon.textContent = theme === 'light' ? '🌙' : '☀️';
     }
 }
 
-// Initialize theme
-const savedTheme = localStorage.getItem('theme') || 'dark';
-setTheme(savedTheme);
+// Initialize theme and add event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
+    
+    // Theme toggle button
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+            setTheme(currentTheme);
+        });
+    }
 
-// Theme toggle functionality
-document.getElementById('theme-toggle')?.addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    setTheme(currentTheme === 'light' ? 'dark' : 'light');
+    // Update search input and button selectors
+    const searchInput = document.querySelector('.search-box input');
+    const searchButton = document.querySelector('.search-box button');
+
+    if (searchInput && searchButton) {
+        searchInput.addEventListener('input', (e) => {
+            searchButton.disabled = !e.target.value.trim();
+            if (e.target.value.trim()) {
+                searchButton.classList.remove('opacity-50');
+            } else {
+                searchButton.classList.add('opacity-50');
+            }
+        });
+        
+        searchButton.addEventListener('click', () => {
+            if (searchInput.value.trim()) {
+                showQuestionnaire();
+            }
+        });
+    }
 });
 
 // Add smooth scrolling for anchor links
