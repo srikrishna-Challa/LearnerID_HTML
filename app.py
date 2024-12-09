@@ -559,39 +559,70 @@ def my_learning_details(topic):
     if not details:
         flash('Topic not found', 'error')
         return redirect(url_for('learning_history'))
-        
-    return render_template('my_learning_details.html', details=details)
+    
+    # Initialize quiz attempts for all topics if not exists
+    for week_topic in details['topics']:
+        topic_name = week_topic['title']
+        if topic_name not in quiz_attempts:
+            quiz_attempts[topic_name] = {
+                'attempts': 0,
+                'scores': [],
+                'max_attempts': 3
+            }
+    
+    return render_template('my_learning_details.html', 
+                         details=details,
+                         quiz_attempts=quiz_attempts)
 
 @app.route('/learning-recommendations/<topic>')
 def learning_recommendations(topic):
     app.logger.debug(f"Accessing recommendations for topic: {topic}")
-    app.logger.debug(f"Available recommendations: {recommendations_data.keys()}")
+    
+    # Get the parent course and week information
+    parent_course = None
+    week_number = None
+    topic_info = None
+    
+    for course, details in topic_details.items():
+        for week_topic in details['topics']:
+            if week_topic['title'] == topic:
+                parent_course = course
+                week_number = week_topic['week']
+                topic_info = week_topic
+                break
+        if parent_course:
+            break
     
     # Initialize quiz attempts if not exists
     if topic not in quiz_attempts:
         quiz_attempts[topic] = {'attempts': 0, 'scores': [], 'max_attempts': 3}
     
     # Get recommendations for the exact topic name
-    recommendations = recommendations_data.get(topic, None)
+    recommendations = recommendations_data.get(parent_course, None)
     
-    # If no recommendations found, try to find a matching topic
     if recommendations is None:
-        # Try to find a matching topic name
-        matching_topic = next((t for t in recommendations_data.keys() 
-                             if topic.lower() in t.lower() or t.lower() in topic.lower()), None)
-        if matching_topic:
-            recommendations = recommendations_data[matching_topic]
-        else:
-            recommendations = {'videos': [], 'articles': [], 'papers': []}
+        recommendations = {'videos': [], 'articles': [], 'papers': []}
     
     topic_materials = user_materials.get(topic, [])
+    
+    # Calculate quiz statistics
+    topic_attempts = quiz_attempts.get(topic, {})
+    quiz_stats = {
+        'attempts_made': topic_attempts.get('attempts', 0),
+        'avg_score': sum(topic_attempts.get('scores', [])) / len(topic_attempts.get('scores', [1])) if topic_attempts.get('scores') else 0,
+        'attempts_left': topic_attempts.get('max_attempts', 3) - topic_attempts.get('attempts', 0)
+    }
     
     app.logger.debug(f"Sending recommendations: {recommendations}")
     
     return render_template('learning_recommendations.html', 
-                         recommendations=recommendations, 
+                         recommendations=recommendations,
                          topic=topic,
+                         parent_course=parent_course,
+                         week_number=week_number,
+                         topic_info=topic_info,
                          quiz_attempts=quiz_attempts,
+                         quiz_stats=quiz_stats,
                          user_materials=topic_materials)
 
 @app.route('/add-learning-material/<topic>', methods=['POST'])

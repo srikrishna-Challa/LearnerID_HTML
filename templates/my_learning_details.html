@@ -109,10 +109,10 @@ function generateRecommendations(topicTitle) {
     loadingOverlay.classList.remove('hidden');
     loadingOverlay.classList.add('flex');
 
-    // Redirect to recommendations page after simulating AI processing
+    // Simulate AI processing and redirect to recommendations
     setTimeout(() => {
         window.location.href = `/learning-recommendations/${encodeURIComponent(topicTitle)}`;
-    }, 2000);
+    }, 1500);
 }
 </script>
 {% endblock %}
