@@ -134,7 +134,9 @@ recommendations_data = {
     }
 }
 
-# Mock quiz data
+# Mock quiz data and attempts tracking
+quiz_attempts = {}  # Format: {topic: {'attempts': count, 'scores': [scores], 'max_attempts': 3}}
+
 quiz_data = {
     'Introduction to Programming': {
         'questions': [
@@ -249,13 +251,36 @@ def show_quiz(topic, item_id):
         flash('Quiz not available for this topic', 'error')
         return redirect(url_for('learning_recommendations', topic=topic))
     
+    # Initialize attempts tracking if not exists
+    if topic not in quiz_attempts:
+        quiz_attempts[topic] = {
+            'attempts': 0,
+            'scores': [],
+            'max_attempts': 3
+        }
+    
+    attempts_info = quiz_attempts[topic]
+    avg_score = sum(attempts_info['scores']) / len(attempts_info['scores']) if attempts_info['scores'] else 0
+    attempts_left = attempts_info['max_attempts'] - attempts_info['attempts']
+    
     questions = quiz_data[topic]['questions']
-    return render_template('quiz.html', topic=topic, item_id=item_id, questions=questions)
+    return render_template('quiz.html', 
+                         topic=topic, 
+                         item_id=item_id, 
+                         questions=questions,
+                         attempts=attempts_info['attempts'],
+                         avg_score=round(avg_score, 2),
+                         attempts_left=attempts_left)
 
 @app.route('/submit-quiz/<topic>/<item_id>', methods=['POST'])
 def submit_quiz(topic, item_id):
     if topic not in quiz_data:
         return jsonify({'status': 'error', 'message': 'Quiz not found'}), 404
+    
+    # Check if maximum attempts reached
+    if quiz_attempts[topic]['attempts'] >= quiz_attempts[topic]['max_attempts']:
+        flash('You have reached the maximum number of attempts for this quiz.', 'error')
+        return redirect(url_for('learning_recommendations', topic=topic))
     
     questions = quiz_data[topic]['questions']
     correct_count = 0
@@ -265,6 +290,13 @@ def submit_quiz(topic, item_id):
         user_answer = request.form.get(f'q{i+1}')
         if user_answer and int(user_answer) == questions[i]['correct']:
             correct_count += 1
+    
+    # Calculate score as percentage
+    score = (correct_count / len(questions)) * 100
+    
+    # Update attempts tracking
+    quiz_attempts[topic]['attempts'] += 1
+    quiz_attempts[topic]['scores'].append(score)
     
     # Check if passed
     passed = correct_count >= quiz_data[topic]['passing_score']
@@ -278,7 +310,8 @@ def submit_quiz(topic, item_id):
         
         flash(f'Congratulations! You passed the quiz with {correct_count} correct answers. Learning credits have been unlocked!', 'success')
     else:
-        flash(f'You got {correct_count} answers correct. You need {quiz_data[topic]["passing_score"]} to pass. Try again!', 'error')
+        attempts_left = quiz_attempts[topic]['max_attempts'] - quiz_attempts[topic]['attempts']
+        flash(f'You got {correct_count} answers correct. You need {quiz_data[topic]["passing_score"]} to pass. You have {attempts_left} attempts left!', 'error')
     
     return redirect(url_for('learning_recommendations', topic=topic))
 
