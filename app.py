@@ -111,3 +111,26 @@ def learning_plan():
     learning_weeks = beginner_weeks
     
     return render_template('learning_plan.html', learning_weeks=learning_weeks)
+
+@app.route('/learning-history')
+def learning_history():
+    # Mock data for demonstration
+    learning_history = [
+        {
+            'topic': 'Technology and Computer Science',
+            'level': 'Intermediate',
+            'total_duration': '8 weeks',
+            'progress': 65,
+            'start_date': '2024-12-01',
+            'status': 'In Progress'
+        },
+        {
+            'topic': 'Data Science and Analytics',
+            'level': 'Beginner',
+            'total_duration': '12 weeks',
+            'progress': 25,
+            'start_date': '2024-11-15',
+            'status': 'In Progress'
+        }
+    ]
+    return render_template('learning_history.html', learning_history=learning_history)

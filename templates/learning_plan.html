@@ -211,7 +211,7 @@ document.getElementById('editQuestionnaireForm').addEventListener('submit', func
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            window.location.reload();
+            window.location.href = "{{ url_for('learning_history') }}";
         }
     })
     .catch(error => {
