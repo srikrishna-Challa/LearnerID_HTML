@@ -23,6 +23,73 @@ user_materials = {}  # Format: {topic: [{'id': str, 'type': str, 'title': str, '
 
 # Mock quiz attempts storage
 quiz_attempts = {}  # Format: {topic: {'attempts': int, 'scores': [float], 'max_attempts': int}}
+# Mock topic details storage
+topic_details = {
+    'Technology and Computer Science': {
+        'title': 'Technology and Computer Science',
+        'level': 'Intermediate',
+        'progress': 65,
+        'start_date': '2024-12-01',
+        'topics': [
+            {
+                'week': 1,
+                'title': 'Introduction to Programming',
+                'status': 'Completed',
+                'progress': 100,
+                'contents': [
+                    'Basic Programming Concepts',
+                    'Variables and Data Types',
+                    'Control Structures',
+                    'Functions and Methods'
+                ]
+            },
+            {
+                'week': 2,
+                'title': 'Object-Oriented Programming',
+                'status': 'In Progress',
+                'progress': 60,
+                'contents': [
+                    'Classes and Objects',
+                    'Inheritance and Polymorphism',
+                    'Encapsulation',
+                    'Design Patterns'
+                ]
+            }
+        ]
+    },
+    'Data Science and Analytics': {
+        'title': 'Data Science and Analytics',
+        'level': 'Beginner',
+        'progress': 25,
+        'start_date': '2024-11-15',
+        'topics': [
+            {
+                'week': 1,
+                'title': 'Introduction to Data Science',
+                'status': 'In Progress',
+                'progress': 45,
+                'contents': [
+                    'What is Data Science?',
+                    'Data Collection and Preprocessing',
+                    'Exploratory Data Analysis',
+                    'Basic Statistics'
+                ]
+            },
+            {
+                'week': 2,
+                'title': 'Data Visualization',
+                'status': 'Not Started',
+                'progress': 0,
+                'contents': [
+                    'Visualization Principles',
+                    'Charts and Graphs',
+                    'Interactive Visualizations',
+                    'Storytelling with Data'
+                ]
+            }
+        ]
+    }
+}
 
 @app.route('/quiz/<topic>/<item_id>')
 def show_quiz(topic, item_id):
