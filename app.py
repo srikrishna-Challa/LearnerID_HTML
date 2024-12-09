@@ -465,23 +465,20 @@ def submit_quiz(topic, item_id):
 @app.route('/')
 def index():
     if 'user_id' in session:
-        return redirect(url_for('dashboard'))
+        return render_template('user_loggedin_page.html')
     return render_template('index.html')
-
-@app.route('/dashboard')
-def dashboard():
-    # TODO: Add authentication check
-    return render_template('dashboard.html')
 
 @app.route('/mails')
 def mails():
-    # TODO: Add authentication check
-    return render_template('dashboard.html')  # We'll create a separate template later
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('user_loggedin_page.html')
 
 @app.route('/learning-credits')
 def learning_credits():
-    # TODO: Add authentication check
-    return render_template('dashboard.html')  # We'll create a separate template later
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('learning_credits.html')
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -751,7 +748,10 @@ def mark_recommendation(topic, item_id):
 
 @app.route('/learning-history')
 def learning_history():
-    # Mock data for demonstration
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    # Mock data for learning history and progress
     learning_history = [
         {
             'topic': 'Technology and Computer Science',
@@ -770,7 +770,41 @@ def learning_history():
             'status': 'In Progress'
         }
     ]
-    return render_template('learning_history.html', learning_history=learning_history)
+
+    # Mock recent activity data
+    recent_activities = [
+        {
+            'type': 'completion',
+            'icon': 'book-open',
+            'text': 'Completed Module: Introduction to Programming',
+            'time': '2 hours ago'
+        },
+        {
+            'type': 'achievement',
+            'icon': 'trophy',
+            'text': 'Earned Badge: Python Basics',
+            'time': 'Yesterday'
+        },
+        {
+            'type': 'course',
+            'icon': 'tasks',
+            'text': 'Started New Course: Data Structures',
+            'time': '2 days ago'
+        }
+    ]
+
+    # Mock progress statistics
+    progress_stats = {
+        'current_progress': 65,
+        'current_course': 'Technology and Computer Science',
+        'learning_credits': 750,
+        'active_courses': 2
+    }
+
+    return render_template('learning_history.html', 
+                         learning_history=learning_history,
+                         recent_activities=recent_activities,
+                         progress_stats=progress_stats)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

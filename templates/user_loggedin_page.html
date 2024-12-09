@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-background">
+    <!-- Navigation Bar -->
+    <nav class="bg-surface px-4 py-3 flex justify-between items-center">
+        <a href="{{ url_for('index') }}" class="text-2xl font-bold text-primary">LearnerID</a>
+        <div class="flex items-center space-x-4">
+            <a href="{{ url_for('index') }}" class="text-white/70 hover:text-white">Home</a>
+            <a href="{{ url_for('about') }}" class="text-white/70 hover:text-white">About</a>
+            <a href="{{ url_for('how_it_works') }}" class="text-white/70 hover:text-white">How it Works</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-white mb-8">Welcome Back, {{ user.name if user else 'User' }}!</h1>
+        <p class="text-white/70 mb-8">Your personalized learning journey continues here.</p>
+        
+        <!-- Quick Links -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <a href="{{ url_for('learning_history') }}" class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5">
+                <h3 class="text-lg font-semibold text-white mb-2">Learning History</h3>
+                <p class="text-white/70">View your progress and continue learning</p>
+            </a>
+            <a href="{{ url_for('learning_credits') }}" class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5">
+                <h3 class="text-lg font-semibold text-white mb-2">Learning Credits</h3>
+                <p class="text-white/70">Track your achievements and rewards</p>
+            </a>
+            <a href="{{ url_for('about') }}" class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5">
+                <h3 class="text-lg font-semibold text-white mb-2">About Platform</h3>
+                <p class="text-white/70">Learn more about our learning platform</p>
+            </a>
+        </div>
+    </main>
+</div>
+{% endblock %}
