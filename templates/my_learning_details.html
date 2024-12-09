@@ -70,6 +70,15 @@
                         </li>
                         {% endfor %}
                     </ul>
+
+                    <!-- Generate Learning Materials Button -->
+                    <div class="mt-6">
+                        <button onclick="generateRecommendations('{{ topic.title }}')"
+                                class="inline-flex items-center px-6 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
+                            <i class="fas fa-magic mr-2"></i>
+                            Generate Learning Materials
+                        </button>
+                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -85,4 +94,25 @@
         </div>
     </main>
 </div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+    <div class="text-center">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+        <p class="mt-4 text-white">AI is generating personalized learning materials...</p>
+    </div>
+</div>
+
+<script>
+function generateRecommendations(topicTitle) {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    loadingOverlay.classList.remove('hidden');
+    loadingOverlay.classList.add('flex');
+
+    // Redirect to recommendations page after simulating AI processing
+    setTimeout(() => {
+        window.location.href = `/learning-recommendations/${encodeURIComponent(topicTitle)}`;
+    }, 2000);
+}
+</script>
 {% endblock %}

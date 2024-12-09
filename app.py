@@ -88,6 +88,51 @@ topic_details = {
     }
 }
 
+# Mock recommendations data
+recommendations_data = {
+    'Introduction to Programming': {
+        'videos': [
+            {
+                'id': 'v1',
+                'title': 'Programming Fundamentals',
+                'description': 'A comprehensive introduction to programming concepts',
+                'duration': '45 min',
+                'url': 'https://example.com/video1',
+                'completed': False
+            },
+            {
+                'id': 'v2',
+                'title': 'Variables and Data Types',
+                'description': 'Understanding different types of data in programming',
+                'duration': '30 min',
+                'url': 'https://example.com/video2',
+                'completed': False
+            }
+        ],
+        'articles': [
+            {
+                'id': 'a1',
+                'title': 'Getting Started with Programming',
+                'description': 'A beginner-friendly guide to programming',
+                'reading_time': '10 min',
+                'url': 'https://example.com/article1',
+                'completed': False
+            }
+        ],
+        'papers': [
+            {
+                'id': 'p1',
+                'title': 'Modern Programming Paradigms',
+                'authors': 'John Doe, Jane Smith',
+                'abstract': 'An overview of current programming paradigms',
+                'published_date': '2024',
+                'url': 'https://example.com/paper1',
+                'completed': False
+            }
+        ]
+    }
+}
+
 @app.route('/')
 def index():
     if 'user_id' in session:
@@ -125,7 +170,6 @@ def how_it_works():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # Handle login form submission here
         username = request.form.get('username')
         password = request.form.get('password')
         remember = request.form.get('remember') == 'on'
@@ -139,7 +183,6 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        # Handle signup form submission here
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
         email = request.form.get('email')
@@ -189,6 +232,32 @@ def my_learning_details(topic):
         return redirect(url_for('learning_history'))
         
     return render_template('my_learning_details.html', details=details)
+
+@app.route('/learning-recommendations/<topic>')
+def learning_recommendations(topic):
+    recommendations = recommendations_data.get(topic, {
+        'videos': [],
+        'articles': [],
+        'papers': []
+    })
+    return render_template('learning_recommendations.html', recommendations=recommendations, topic=topic)
+
+@app.route('/mark-recommendation/<topic>/<item_id>', methods=['POST'])
+def mark_recommendation(topic, item_id):
+    if topic not in recommendations_data:
+        return jsonify({'status': 'error', 'message': 'Topic not found'}), 404
+    
+    # Find and toggle the completion status of the item
+    for section in ['videos', 'articles', 'papers']:
+        for item in recommendations_data[topic][section]:
+            if item['id'] == item_id:
+                item['completed'] = not item['completed']
+                return jsonify({
+                    'status': 'success',
+                    'message': f"Item marked as {'completed' if item['completed'] else 'incomplete'}"
+                })
+    
+    return jsonify({'status': 'error', 'message': 'Item not found'}), 404
 
 @app.route('/learning-history')
 def learning_history():
