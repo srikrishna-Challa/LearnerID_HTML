@@ -25,31 +25,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Radio button click handler
-    const radioGroups = document.querySelectorAll('.space-y-4');
-    radioGroups.forEach(group => {
-        const labels = group.querySelectorAll('label');
-        labels.forEach(label => {
-            label.addEventListener('click', () => {
-                // Remove selected state from all labels in group
-                labels.forEach(l => {
-                    l.classList.remove('selected');
-                    const radio = l.querySelector('input[type="radio"]');
-                    const indicator = l.querySelector('.w-3.h-3');
-                    if (indicator) indicator.classList.add('hidden');
-                });
-                
-                // Add selected state to clicked label
-                label.classList.add('selected');
-                const radio = label.querySelector('input[type="radio"]');
-                const indicator = label.querySelector('.w-3.h-3');
-                if (radio && indicator) {
-                    radio.checked = true;
-                    indicator.classList.remove('hidden');
-                }
+    // Add click handlers for topic buttons
+    document.querySelectorAll('button[onclick="showQuestionnaire()"]').forEach(button => {
+        button.addEventListener('click', showQuestionnaire);
+    });
+
+    // Handle "Other" language option
+    const languageRadios = document.querySelectorAll('input[name="contentLanguage"]');
+    const otherLanguageInput = document.getElementById('otherLanguageInput');
+
+    if (languageRadios && otherLanguageInput) {
+        languageRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                otherLanguageInput.style.display = e.target.value === 'other' ? 'block' : 'none';
             });
         });
-    });
+    }
 
     // Event listeners for modal
     const modal = document.getElementById('learningLevelModal');
@@ -77,23 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // Add click handlers for topic buttons
-    document.querySelectorAll('button[onclick="showQuestionnaire()"]').forEach(button => {
-        button.addEventListener('click', showQuestionnaire);
-    });
-
-    // Handle "Other" language option
-    const languageRadios = document.querySelectorAll('input[name="contentLanguage"]');
-    const otherLanguageInput = document.getElementById('otherLanguageInput');
-
-    if (languageRadios && otherLanguageInput) {
-        languageRadios.forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                otherLanguageInput.style.display = e.target.value === 'other' ? 'block' : 'none';
-            });
-        });
-    }
 });
 
 // Questionnaire functionality
@@ -106,6 +80,27 @@ function showQuestionnaire() {
         modal.classList.remove('hidden');
         modal.classList.add('flex');
         currentStep = 1;
+        showSlide(currentStep);
+        updateProgressIndicator();
+        updateNavigationButtons();
+    }
+}
+
+function handleNext() {
+    if (currentStep < totalSteps) {
+        currentStep++;
+        showSlide(currentStep);
+        updateProgressIndicator();
+        updateNavigationButtons();
+    } else {
+        saveAnswers();
+        hideModal();
+    }
+}
+
+function handlePrevious() {
+    if (currentStep > 1) {
+        currentStep--;
         showSlide(currentStep);
         updateProgressIndicator();
         updateNavigationButtons();
@@ -147,7 +142,6 @@ function showSlide(slideNumber) {
     }
 }
 
-// Update button visibility
 function updateNavigationButtons() {
     const prevBtn = document.getElementById('prevButton');
     const nextBtn = document.getElementById('nextButton');
@@ -164,27 +158,6 @@ function hideModal() {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
         currentStep = 1;
-    }
-}
-
-function handleNext() {
-    if (currentStep < totalSteps) {
-        currentStep++;
-        showSlide(currentStep);
-        updateProgressIndicator();
-        updateNavigationButtons();
-    } else {
-        saveAnswers();
-        hideModal();
-    }
-}
-
-function handlePrevious() {
-    if (currentStep > 1) {
-        currentStep--;
-        showSlide(currentStep);
-        updateProgressIndicator();
-        updateNavigationButtons();
     }
 }
 
