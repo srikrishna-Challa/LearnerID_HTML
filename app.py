@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'  # Change this to a secure secret key
@@ -45,8 +45,15 @@ def signup():
     
     return render_template('signup.html')
 
-@app.route('/learning-plan')
+@app.route('/learning-plan', methods=['GET', 'POST'])
 def learning_plan():
+    if request.method == 'POST':
+        # Simulate AI processing time
+        import time
+        time.sleep(2)
+        flash('Your learning plan has been updated successfully!', 'success')
+        return jsonify({'status': 'success', 'message': 'Learning plan updated'})
+
     # In a real application, we would use the user's preferences to generate a customized plan
     # For now, we'll demonstrate different content based on the level
     beginner_weeks = [
