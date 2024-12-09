@@ -1,11 +1,33 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'  # Change this to a secure secret key
 
 @app.route('/')
 def index():
+    if 'user_id' in session:
+        return redirect(url_for('dashboard'))
     return render_template('index.html')
+
+@app.route('/dashboard')
+def dashboard():
+    # TODO: Add authentication check
+    return render_template('dashboard.html')
+
+@app.route('/mails')
+def mails():
+    # TODO: Add authentication check
+    return render_template('dashboard.html')  # We'll create a separate template later
+
+@app.route('/learning-credits')
+def learning_credits():
+    # TODO: Add authentication check
+    return render_template('dashboard.html')  # We'll create a separate template later
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
 
 @app.route('/about')
 def about():
