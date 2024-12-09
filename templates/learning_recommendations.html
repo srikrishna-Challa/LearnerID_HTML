@@ -33,13 +33,102 @@
             <p class="text-white/70 mt-2">AI-curated learning materials for {{ topic }}</p>
         </div>
 
-        <!-- Recommendations Sections -->
+        <!-- Topic Recommendations -->
         <div class="space-y-8">
-            <!-- Video Resources -->
+            {% for video in recommendations.videos %}
+            <!-- Topic Container -->
             <section class="bg-surface rounded-2xl p-6 border border-white/10">
-                <h2 class="text-xl font-semibold text-white mb-4">Video Resources</h2>
-                <div class="space-y-4">
-                    {% for video in recommendations.videos %}
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h2 class="text-xl font-semibold text-white">{{ video.title }}</h2>
+                        <p class="text-white/70 mt-1">{{ video.description }}</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ video.id }}')" class="flex-shrink-0">
+                            <button type="submit" 
+                                    class="px-4 py-2 rounded-xl {% if video.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
+                                {% if video.completed %}
+                                    <i class="fas fa-check mr-2"></i>Completed
+                                {% else %}
+                                    Mark as Complete
+                                {% endif %}
+                            </button>
+                        </form>
+                        {% if video.credits_unlocked %}
+                            <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
+                                Learning Credits Unlocked
+                            </span>
+                        {% else %}
+                            <a href="{{ url_for('show_quiz', topic=topic, item_id=video.id) }}"
+                               {% if not video.completed %}tabindex="-1"{% endif %}
+                               class="px-4 py-2 rounded-xl {% if video.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
+                                Generate Tests
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Resource Sections -->
+                <div class="space-y-6">
+                    <!-- Video Resource -->
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <h3 class="text-lg font-medium text-white mb-2">Video Lesson</h3>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-white/50 text-sm">Duration: {{ video.duration }}</span>
+                                <a href="{{ video.url }}" target="_blank" 
+                                   class="ml-4 text-primary hover:text-primary/90">Watch Video</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Related Reading Materials -->
+                    {% for article in recommendations.articles if article.title.lower() in video.title.lower() or video.title.lower() in article.title.lower() %}
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <h3 class="text-lg font-medium text-white mb-2">Reading Material</h3>
+                        <p class="text-white/70 mb-2">{{ article.description }}</p>
+                        <div class="flex items-center">
+                            <span class="text-white/50 text-sm">Reading time: {{ article.reading_time }}</span>
+                            <a href="{{ article.url }}" target="_blank" 
+                               class="ml-4 text-primary hover:text-primary/90">Read Article</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <!-- Related Research Papers -->
+                    {% for paper in recommendations.papers if paper.title.lower() in video.title.lower() or video.title.lower() in paper.title.lower() %}
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <h3 class="text-lg font-medium text-white mb-2">Research Paper</h3>
+                        <p class="text-white/70 mb-2">{{ paper.abstract }}</p>
+                        <div class="flex items-center">
+                            <span class="text-white/50 text-sm">Authors: {{ paper.authors }}</span>
+                            <span class="text-white/50 text-sm ml-4">Published: {{ paper.published_date }}</span>
+                            <a href="{{ paper.url }}" target="_blank" 
+                               class="ml-4 text-primary hover:text-primary/90">Read Paper</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <!-- Quiz Attempts Information -->
+                    {% if video.completed %}
+                    <div class="grid grid-cols-3 gap-4 mt-4">
+                        <div class="bg-surface/50 p-4 rounded-lg">
+                            <p class="text-sm text-white/70">Attempts Made</p>
+                            <p class="text-xl font-semibold text-white">{{ quiz_attempts[topic].attempts if quiz_attempts.get(topic) else 0 }}</p>
+                        </div>
+                        <div class="bg-surface/50 p-4 rounded-lg">
+                            <p class="text-sm text-white/70">Average Score</p>
+                            <p class="text-xl font-semibold text-white">{{ "%.1f"|format(quiz_attempts[topic].scores|sum / quiz_attempts[topic].scores|length if quiz_attempts.get(topic) and quiz_attempts[topic].scores else 0) }}%</p>
+                        </div>
+                        <div class="bg-surface/50 p-4 rounded-lg">
+                            <p class="text-sm text-white/70">Attempts Left</p>
+                            <p class="text-xl font-semibold text-white">{{ (quiz_attempts[topic].max_attempts - quiz_attempts[topic].attempts) if quiz_attempts.get(topic) else 3 }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+            {% endfor %}
                     <div class="flex items-start justify-between p-4 bg-white/5 rounded-xl">
                         <div class="flex-1">
                             <h3 class="text-white font-medium">{{ video.title }}</h3>

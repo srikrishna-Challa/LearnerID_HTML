@@ -701,28 +701,52 @@ def delete_material(material_id):
 
 @app.route('/mark-recommendation/<topic>/<item_id>', methods=['POST'])
 def mark_recommendation(topic, item_id):
+    app.logger.debug(f"Mark recommendation request - Topic: {topic}, Item ID: {item_id}")
+    
+    # Find the parent course for the topic
+    parent_course = None
+    for course, details in topic_details.items():
+        for week_topic in details['topics']:
+            if week_topic['title'] == topic:
+                parent_course = course
+                break
+        if parent_course:
+            break
+    
+    if not parent_course:
+        app.logger.error(f"Parent course not found for topic: {topic}")
+        return jsonify({'status': 'error', 'message': 'Topic not found'}), 404
+    
+    app.logger.debug(f"Found parent course: {parent_course}")
+    
+    # Search for the item in the parent course's recommendations
     item_found = False
+    course_recommendations = recommendations_data.get(parent_course, {})
+    
     for section in ['videos', 'articles', 'papers']:
-        for item in recommendations_data.get(topic, {}).get(section, []):
+        for item in course_recommendations.get(section, []):
             if item['id'] == item_id:
+                app.logger.debug(f"Found item: {item}")
                 item_found = True
                 item['completed'] = not item.get('completed', False)
+                
                 if item['completed']:
-                    flash('Congratulations for completing the topic! You can take a quick test to evaluate your knowledge on this topic.', 'success')
+                    flash('Congratulations! You can now take a quiz to test your knowledge.', 'success')
                     return jsonify({
                         'status': 'success',
-                        'message': 'Topic marked as completed',
+                        'message': 'Item marked as completed',
                         'completed': True
                     })
                 else:
-                    flash('Topic status changed to In Progress.', 'info')
+                    flash('Progress reset to in progress.', 'info')
                     return jsonify({
                         'status': 'success',
-                        'message': 'Topic marked as in progress',
+                        'message': 'Item marked as in progress',
                         'completed': False
                     })
     
     if not item_found:
+        app.logger.error(f"Item not found - Topic: {topic}, Item ID: {item_id}")
         return jsonify({'status': 'error', 'message': 'Item not found'}), 404
 
 @app.route('/learning-history')
