@@ -49,6 +49,24 @@
                                 <a href="{{ video.url }}" target="_blank" 
                                    class="ml-4 text-primary hover:text-primary/90">Watch Video</a>
                             </div>
+                            
+                            <!-- Quiz Attempts Information -->
+                            {% if video.completed %}
+                            <div class="mt-4 grid grid-cols-3 gap-4">
+                                <div class="bg-surface/50 p-2 rounded-lg">
+                                    <p class="text-sm text-white/70">Attempts Made</p>
+                                    <p class="text-white">{{ quiz_attempts[topic].attempts if quiz_attempts.get(topic) else 0 }}</p>
+                                </div>
+                                <div class="bg-surface/50 p-2 rounded-lg">
+                                    <p class="text-sm text-white/70">Average Score</p>
+                                    <p class="text-white">{{ "%.1f"|format(quiz_attempts[topic].scores|sum / quiz_attempts[topic].scores|length if quiz_attempts.get(topic) and quiz_attempts[topic].scores else 0) }}%</p>
+                                </div>
+                                <div class="bg-surface/50 p-2 rounded-lg">
+                                    <p class="text-sm text-white/70">Attempts Left</p>
+                                    <p class="text-white">{{ (quiz_attempts[topic].max_attempts - quiz_attempts[topic].attempts) if quiz_attempts.get(topic) else 3 }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                         <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ video.id }}')" class="ml-4 flex-shrink-0">
                             <div class="flex space-x-2">
@@ -68,7 +86,7 @@
                                     <a href="{{ url_for('show_quiz', topic=topic, item_id=video.id) }}"
                                        {% if not video.completed %}tabindex="-1"{% endif %}
                                        class="px-4 py-2 rounded-xl {% if video.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
-                                        Generate Q&A
+                                        Generate Tests
                                     </a>
                                 {% endif %}
                             </div>
@@ -92,6 +110,24 @@
                                 <a href="{{ article.url }}" target="_blank" 
                                    class="ml-4 text-primary hover:text-primary/90">Read Article</a>
                             </div>
+                            
+                            <!-- Quiz Attempts Information -->
+                            {% if article.completed %}
+                            <div class="mt-4 grid grid-cols-3 gap-4">
+                                <div class="bg-surface/50 p-2 rounded-lg">
+                                    <p class="text-sm text-white/70">Attempts Made</p>
+                                    <p class="text-white">{{ quiz_attempts[topic].attempts if quiz_attempts.get(topic) else 0 }}</p>
+                                </div>
+                                <div class="bg-surface/50 p-2 rounded-lg">
+                                    <p class="text-sm text-white/70">Average Score</p>
+                                    <p class="text-white">{{ "%.1f"|format(quiz_attempts[topic].scores|sum / quiz_attempts[topic].scores|length if quiz_attempts.get(topic) and quiz_attempts[topic].scores else 0) }}%</p>
+                                </div>
+                                <div class="bg-surface/50 p-2 rounded-lg">
+                                    <p class="text-sm text-white/70">Attempts Left</p>
+                                    <p class="text-white">{{ (quiz_attempts[topic].max_attempts - quiz_attempts[topic].attempts) if quiz_attempts.get(topic) else 3 }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                         <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ article.id }}')" class="ml-4 flex-shrink-0">
                             <div class="flex space-x-2">
@@ -111,7 +147,7 @@
                                     <a href="{{ url_for('show_quiz', topic=topic, item_id=article.id) }}"
                                        {% if not article.completed %}tabindex="-1"{% endif %}
                                        class="px-4 py-2 rounded-xl {% if article.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
-                                        Generate Q&A
+                                        Generate Tests
                                     </a>
                                 {% endif %}
                             </div>
@@ -136,6 +172,24 @@
                                 <a href="{{ paper.url }}" target="_blank" 
                                    class="ml-4 text-primary hover:text-primary/90">Read Paper</a>
                             </div>
+                            
+                            <!-- Quiz Attempts Information -->
+                            {% if paper.completed %}
+                            <div class="mt-4 grid grid-cols-3 gap-4">
+                                <div class="bg-surface/50 p-2 rounded-lg">
+                                    <p class="text-sm text-white/70">Attempts Made</p>
+                                    <p class="text-white">{{ quiz_attempts[topic].attempts if quiz_attempts.get(topic) else 0 }}</p>
+                                </div>
+                                <div class="bg-surface/50 p-2 rounded-lg">
+                                    <p class="text-sm text-white/70">Average Score</p>
+                                    <p class="text-white">{{ "%.1f"|format(quiz_attempts[topic].scores|sum / quiz_attempts[topic].scores|length if quiz_attempts.get(topic) and quiz_attempts[topic].scores else 0) }}%</p>
+                                </div>
+                                <div class="bg-surface/50 p-2 rounded-lg">
+                                    <p class="text-sm text-white/70">Attempts Left</p>
+                                    <p class="text-white">{{ (quiz_attempts[topic].max_attempts - quiz_attempts[topic].attempts) if quiz_attempts.get(topic) else 3 }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                         <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ paper.id }}')" class="ml-4 flex-shrink-0">
                             <div class="flex space-x-2">
@@ -155,7 +209,7 @@
                                     <a href="{{ url_for('show_quiz', topic=topic, item_id=paper.id) }}"
                                        {% if not paper.completed %}tabindex="-1"{% endif %}
                                        class="px-4 py-2 rounded-xl {% if paper.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
-                                        Generate Q&A
+                                        Generate Tests
                                     </a>
                                 {% endif %}
                             </div>
@@ -167,6 +221,7 @@
         </div>
     </main>
 </div>
+
 <script>
 function handleCompletion(event, topic, itemId) {
     event.preventDefault();

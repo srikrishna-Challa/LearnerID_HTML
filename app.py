@@ -422,7 +422,10 @@ def learning_recommendations(topic):
         'articles': [],
         'papers': []
     })
-    return render_template('learning_recommendations.html', recommendations=recommendations, topic=topic)
+    return render_template('learning_recommendations.html', 
+                         recommendations=recommendations, 
+                         topic=topic,
+                         quiz_attempts=quiz_attempts)
 
 @app.route('/mark-recommendation/<topic>/<item_id>', methods=['POST'])
 def mark_recommendation(topic, item_id):

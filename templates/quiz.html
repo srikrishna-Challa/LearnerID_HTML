@@ -22,22 +22,6 @@
                 </a>
                 <h1 class="text-3xl font-bold text-white mt-4">Knowledge Assessment</h1>
                 <p class="text-white/70 mt-2">Test your understanding of {{ topic }}</p>
-                
-                <!-- Quiz Attempts Information -->
-                <div class="mt-4 grid grid-cols-3 gap-4">
-                    <div class="bg-surface p-4 rounded-xl border border-white/10">
-                        <h4 class="text-sm text-white/70">Attempts Made</h4>
-                        <p class="text-xl font-semibold text-white">{{ attempts }}</p>
-                    </div>
-                    <div class="bg-surface p-4 rounded-xl border border-white/10">
-                        <h4 class="text-sm text-white/70">Average Score</h4>
-                        <p class="text-xl font-semibold text-white">{{ avg_score }}%</p>
-                    </div>
-                    <div class="bg-surface p-4 rounded-xl border border-white/10">
-                        <h4 class="text-sm text-white/70">Attempts Left</h4>
-                        <p class="text-xl font-semibold text-white">{{ attempts_left }}</p>
-                    </div>
-                </div>
             </div>
 
             <form id="quizForm" method="POST" action="{{ url_for('submit_quiz', topic=topic, item_id=item_id) }}" class="space-y-8">
