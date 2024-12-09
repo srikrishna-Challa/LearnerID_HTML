@@ -24,141 +24,62 @@
         {% endwith %}
         
         <div class="mb-8">
-            <a href="{{ url_for('my_learning_details', topic=topic) }}" 
+            <a href="{{ url_for('my_learning_details', topic=parent_course) }}" 
                class="inline-flex items-center text-white/70 hover:text-white">
                 <i class="fas fa-arrow-left mr-2"></i>
-                Back to Topic Details
+                Back to Course Details
             </a>
             <h1 class="text-3xl font-bold text-white mt-4">Your Learning Resources</h1>
-            <p class="text-white/70 mt-2">AI-curated learning materials for {{ topic }}</p>
+            <p class="text-white/70 mt-2">Week {{ week_number }}: {{ topic }}</p>
         </div>
 
-        <!-- Topic Recommendations -->
-        <div class="space-y-8">
-            {% for video in recommendations.videos %}
-            <!-- Topic Container -->
-            <section class="bg-surface rounded-2xl p-6 border border-white/10">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <h2 class="text-xl font-semibold text-white">{{ video.title }}</h2>
-                        <p class="text-white/70 mt-1">{{ video.description }}</p>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ video.id }}')" class="flex-shrink-0">
-                            <button type="submit" 
-                                    class="px-4 py-2 rounded-xl {% if video.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
-                                {% if video.completed %}
-                                    <i class="fas fa-check mr-2"></i>Completed
-                                {% else %}
-                                    Mark as Complete
-                                {% endif %}
-                            </button>
-                        </form>
-                        {% if video.credits_unlocked %}
-                            <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
-                                Learning Credits Unlocked
-                            </span>
-                        {% else %}
-                            <a href="{{ url_for('show_quiz', topic=topic, item_id=video.id) }}"
-                               {% if not video.completed %}tabindex="-1"{% endif %}
-                               class="px-4 py-2 rounded-xl {% if video.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
-                                Generate Tests
-                            </a>
-                        {% endif %}
-                    </div>
+        <!-- Topic Container -->
+        <div class="bg-surface rounded-2xl p-6 border border-white/10 mb-8">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 class="text-xl font-semibold text-white">{{ topic }}</h2>
+                    {% if topic_info %}
+                    <p class="text-white/70 mt-1">Progress: {{ topic_info.progress }}%</p>
+                    {% endif %}
                 </div>
-
-                <!-- Resource Sections -->
-                <div class="space-y-6">
-                    <!-- Video Resource -->
-                    <div class="bg-white/5 rounded-xl p-4">
-                        <h3 class="text-lg font-medium text-white mb-2">Video Lesson</h3>
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <span class="text-white/50 text-sm">Duration: {{ video.duration }}</span>
-                                <a href="{{ video.url }}" target="_blank" 
-                                   class="ml-4 text-primary hover:text-primary/90">Watch Video</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Related Reading Materials -->
-                    {% for article in recommendations.articles if article.title.lower() in video.title.lower() or video.title.lower() in article.title.lower() %}
-                    <div class="bg-white/5 rounded-xl p-4">
-                        <h3 class="text-lg font-medium text-white mb-2">Reading Material</h3>
-                        <p class="text-white/70 mb-2">{{ article.description }}</p>
-                        <div class="flex items-center">
-                            <span class="text-white/50 text-sm">Reading time: {{ article.reading_time }}</span>
-                            <a href="{{ article.url }}" target="_blank" 
-                               class="ml-4 text-primary hover:text-primary/90">Read Article</a>
-                        </div>
-                    </div>
-                    {% endfor %}
-
-                    <!-- Related Research Papers -->
-                    {% for paper in recommendations.papers if paper.title.lower() in video.title.lower() or video.title.lower() in paper.title.lower() %}
-                    <div class="bg-white/5 rounded-xl p-4">
-                        <h3 class="text-lg font-medium text-white mb-2">Research Paper</h3>
-                        <p class="text-white/70 mb-2">{{ paper.abstract }}</p>
-                        <div class="flex items-center">
-                            <span class="text-white/50 text-sm">Authors: {{ paper.authors }}</span>
-                            <span class="text-white/50 text-sm ml-4">Published: {{ paper.published_date }}</span>
-                            <a href="{{ paper.url }}" target="_blank" 
-                               class="ml-4 text-primary hover:text-primary/90">Read Paper</a>
-                        </div>
-                    </div>
-                    {% endfor %}
-
-                    <!-- Quiz Attempts Information -->
-                    {% if video.completed %}
-                    <div class="grid grid-cols-3 gap-4 mt-4">
-                        <div class="bg-surface/50 p-4 rounded-lg">
+                <div class="flex items-center space-x-3">
+                    {% if quiz_stats %}
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-surface/50 p-3 rounded-lg text-center">
                             <p class="text-sm text-white/70">Attempts Made</p>
-                            <p class="text-xl font-semibold text-white">{{ quiz_attempts[topic].attempts if quiz_attempts.get(topic) else 0 }}</p>
+                            <p class="text-lg font-semibold text-white">{{ quiz_stats.attempts_made }}</p>
                         </div>
-                        <div class="bg-surface/50 p-4 rounded-lg">
+                        <div class="bg-surface/50 p-3 rounded-lg text-center">
                             <p class="text-sm text-white/70">Average Score</p>
-                            <p class="text-xl font-semibold text-white">{{ "%.1f"|format(quiz_attempts[topic].scores|sum / quiz_attempts[topic].scores|length if quiz_attempts.get(topic) and quiz_attempts[topic].scores else 0) }}%</p>
+                            <p class="text-lg font-semibold text-white">{{ "%.1f"|format(quiz_stats.avg_score) }}%</p>
                         </div>
-                        <div class="bg-surface/50 p-4 rounded-lg">
+                        <div class="bg-surface/50 p-3 rounded-lg text-center">
                             <p class="text-sm text-white/70">Attempts Left</p>
-                            <p class="text-xl font-semibold text-white">{{ (quiz_attempts[topic].max_attempts - quiz_attempts[topic].attempts) if quiz_attempts.get(topic) else 3 }}</p>
+                            <p class="text-lg font-semibold text-white">{{ quiz_stats.attempts_left }}</p>
                         </div>
                     </div>
                     {% endif %}
                 </div>
-            </section>
-            {% endfor %}
-                    <div class="flex items-start justify-between p-4 bg-white/5 rounded-xl">
+            </div>
+
+            <!-- Video Resources -->
+            {% if recommendations.videos %}
+            <div class="space-y-6">
+                <h3 class="text-lg font-medium text-white">Video Resources</h3>
+                {% for video in recommendations.videos %}
+                <div class="bg-white/5 rounded-xl p-4">
+                    <div class="flex justify-between items-start">
                         <div class="flex-1">
-                            <h3 class="text-white font-medium">{{ video.title }}</h3>
+                            <h4 class="text-white font-medium">{{ video.title }}</h4>
                             <p class="text-white/70 text-sm mt-1">{{ video.description }}</p>
                             <div class="flex items-center mt-2">
                                 <span class="text-white/50 text-sm">Duration: {{ video.duration }}</span>
                                 <a href="{{ video.url }}" target="_blank" 
                                    class="ml-4 text-primary hover:text-primary/90">Watch Video</a>
                             </div>
-                            
-                            <!-- Quiz Attempts Information -->
-                            {% if video.completed %}
-                            <div class="mt-4 grid grid-cols-3 gap-4">
-                                <div class="bg-surface/50 p-2 rounded-lg">
-                                    <p class="text-sm text-white/70">Attempts Made</p>
-                                    <p class="text-white">{{ quiz_attempts[topic].attempts if quiz_attempts.get(topic) else 0 }}</p>
-                                </div>
-                                <div class="bg-surface/50 p-2 rounded-lg">
-                                    <p class="text-sm text-white/70">Average Score</p>
-                                    <p class="text-white">{{ "%.1f"|format(quiz_attempts[topic].scores|sum / quiz_attempts[topic].scores|length if quiz_attempts.get(topic) and quiz_attempts[topic].scores else 0) }}%</p>
-                                </div>
-                                <div class="bg-surface/50 p-2 rounded-lg">
-                                    <p class="text-sm text-white/70">Attempts Left</p>
-                                    <p class="text-white">{{ (quiz_attempts[topic].max_attempts - quiz_attempts[topic].attempts) if quiz_attempts.get(topic) else 3 }}</p>
-                                </div>
-                            </div>
-                            {% endif %}
                         </div>
-                        <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ video.id }}')" class="ml-4 flex-shrink-0">
-                            <div class="flex space-x-2">
+                        <div class="flex items-center space-x-3 ml-4">
+                            <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ video.id }}')" class="flex-shrink-0">
                                 <button type="submit" 
                                         class="px-4 py-2 rounded-xl {% if video.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
                                     {% if video.completed %}
@@ -167,59 +88,43 @@
                                         Mark as Complete
                                     {% endif %}
                                 </button>
-                                {% if video.credits_unlocked %}
-                                    <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
-                                        Learning Credits Unlocked
-                                    </span>
-                                {% else %}
-                                    <a href="{{ url_for('show_quiz', topic=topic, item_id=video.id) }}"
-                                       {% if not video.completed %}tabindex="-1"{% endif %}
-                                       class="px-4 py-2 rounded-xl {% if video.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
-                                        Generate Tests
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </form>
+                            </form>
+                            {% if video.credits_unlocked %}
+                                <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
+                                    Learning Credits Unlocked
+                                </span>
+                            {% else %}
+                                <a href="{{ url_for('show_quiz', topic=topic, item_id=video.id) }}"
+                                   {% if not video.completed %}tabindex="-1"{% endif %}
+                                   class="px-4 py-2 rounded-xl {% if video.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
+                                    Generate Tests
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
-                    {% endfor %}
                 </div>
-            </section>
+                {% endfor %}
+            </div>
+            {% endif %}
 
             <!-- Reading Materials -->
-            <section class="bg-surface rounded-2xl p-6 border border-white/10">
-                <h2 class="text-xl font-semibold text-white mb-4">Reading Materials</h2>
-                <div class="space-y-4">
-                    {% for article in recommendations.articles %}
-                    <div class="flex items-start justify-between p-4 bg-white/5 rounded-xl">
+            {% if recommendations.articles %}
+            <div class="space-y-6 mt-8">
+                <h3 class="text-lg font-medium text-white">Reading Materials</h3>
+                {% for article in recommendations.articles %}
+                <div class="bg-white/5 rounded-xl p-4">
+                    <div class="flex justify-between items-start">
                         <div class="flex-1">
-                            <h3 class="text-white font-medium">{{ article.title }}</h3>
+                            <h4 class="text-white font-medium">{{ article.title }}</h4>
                             <p class="text-white/70 text-sm mt-1">{{ article.description }}</p>
                             <div class="flex items-center mt-2">
                                 <span class="text-white/50 text-sm">Reading time: {{ article.reading_time }}</span>
                                 <a href="{{ article.url }}" target="_blank" 
                                    class="ml-4 text-primary hover:text-primary/90">Read Article</a>
                             </div>
-                            
-                            <!-- Quiz Attempts Information -->
-                            {% if article.completed %}
-                            <div class="mt-4 grid grid-cols-3 gap-4">
-                                <div class="bg-surface/50 p-2 rounded-lg">
-                                    <p class="text-sm text-white/70">Attempts Made</p>
-                                    <p class="text-white">{{ quiz_attempts[topic].attempts if quiz_attempts.get(topic) else 0 }}</p>
-                                </div>
-                                <div class="bg-surface/50 p-2 rounded-lg">
-                                    <p class="text-sm text-white/70">Average Score</p>
-                                    <p class="text-white">{{ "%.1f"|format(quiz_attempts[topic].scores|sum / quiz_attempts[topic].scores|length if quiz_attempts.get(topic) and quiz_attempts[topic].scores else 0) }}%</p>
-                                </div>
-                                <div class="bg-surface/50 p-2 rounded-lg">
-                                    <p class="text-sm text-white/70">Attempts Left</p>
-                                    <p class="text-white">{{ (quiz_attempts[topic].max_attempts - quiz_attempts[topic].attempts) if quiz_attempts.get(topic) else 3 }}</p>
-                                </div>
-                            </div>
-                            {% endif %}
                         </div>
-                        <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ article.id }}')" class="ml-4 flex-shrink-0">
-                            <div class="flex space-x-2">
+                        <div class="flex items-center space-x-3 ml-4">
+                            <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ article.id }}')" class="flex-shrink-0">
                                 <button type="submit" 
                                         class="px-4 py-2 rounded-xl {% if article.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
                                     {% if article.completed %}
@@ -228,28 +133,75 @@
                                         Mark as Complete
                                     {% endif %}
                                 </button>
-                                {% if article.credits_unlocked %}
-                                    <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
-                                        Learning Credits Unlocked
-                                    </span>
-                                {% else %}
-                                    <a href="{{ url_for('show_quiz', topic=topic, item_id=article.id) }}"
-                                       {% if not article.completed %}tabindex="-1"{% endif %}
-                                       class="px-4 py-2 rounded-xl {% if article.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
-                                        Generate Tests
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </form>
+                            </form>
+                            {% if article.credits_unlocked %}
+                                <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
+                                    Learning Credits Unlocked
+                                </span>
+                            {% else %}
+                                <a href="{{ url_for('show_quiz', topic=topic, item_id=article.id) }}"
+                                   {% if not article.completed %}tabindex="-1"{% endif %}
+                                   class="px-4 py-2 rounded-xl {% if article.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
+                                    Generate Tests
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
-                    {% endfor %}
                 </div>
-            </section>
+                {% endfor %}
+            </div>
+            {% endif %}
 
-            <!-- User Added Materials -->
-            <section class="bg-surface rounded-2xl p-6 border border-white/10 mb-8">
+            <!-- Research Papers -->
+            {% if recommendations.papers %}
+            <div class="space-y-6 mt-8">
+                <h3 class="text-lg font-medium text-white">Research Papers</h3>
+                {% for paper in recommendations.papers %}
+                <div class="bg-white/5 rounded-xl p-4">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h4 class="text-white font-medium">{{ paper.title }}</h4>
+                            <p class="text-white/70 text-sm mt-1">{{ paper.authors }}</p>
+                            <p class="text-white/70 text-sm mt-1">{{ paper.abstract }}</p>
+                            <div class="flex items-center mt-2">
+                                <span class="text-white/50 text-sm">Published: {{ paper.published_date }}</span>
+                                <a href="{{ paper.url }}" target="_blank" 
+                                   class="ml-4 text-primary hover:text-primary/90">Read Paper</a>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3 ml-4">
+                            <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ paper.id }}')" class="flex-shrink-0">
+                                <button type="submit" 
+                                        class="px-4 py-2 rounded-xl {% if paper.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
+                                    {% if paper.completed %}
+                                        <i class="fas fa-check mr-2"></i>Completed
+                                    {% else %}
+                                        Mark as Complete
+                                    {% endif %}
+                                </button>
+                            </form>
+                            {% if paper.credits_unlocked %}
+                                <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
+                                    Learning Credits Unlocked
+                                </span>
+                            {% else %}
+                                <a href="{{ url_for('show_quiz', topic=topic, item_id=paper.id) }}"
+                                   {% if not paper.completed %}tabindex="-1"{% endif %}
+                                   class="px-4 py-2 rounded-xl {% if paper.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
+                                    Generate Tests
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- User Materials -->
+            <div class="mt-8">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-semibold text-white">Your Learning Materials</h2>
+                    <h3 class="text-lg font-medium text-white">Your Learning Materials</h3>
                     <button onclick="toggleAddMaterialForm()"
                             class="px-4 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
                         <i class="fas fa-plus mr-2"></i>Add Material
@@ -307,7 +259,7 @@
                     {% for material in user_materials %}
                     <div class="flex items-start justify-between p-4 bg-white/5 rounded-xl">
                         <div class="flex-1">
-                            <h3 class="text-white font-medium">{{ material.title }}</h3>
+                            <h4 class="text-white font-medium">{{ material.title }}</h4>
                             <p class="text-white/70 text-sm mt-1">{{ material.description }}</p>
                             <div class="flex items-center mt-2">
                                 <span class="text-white/50 text-sm">Type: {{ material.type }}</span>
@@ -329,69 +281,7 @@
                     </div>
                     {% endfor %}
                 </div>
-            </section>
-
-            <!-- Research Papers -->
-            <section class="bg-surface rounded-2xl p-6 border border-white/10">
-                <h2 class="text-xl font-semibold text-white mb-4">Research Papers</h2>
-                <div class="space-y-4">
-                    {% for paper in recommendations.papers %}
-                    <div class="flex items-start justify-between p-4 bg-white/5 rounded-xl">
-                        <div class="flex-1">
-                            <h3 class="text-white font-medium">{{ paper.title }}</h3>
-                            <p class="text-white/70 text-sm mt-1">{{ paper.authors }}</p>
-                            <p class="text-white/70 text-sm mt-1">{{ paper.abstract }}</p>
-                            <div class="flex items-center mt-2">
-                                <span class="text-white/50 text-sm">Published: {{ paper.published_date }}</span>
-                                <a href="{{ paper.url }}" target="_blank" 
-                                   class="ml-4 text-primary hover:text-primary/90">Read Paper</a>
-                            </div>
-                            
-                            <!-- Quiz Attempts Information -->
-                            {% if paper.completed %}
-                            <div class="mt-4 grid grid-cols-3 gap-4">
-                                <div class="bg-surface/50 p-2 rounded-lg">
-                                    <p class="text-sm text-white/70">Attempts Made</p>
-                                    <p class="text-white">{{ quiz_attempts[topic].attempts if quiz_attempts.get(topic) else 0 }}</p>
-                                </div>
-                                <div class="bg-surface/50 p-2 rounded-lg">
-                                    <p class="text-sm text-white/70">Average Score</p>
-                                    <p class="text-white">{{ "%.1f"|format(quiz_attempts[topic].scores|sum / quiz_attempts[topic].scores|length if quiz_attempts.get(topic) and quiz_attempts[topic].scores else 0) }}%</p>
-                                </div>
-                                <div class="bg-surface/50 p-2 rounded-lg">
-                                    <p class="text-sm text-white/70">Attempts Left</p>
-                                    <p class="text-white">{{ (quiz_attempts[topic].max_attempts - quiz_attempts[topic].attempts) if quiz_attempts.get(topic) else 3 }}</p>
-                                </div>
-                            </div>
-                            {% endif %}
-                        </div>
-                        <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ paper.id }}')" class="ml-4 flex-shrink-0">
-                            <div class="flex space-x-2">
-                                <button type="submit" 
-                                        class="px-4 py-2 rounded-xl {% if paper.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
-                                    {% if paper.completed %}
-                                        <i class="fas fa-check mr-2"></i>Completed
-                                    {% else %}
-                                        Mark as Complete
-                                    {% endif %}
-                                </button>
-                                {% if paper.credits_unlocked %}
-                                    <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
-                                        Learning Credits Unlocked
-                                    </span>
-                                {% else %}
-                                    <a href="{{ url_for('show_quiz', topic=topic, item_id=paper.id) }}"
-                                       {% if not paper.completed %}tabindex="-1"{% endif %}
-                                       class="px-4 py-2 rounded-xl {% if paper.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
-                                        Generate Tests
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </form>
-                    </div>
-                    {% endfor %}
-                </div>
-            </section>
+            </div>
         </div>
     </main>
 </div>
@@ -424,34 +314,9 @@ function handleCompletion(event, topic, itemId) {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            // Get the form that triggered this event
-            const form = event.target;
-            const submitButton = form.querySelector('button[type="submit"]');
-            const qaButton = form.querySelector('button[type="button"]');
-            
-            // Update the submit button appearance
-            if (data.completed) {
-                submitButton.innerHTML = '<i class="fas fa-check mr-2"></i>Completed';
-                submitButton.classList.add('bg-green-500/20', 'text-green-500');
-                submitButton.classList.remove('bg-white/5', 'text-white/70');
-                
-                // Enable Q&A button
-                qaButton.classList.remove('bg-white/5', 'cursor-not-allowed');
-                qaButton.classList.add('bg-primary', 'hover:bg-primary/90');
-                qaButton.disabled = false;
-            } else {
-                submitButton.textContent = 'Mark as Complete';
-                submitButton.classList.remove('bg-green-500/20', 'text-green-500');
-                submitButton.classList.add('bg-white/5', 'text-white/70');
-                
-                // Disable Q&A button
-                qaButton.classList.add('bg-white/5', 'cursor-not-allowed');
-                qaButton.classList.remove('bg-primary', 'hover:bg-primary/90');
-                qaButton.disabled = true;
-            }
-            
-            // Reload the page to show the flash message
             window.location.reload();
+        } else {
+            console.error('Error:', data.message);
         }
     })
     .catch(error => {
