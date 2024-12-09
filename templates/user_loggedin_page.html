@@ -1,37 +1,144 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="min-h-screen bg-background">
-    <!-- Navigation Bar -->
-    <nav class="bg-surface px-4 py-3 flex justify-between items-center">
-        <a href="{{ url_for('index') }}" class="text-2xl font-bold text-primary">LearnerID</a>
-        <div class="flex items-center space-x-4">
-            <a href="{{ url_for('index') }}" class="text-white/70 hover:text-white">Home</a>
-            <a href="{{ url_for('about') }}" class="text-white/70 hover:text-white">About</a>
-            <a href="{{ url_for('how_it_works') }}" class="text-white/70 hover:text-white">How it Works</a>
+<div class="flex h-screen bg-background">
+    <!-- Sidebar -->
+    <aside class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full md:translate-x-0">
+        <div class="h-full bg-surface">
+            <!-- User Profile Section -->
+            <div class="flex flex-col items-center p-6 border-b border-white/10">
+                <div class="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mb-4">
+                    <i class="fas fa-user text-3xl text-primary"></i>
+                </div>
+                <h2 class="text-lg font-semibold text-white">{{ user.name if user else 'User Name' }}</h2>
+                <p class="text-sm text-white/70">{{ user.email if user else 'user@example.com' }}</p>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="{{ url_for('user_loggedin_page') }}" 
+                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'user_loggedin_page' %}bg-white/10{% endif %}">
+                            <i class="fas fa-home w-6"></i>
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('learning_history') }}" 
+                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'learning_history' %}bg-white/10{% endif %}">
+                            <i class="fas fa-history w-6"></i>
+                            <span>Learning History</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('learning_credits') }}" 
+                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'learning_credits' %}bg-white/10{% endif %}">
+                            <i class="fas fa-star w-6"></i>
+                            <span>Learning Credits</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('about') }}" 
+                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'about' %}bg-white/10{% endif %}">
+                            <i class="fas fa-info-circle w-6"></i>
+                            <span>About Us</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('how_it_works') }}" 
+                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'how_it_works' %}bg-white/10{% endif %}">
+                            <i class="fas fa-question-circle w-6"></i>
+                            <span>How it Works</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Logout Button -->
+            <div class="absolute bottom-0 left-0 right-0 p-4">
+                <form action="{{ url_for('logout') }}" method="POST" class="w-full">
+                    <button type="submit" 
+                            class="w-full flex items-center justify-center p-3 text-white rounded-xl hover:bg-white/5 transition-colors">
+                        <i class="fas fa-sign-out-alt w-6"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </div>
         </div>
-    </nav>
+    </aside>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-white mb-8">Welcome Back, {{ user.name if user else 'User' }}!</h1>
-        <p class="text-white/70 mb-8">Your personalized learning journey continues here.</p>
-        
-        <!-- Quick Links -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <a href="{{ url_for('learning_history') }}" class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5">
-                <h3 class="text-lg font-semibold text-white mb-2">Learning History</h3>
-                <p class="text-white/70">View your progress and continue learning</p>
-            </a>
-            <a href="{{ url_for('learning_credits') }}" class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5">
-                <h3 class="text-lg font-semibold text-white mb-2">Learning Credits</h3>
-                <p class="text-white/70">Track your achievements and rewards</p>
-            </a>
-            <a href="{{ url_for('about') }}" class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5">
-                <h3 class="text-lg font-semibold text-white mb-2">About Platform</h3>
-                <p class="text-white/70">Learn more about our learning platform</p>
-            </a>
+    <main class="flex-1 md:ml-64 p-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-white mb-8">Welcome to Your Learning Journey!</h1>
+            
+            <!-- Search Section -->
+            <div class="bg-surface p-6 rounded-2xl border border-white/10 mb-8">
+                <h2 class="text-xl font-semibold text-white mb-4">Find Your Next Learning Path</h2>
+                <div class="relative">
+                    <input type="text" 
+                           placeholder="Search for learning plans..." 
+                           class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary">
+                    <button class="absolute right-3 top-1/2 -translate-y-1/2 text-primary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Learning Options -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <a href="{{ url_for('learning_plan') }}" 
+                   class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Create Learning Plan</h3>
+                        <i class="fas fa-plus-circle text-primary text-xl"></i>
+                    </div>
+                    <p class="text-white/70">Design your personalized learning journey with AI assistance</p>
+                </a>
+                
+                <a href="#" class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Browse Popular Plans</h3>
+                        <i class="fas fa-fire text-primary text-xl"></i>
+                    </div>
+                    <p class="text-white/70">Explore trending learning paths and topics</p>
+                </a>
+            </div>
+            
+            <!-- Featured Categories -->
+            <div class="bg-surface p-6 rounded-2xl border border-white/10">
+                <h2 class="text-xl font-semibold text-white mb-4">Featured Categories</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <a href="#" class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                        <i class="fas fa-laptop-code text-primary text-xl mb-2"></i>
+                        <h3 class="text-white font-medium">Technology</h3>
+                    </a>
+                    <a href="#" class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                        <i class="fas fa-chart-bar text-primary text-xl mb-2"></i>
+                        <h3 class="text-white font-medium">Data Science</h3>
+                    </a>
+                    <a href="#" class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                        <i class="fas fa-paint-brush text-primary text-xl mb-2"></i>
+                        <h3 class="text-white font-medium">Design</h3>
+                    </a>
+                </div>
+            </div>
         </div>
     </main>
 </div>
+
+<!-- Mobile Nav Toggle -->
+<button type="button" 
+        class="fixed top-4 left-4 z-50 md:hidden text-white text-2xl bg-transparent border-none cursor-pointer"
+        onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+</button>
+
+<script>
+function toggleSidebar() {
+    const sidebar = document.querySelector('aside');
+    sidebar.classList.toggle('-translate-x-full');
+}
+</script>
 {% endblock %}
