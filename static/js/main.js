@@ -114,15 +114,12 @@ function updateProgressIndicator() {
     
     steps.forEach(step => {
         const stepNum = parseInt(step.getAttribute('data-step'));
-        if (stepNum < currentStep) {
-            step.classList.remove('bg-white/10');
-            step.classList.add('bg-primary');
-        } else if (stepNum === currentStep) {
-            step.classList.remove('bg-white/10');
-            step.classList.add('bg-primary');
+        if (stepNum <= currentStep) {
+            step.classList.remove('bg-white/10', 'text-white/70');
+            step.classList.add('bg-primary', 'text-white');
         } else {
-            step.classList.remove('bg-primary');
-            step.classList.add('bg-white/10');
+            step.classList.remove('bg-primary', 'text-white');
+            step.classList.add('bg-white/10', 'text-white/70');
         }
     });
     
@@ -148,7 +145,7 @@ function updateNavigationButtons() {
     
     if (prevBtn && nextBtn) {
         prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
-        nextBtn.textContent = currentStep === totalSteps ? 'Finish' : 'Next';
+        nextBtn.textContent = currentStep === totalSteps ? 'Generate my Learning Plan' : 'Next';
     }
 }
 
