@@ -1,28 +1,33 @@
-import logging
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_file
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, send_file
 from werkzeug.utils import secure_filename
-import os
 from datetime import datetime
+import os
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here'  # TODO: Move to environment variable
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+app.secret_key = 'your-secret-key-here'  # Change this to a secure secret key
+
+# Configure upload folder
+UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
 
-# Create uploads directory if it doesn't exist
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
-logging.basicConfig(level=logging.DEBUG)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Mock quiz attempts storage
+quiz_attempts = {}  # Format: {topic: {'attempts': int, 'scores': [float], 'max_attempts': int}}
+
 # Mock user materials storage
 user_materials = {}  # Format: {topic: [{'id': str, 'type': str, 'title': str, 'description': str, 'url': str, 'filename': str}]}
 
-# Mock quiz attempts storage
-quiz_attempts = {}  # Format: {topic: {'attempts': int, 'scores': [float], 'max_attempts': int}}
 # Mock topic details storage
 topic_details = {
     'Technology and Computer Science': {
@@ -86,6 +91,154 @@ topic_details = {
                     'Interactive Visualizations',
                     'Storytelling with Data'
                 ]
+            }
+        ]
+    }
+}
+
+# Mock quiz data storage
+quiz_data = {
+    'Technology and Computer Science': {
+        'questions': [
+            {
+                'text': 'What is a variable in programming?',
+                'options': [
+                    'A container for storing data values',
+                    'A type of loop',
+                    'A mathematical operation',
+                    'A programming language'
+                ],
+                'correct': 0
+            },
+            {
+                'text': 'What is object-oriented programming?',
+                'options': [
+                    'A way to write faster code',
+                    'A programming paradigm based on objects containing data and code',
+                    'A type of database',
+                    'A programming language'
+                ],
+                'correct': 1
+            }
+        ],
+        'passing_score': 1
+    },
+    'Data Science and Analytics': {
+        'questions': [
+            {
+                'text': 'What is data preprocessing?',
+                'options': [
+                    'Analyzing data',
+                    'Collecting data',
+                    'Cleaning and preparing data for analysis',
+                    'Visualizing data'
+                ],
+                'correct': 2
+            },
+            {
+                'text': 'Which is NOT a common type of data visualization?',
+                'options': [
+                    'Bar chart',
+                    'Pie chart',
+                    'Line graph',
+                    'Sound wave'
+                ],
+                'correct': 3
+            }
+        ],
+        'passing_score': 1
+    }
+}
+
+# Mock recommendations data storage
+recommendations_data = {
+    'Technology and Computer Science': {
+        'videos': [
+            {
+                'id': 'v1',
+                'title': 'Introduction to Programming Concepts',
+                'description': 'A comprehensive overview of basic programming concepts',
+                'duration': '45 minutes',
+                'url': 'https://example.com/video1',
+                'completed': False,
+                'credits_unlocked': False
+            },
+            {
+                'id': 'v2',
+                'title': 'Object-Oriented Programming Basics',
+                'description': 'Learn about classes, objects, and OOP principles',
+                'duration': '60 minutes',
+                'url': 'https://example.com/video2',
+                'completed': False,
+                'credits_unlocked': False
+            }
+        ],
+        'articles': [
+            {
+                'id': 'a1',
+                'title': 'Getting Started with Python',
+                'description': 'A beginner-friendly guide to Python programming',
+                'reading_time': '15 minutes',
+                'url': 'https://example.com/article1',
+                'completed': False,
+                'credits_unlocked': False
+            },
+            {
+                'id': 'a2',
+                'title': 'Best Practices in Software Development',
+                'description': 'Essential practices for writing clean, maintainable code',
+                'reading_time': '20 minutes',
+                'url': 'https://example.com/article2',
+                'completed': False,
+                'credits_unlocked': False
+            }
+        ],
+        'papers': [
+            {
+                'id': 'p1',
+                'title': 'Modern Software Development Methodologies',
+                'authors': 'John Doe, Jane Smith',
+                'abstract': 'An analysis of current software development practices',
+                'published_date': '2024-01-15',
+                'url': 'https://example.com/paper1',
+                'completed': False,
+                'credits_unlocked': False
+            }
+        ]
+    },
+    'Data Science and Analytics': {
+        'videos': [
+            {
+                'id': 'v3',
+                'title': 'Introduction to Data Science',
+                'description': 'Understanding the basics of data science',
+                'duration': '50 minutes',
+                'url': 'https://example.com/video3',
+                'completed': False,
+                'credits_unlocked': False
+            }
+        ],
+        'articles': [
+            {
+                'id': 'a3',
+                'title': 'Data Analysis Fundamentals',
+                'description': 'Learn the basics of data analysis',
+                'reading_time': '25 minutes',
+                'url': 'https://example.com/article3',
+                'completed': False,
+                'credits_unlocked': False
+            }
+        ],
+        'papers': [
+            {
+                'id': 'p2',
+                'title': 'Advanced Data Visualization Techniques',
+                'authors': 'Alice Johnson, Bob Wilson',
+                'abstract': 'Exploring modern data visualization methods',
+                'published_date': '2024-02-01',
+                'url': 'https://example.com/paper2',
+                'completed': False,
+                'credits_unlocked': False
             }
         ]
     }
