@@ -31,7 +31,7 @@
                     <div class="space-y-3">
                         {% for option in question.options %}
                         <label class="flex items-center p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10">
-                            <input type="radio" name="q{{ loop.parent.index }}" value="{{ loop.index0 }}" 
+                            <input type="radio" name="q{{ loop.parent.loop.index }}" value="{{ loop.index0 }}" 
                                    class="mr-3" required>
                             <span class="text-white">{{ option }}</span>
                         </label>
