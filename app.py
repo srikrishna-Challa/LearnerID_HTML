@@ -47,21 +47,60 @@ def signup():
 
 @app.route('/learning-plan')
 def learning_plan():
-    # Mock data for demonstration
-    learning_weeks = [
+    # In a real application, we would use the user's preferences to generate a customized plan
+    # For now, we'll demonstrate different content based on the level
+    beginner_weeks = [
         {
             'week': 1,
-            'title': 'Introduction to Python',
-            'description': 'Basic syntax, variables, data types, and control structures',
+            'title': 'Introduction to Programming',
+            'description': 'Basic concepts, syntax, and fundamental programming principles',
             'start_date': '2024-12-10',
             'end_date': '2024-12-16'
         },
         {
             'week': 2,
-            'title': 'Functions and Modules',
-            'description': 'Writing functions, importing modules, and code organization',
+            'title': 'Variables and Data Types',
+            'description': 'Understanding different types of data and how to work with variables',
             'start_date': '2024-12-17',
             'end_date': '2024-12-23'
         }
     ]
+    
+    intermediate_weeks = [
+        {
+            'week': 1,
+            'title': 'Advanced Data Structures',
+            'description': 'Deep dive into complex data structures and their applications',
+            'start_date': '2024-12-10',
+            'end_date': '2024-12-16'
+        },
+        {
+            'week': 2,
+            'title': 'Algorithm Design',
+            'description': 'Understanding and implementing efficient algorithms',
+            'start_date': '2024-12-17',
+            'end_date': '2024-12-23'
+        }
+    ]
+    
+    advanced_weeks = [
+        {
+            'week': 1,
+            'title': 'System Architecture',
+            'description': 'Designing and implementing complex software systems',
+            'start_date': '2024-12-10',
+            'end_date': '2024-12-16'
+        },
+        {
+            'week': 2,
+            'title': 'Advanced Topics',
+            'description': 'Exploring cutting-edge technologies and methodologies',
+            'start_date': '2024-12-17',
+            'end_date': '2024-12-23'
+        }
+    ]
+    
+    # Default to beginner weeks
+    learning_weeks = beginner_weeks
+    
     return render_template('learning_plan.html', learning_weeks=learning_weeks)

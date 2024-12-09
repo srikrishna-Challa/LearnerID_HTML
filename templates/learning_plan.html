@@ -54,6 +54,85 @@
     </main>
 </div>
 
+<!-- Edit Questionnaire Modal -->
+<div class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center" id="editQuestionnaireModal">
+    <div class="w-full max-w-2xl mx-4 bg-surface p-8 rounded-2xl relative">
+        <button class="absolute top-4 right-4 text-white/70 hover:text-white" onclick="hideEditModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        <h2 class="text-2xl font-bold text-white mb-6">Edit Learning Preferences</h2>
+        <form id="editQuestionnaireForm" class="space-y-6">
+            <!-- Learning Level -->
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-3">Learning Level</h3>
+                <div class="space-y-2">
+                    <label class="flex items-center p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10">
+                        <input type="radio" name="edit_level" value="beginner" class="mr-3">
+                        <span class="text-white">Beginner</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10">
+                        <input type="radio" name="edit_level" value="intermediate" class="mr-3">
+                        <span class="text-white">Intermediate</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10">
+                        <input type="radio" name="edit_level" value="advanced" class="mr-3">
+                        <span class="text-white">Advanced</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Learning Goals -->
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-3">Learning Goals</h3>
+                <div class="space-y-2">
+                    <label class="flex items-center p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10">
+                        <input type="radio" name="edit_goal" value="new_skill" class="mr-3">
+                        <span class="text-white">Develop a new skill</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10">
+                        <input type="radio" name="edit_goal" value="career" class="mr-3">
+                        <span class="text-white">Advance in my career</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10">
+                        <input type="radio" name="edit_goal" value="certification" class="mr-3">
+                        <span class="text-white">Prepare for certification</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Time Commitment -->
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-3">Time Commitment</h3>
+                <div class="space-y-2">
+                    <label class="flex items-center p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10">
+                        <input type="radio" name="edit_timeCommitment" value="less_than_2" class="mr-3">
+                        <span class="text-white">Less than 2 hours per week</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10">
+                        <input type="radio" name="edit_timeCommitment" value="2_to_5" class="mr-3">
+                        <span class="text-white">2-5 hours per week</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10">
+                        <input type="radio" name="edit_timeCommitment" value="5_to_10" class="mr-3">
+                        <span class="text-white">5-10 hours per week</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-4 mt-8">
+                <button type="button" onclick="hideEditModal()" 
+                        class="px-6 py-2 border border-white/10 rounded-xl bg-white/5 hover:bg-white/10 text-white">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="px-6 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white">
+                    Update Learning Plan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
 function savePlan() {
     // TODO: Implement save functionality
@@ -61,8 +140,45 @@ function savePlan() {
 }
 
 function editPlan() {
-    // TODO: Implement edit functionality
-    alert('Edit functionality will be implemented soon');
+    const modal = document.getElementById('editQuestionnaireModal');
+    const storedPreferences = JSON.parse(localStorage.getItem('learningPreferences') || '{}');
+    
+    // Set the stored values in the form
+    if (storedPreferences.level) {
+        document.querySelector(`input[name="edit_level"][value="${storedPreferences.level}"]`).checked = true;
+    }
+    if (storedPreferences.goal) {
+        document.querySelector(`input[name="edit_goal"][value="${storedPreferences.goal}"]`).checked = true;
+    }
+    if (storedPreferences.timeCommitment) {
+        document.querySelector(`input[name="edit_timeCommitment"][value="${storedPreferences.timeCommitment}"]`).checked = true;
+    }
+    
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
 }
+
+function hideEditModal() {
+    const modal = document.getElementById('editQuestionnaireModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+// Handle form submission
+document.getElementById('editQuestionnaireForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const newPreferences = {
+        level: document.querySelector('input[name="edit_level"]:checked')?.value,
+        goal: document.querySelector('input[name="edit_goal"]:checked')?.value,
+        timeCommitment: document.querySelector('input[name="edit_timeCommitment"]:checked')?.value
+    };
+    
+    localStorage.setItem('learningPreferences', JSON.stringify(newPreferences));
+    hideEditModal();
+    
+    // Refresh the learning plan with new preferences
+    window.location.reload();
+});
 </script>
 {% endblock %}
