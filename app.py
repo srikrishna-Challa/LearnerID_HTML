@@ -134,3 +134,92 @@ def learning_history():
         }
     ]
     return render_template('learning_history.html', learning_history=learning_history)
+
+@app.route('/my-learning-details/<topic>')
+def my_learning_details(topic):
+    # Mock data for demonstration
+    topic_details = {
+        'Technology and Computer Science': {
+            'title': 'Technology and Computer Science',
+            'level': 'Intermediate',
+            'progress': 65,
+            'start_date': '2024-12-01',
+            'topics': [
+                {
+                    'week': 1,
+                    'title': 'Introduction to Programming',
+                    'status': 'Completed',
+                    'progress': 100,
+                    'contents': [
+                        'Basic Programming Concepts',
+                        'Variables and Data Types',
+                        'Control Structures',
+                        'Functions and Methods'
+                    ]
+                },
+                {
+                    'week': 2,
+                    'title': 'Object-Oriented Programming',
+                    'status': 'In Progress',
+                    'progress': 60,
+                    'contents': [
+                        'Classes and Objects',
+                        'Inheritance and Polymorphism',
+                        'Encapsulation',
+                        'Design Patterns'
+                    ]
+                },
+                {
+                    'week': 3,
+                    'title': 'Web Development Fundamentals',
+                    'status': 'Not Started',
+                    'progress': 0,
+                    'contents': [
+                        'HTML and CSS',
+                        'JavaScript Basics',
+                        'DOM Manipulation',
+                        'Web APIs'
+                    ]
+                }
+            ]
+        },
+        'Data Science and Analytics': {
+            'title': 'Data Science and Analytics',
+            'level': 'Beginner',
+            'progress': 25,
+            'start_date': '2024-11-15',
+            'topics': [
+                {
+                    'week': 1,
+                    'title': 'Introduction to Data Science',
+                    'status': 'In Progress',
+                    'progress': 75,
+                    'contents': [
+                        'What is Data Science?',
+                        'Data Collection Methods',
+                        'Data Cleaning',
+                        'Basic Statistics'
+                    ]
+                },
+                {
+                    'week': 2,
+                    'title': 'Data Analysis Tools',
+                    'status': 'Not Started',
+                    'progress': 0,
+                    'contents': [
+                        'Python for Data Analysis',
+                        'Pandas Library',
+                        'NumPy Basics',
+                        'Data Visualization'
+                    ]
+                }
+            ]
+        }
+    }
+    
+    details = topic_details.get(topic)
+    if not details:
+        flash('Topic not found', 'error')
+        return redirect(url_for('learning_history'))
+        
+    return render_template('my_learning_details.html', details=details)
