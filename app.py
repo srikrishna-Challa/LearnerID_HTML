@@ -8,6 +8,86 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'  # Change this to a secure secret key
 
+# Topic details for learning paths
+topic_details = {
+    'Technology and Computer Science': {
+        'title': 'Technology and Computer Science',
+        'level': 'Intermediate',
+        'progress': 65,
+        'start_date': '2024-12-01',
+        'topics': [
+            {
+                'week': 1,
+                'title': 'Introduction to Programming',
+                'status': 'Completed',
+                'progress': 100,
+                'contents': [
+                    'Basic Programming Concepts',
+                    'Variables and Data Types',
+                    'Control Structures',
+                    'Functions and Methods'
+                ]
+            },
+            {
+                'week': 2,
+                'title': 'Object-Oriented Programming',
+                'status': 'In Progress',
+                'progress': 60,
+                'contents': [
+                    'Classes and Objects',
+                    'Inheritance and Polymorphism',
+                    'Encapsulation',
+                    'Design Patterns'
+                ]
+            },
+            {
+                'week': 3,
+                'title': 'Web Development Fundamentals',
+                'status': 'Not Started',
+                'progress': 0,
+                'contents': [
+                    'HTML and CSS',
+                    'JavaScript Basics',
+                    'DOM Manipulation',
+                    'Web APIs'
+                ]
+            }
+        ]
+    },
+    'Data Science and Analytics': {
+        'title': 'Data Science and Analytics',
+        'level': 'Beginner',
+        'progress': 25,
+        'start_date': '2024-11-15',
+        'topics': [
+            {
+                'week': 1,
+                'title': 'Introduction to Data Science',
+                'status': 'In Progress',
+                'progress': 75,
+                'contents': [
+                    'What is Data Science?',
+                    'Data Collection Methods',
+                    'Data Cleaning',
+                    'Basic Statistics'
+                ]
+            },
+            {
+                'week': 2,
+                'title': 'Data Analysis Tools',
+                'status': 'Not Started',
+                'progress': 0,
+                'contents': [
+                    'Python for Data Analysis',
+                    'Pandas Library',
+                    'NumPy Basics',
+                    'Data Visualization'
+                ]
+            }
+        ]
+    }
+}
+
 @app.route('/')
 def index():
     if 'user_id' in session:
@@ -81,9 +161,8 @@ def learning_plan():
         flash('Your learning plan has been updated successfully!', 'success')
         return jsonify({'status': 'success', 'message': 'Learning plan updated'})
 
-    # In a real application, we would use the user's preferences to generate a customized plan
-    # For now, we'll demonstrate different content based on the level
-    beginner_weeks = [
+    # Default to beginner weeks
+    learning_weeks = [
         {
             'week': 1,
             'title': 'Introduction to Programming',
@@ -100,44 +179,16 @@ def learning_plan():
         }
     ]
     
-    intermediate_weeks = [
-        {
-            'week': 1,
-            'title': 'Advanced Data Structures',
-            'description': 'Deep dive into complex data structures and their applications',
-            'start_date': '2024-12-10',
-            'end_date': '2024-12-16'
-        },
-        {
-            'week': 2,
-            'title': 'Algorithm Design',
-            'description': 'Understanding and implementing efficient algorithms',
-            'start_date': '2024-12-17',
-            'end_date': '2024-12-23'
-        }
-    ]
-    
-    advanced_weeks = [
-        {
-            'week': 1,
-            'title': 'System Architecture',
-            'description': 'Designing and implementing complex software systems',
-            'start_date': '2024-12-10',
-            'end_date': '2024-12-16'
-        },
-        {
-            'week': 2,
-            'title': 'Advanced Topics',
-            'description': 'Exploring cutting-edge technologies and methodologies',
-            'start_date': '2024-12-17',
-            'end_date': '2024-12-23'
-        }
-    ]
-    
-    # Default to beginner weeks
-    learning_weeks = beginner_weeks
-    
     return render_template('learning_plan.html', learning_weeks=learning_weeks)
+
+@app.route('/my-learning-details/<topic>')
+def my_learning_details(topic):
+    details = topic_details.get(topic)
+    if not details:
+        flash('Topic not found', 'error')
+        return redirect(url_for('learning_history'))
+        
+    return render_template('my_learning_details.html', details=details)
 
 @app.route('/learning-history')
 def learning_history():
@@ -164,92 +215,3 @@ def learning_history():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
-@app.route('/my-learning-details/<topic>')
-def my_learning_details(topic):
-    # Mock data for demonstration
-    topic_details = {
-        'Technology and Computer Science': {
-            'title': 'Technology and Computer Science',
-            'level': 'Intermediate',
-            'progress': 65,
-            'start_date': '2024-12-01',
-            'topics': [
-                {
-                    'week': 1,
-                    'title': 'Introduction to Programming',
-                    'status': 'Completed',
-                    'progress': 100,
-                    'contents': [
-                        'Basic Programming Concepts',
-                        'Variables and Data Types',
-                        'Control Structures',
-                        'Functions and Methods'
-                    ]
-                },
-                {
-                    'week': 2,
-                    'title': 'Object-Oriented Programming',
-                    'status': 'In Progress',
-                    'progress': 60,
-                    'contents': [
-                        'Classes and Objects',
-                        'Inheritance and Polymorphism',
-                        'Encapsulation',
-                        'Design Patterns'
-                    ]
-                },
-                {
-                    'week': 3,
-                    'title': 'Web Development Fundamentals',
-                    'status': 'Not Started',
-                    'progress': 0,
-                    'contents': [
-                        'HTML and CSS',
-                        'JavaScript Basics',
-                        'DOM Manipulation',
-                        'Web APIs'
-                    ]
-                }
-            ]
-        },
-        'Data Science and Analytics': {
-            'title': 'Data Science and Analytics',
-            'level': 'Beginner',
-            'progress': 25,
-            'start_date': '2024-11-15',
-            'topics': [
-                {
-                    'week': 1,
-                    'title': 'Introduction to Data Science',
-                    'status': 'In Progress',
-                    'progress': 75,
-                    'contents': [
-                        'What is Data Science?',
-                        'Data Collection Methods',
-                        'Data Cleaning',
-                        'Basic Statistics'
-                    ]
-                },
-                {
-                    'week': 2,
-                    'title': 'Data Analysis Tools',
-                    'status': 'Not Started',
-                    'progress': 0,
-                    'contents': [
-                        'Python for Data Analysis',
-                        'Pandas Library',
-                        'NumPy Basics',
-                        'Data Visualization'
-                    ]
-                }
-            ]
-        }
-    }
-    
-    details = topic_details.get(topic)
-    if not details:
-        flash('Topic not found', 'error')
-        return redirect(url_for('learning_history'))
-        
-    return render_template('my_learning_details.html', details=details)
