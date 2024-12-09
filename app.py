@@ -25,6 +25,154 @@ def allowed_file(filename):
 # Mock quiz attempts storage
 quiz_attempts = {}  # Format: {topic: {'attempts': int, 'scores': [float], 'max_attempts': int}}
 
+# Mock quiz data storage
+quiz_data = {
+    'Technology and Computer Science': {
+        'questions': [
+            {
+                'text': 'What is a variable in programming?',
+                'options': [
+                    'A container for storing data values',
+                    'A type of loop',
+                    'A mathematical operation',
+                    'A programming language'
+                ],
+                'correct': 0
+            },
+            {
+                'text': 'What is object-oriented programming?',
+                'options': [
+                    'A way to write faster code',
+                    'A programming paradigm based on objects containing data and code',
+                    'A type of database',
+                    'A programming language'
+                ],
+                'correct': 1
+            }
+        ],
+        'passing_score': 1
+    },
+    'Data Science and Analytics': {
+        'questions': [
+            {
+                'text': 'What is data preprocessing?',
+                'options': [
+                    'Analyzing data',
+                    'Collecting data',
+                    'Cleaning and preparing data for analysis',
+                    'Visualizing data'
+                ],
+                'correct': 2
+            },
+            {
+                'text': 'Which is NOT a common type of data visualization?',
+                'options': [
+                    'Bar chart',
+                    'Pie chart',
+                    'Line graph',
+                    'Sound wave'
+                ],
+                'correct': 3
+            }
+        ],
+        'passing_score': 1
+    }
+}
+
+# Mock recommendations data storage
+recommendations_data = {
+    'Technology and Computer Science': {
+        'videos': [
+            {
+                'id': 'v1',
+                'title': 'Introduction to Programming Concepts',
+                'description': 'A comprehensive overview of basic programming concepts',
+                'duration': '45 minutes',
+                'url': 'https://example.com/video1',
+                'completed': False,
+                'credits_unlocked': False
+            },
+            {
+                'id': 'v2',
+                'title': 'Object-Oriented Programming Basics',
+                'description': 'Learn about classes, objects, and OOP principles',
+                'duration': '60 minutes',
+                'url': 'https://example.com/video2',
+                'completed': False,
+                'credits_unlocked': False
+            }
+        ],
+        'articles': [
+            {
+                'id': 'a1',
+                'title': 'Getting Started with Python',
+                'description': 'A beginner-friendly guide to Python programming',
+                'reading_time': '15 minutes',
+                'url': 'https://example.com/article1',
+                'completed': False,
+                'credits_unlocked': False
+            },
+            {
+                'id': 'a2',
+                'title': 'Best Practices in Software Development',
+                'description': 'Essential practices for writing clean, maintainable code',
+                'reading_time': '20 minutes',
+                'url': 'https://example.com/article2',
+                'completed': False,
+                'credits_unlocked': False
+            }
+        ],
+        'papers': [
+            {
+                'id': 'p1',
+                'title': 'Modern Software Development Methodologies',
+                'authors': 'John Doe, Jane Smith',
+                'abstract': 'An analysis of current software development practices',
+                'published_date': '2024-01-15',
+                'url': 'https://example.com/paper1',
+                'completed': False,
+                'credits_unlocked': False
+            }
+        ]
+    },
+    'Data Science and Analytics': {
+        'videos': [
+            {
+                'id': 'v3',
+                'title': 'Introduction to Data Science',
+                'description': 'Understanding the basics of data science',
+                'duration': '50 minutes',
+                'url': 'https://example.com/video3',
+                'completed': False,
+                'credits_unlocked': False
+            }
+        ],
+        'articles': [
+            {
+                'id': 'a3',
+                'title': 'Data Analysis Fundamentals',
+                'description': 'Learn the basics of data analysis',
+                'reading_time': '25 minutes',
+                'url': 'https://example.com/article3',
+                'completed': False,
+                'credits_unlocked': False
+            }
+        ],
+        'papers': [
+            {
+                'id': 'p2',
+                'title': 'Advanced Data Visualization Techniques',
+                'authors': 'Alice Johnson, Bob Wilson',
+                'abstract': 'Exploring modern data visualization methods',
+                'published_date': '2024-02-01',
+                'url': 'https://example.com/paper2',
+                'completed': False,
+                'credits_unlocked': False
+            }
+        ]
+    }
+}
+
 # Mock user materials storage
 user_materials = {}  # Format: {topic: [{'id': str, 'type': str, 'title': str, 'description': str, 'url': str, 'filename': str}]}
 
