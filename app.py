@@ -1,4 +1,9 @@
+import logging
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'  # Change this to a secure secret key
@@ -156,6 +161,9 @@ def learning_history():
         }
     ]
     return render_template('learning_history.html', learning_history=learning_history)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 @app.route('/my-learning-details/<topic>')
 def my_learning_details(topic):
