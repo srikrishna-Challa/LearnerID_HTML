@@ -564,15 +564,29 @@ def my_learning_details(topic):
 
 @app.route('/learning-recommendations/<topic>')
 def learning_recommendations(topic):
+    app.logger.debug(f"Accessing recommendations for topic: {topic}")
+    app.logger.debug(f"Available recommendations: {recommendations_data.keys()}")
+    
+    # Initialize quiz attempts if not exists
     if topic not in quiz_attempts:
         quiz_attempts[topic] = {'attempts': 0, 'scores': [], 'max_attempts': 3}
     
-    recommendations = recommendations_data.get(topic, {
-        'videos': [],
-        'articles': [],
-        'papers': []
-    })
+    # Get recommendations for the exact topic name
+    recommendations = recommendations_data.get(topic, None)
+    
+    # If no recommendations found, try to find a matching topic
+    if recommendations is None:
+        # Try to find a matching topic name
+        matching_topic = next((t for t in recommendations_data.keys() 
+                             if topic.lower() in t.lower() or t.lower() in topic.lower()), None)
+        if matching_topic:
+            recommendations = recommendations_data[matching_topic]
+        else:
+            recommendations = {'videos': [], 'articles': [], 'papers': []}
+    
     topic_materials = user_materials.get(topic, [])
+    
+    app.logger.debug(f"Sending recommendations: {recommendations}")
     
     return render_template('learning_recommendations.html', 
                          recommendations=recommendations, 
