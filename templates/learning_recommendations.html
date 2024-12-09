@@ -13,6 +13,16 @@
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 p-4 rounded-xl {% if category == 'success' %}bg-green-500/10 text-green-500{% else %}bg-blue-500/10 text-blue-500{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
         <div class="mb-8">
             <a href="{{ url_for('my_learning_details', topic=topic) }}" 
                class="inline-flex items-center text-white/70 hover:text-white">
@@ -40,8 +50,7 @@
                                    class="ml-4 text-primary hover:text-primary/90">Watch Video</a>
                             </div>
                         </div>
-                        <form method="POST" action="{{ url_for('mark_recommendation', topic=topic, item_id=video.id) }}"
-                              class="ml-4 flex-shrink-0">
+                        <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ video.id }}')" class="ml-4 flex-shrink-0">
                             <div class="flex space-x-2">
                                 <button type="submit" 
                                         class="px-4 py-2 rounded-xl {% if video.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
@@ -78,8 +87,7 @@
                                    class="ml-4 text-primary hover:text-primary/90">Read Article</a>
                             </div>
                         </div>
-                        <form method="POST" action="{{ url_for('mark_recommendation', topic=topic, item_id=article.id) }}"
-                              class="ml-4 flex-shrink-0">
+                        <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ article.id }}')" class="ml-4 flex-shrink-0">
                             <div class="flex space-x-2">
                                 <button type="submit" 
                                         class="px-4 py-2 rounded-xl {% if article.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
@@ -117,8 +125,7 @@
                                    class="ml-4 text-primary hover:text-primary/90">Read Paper</a>
                             </div>
                         </div>
-                        <form method="POST" action="{{ url_for('mark_recommendation', topic=topic, item_id=paper.id) }}"
-                              class="ml-4 flex-shrink-0">
+                        <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ paper.id }}')" class="ml-4 flex-shrink-0">
                             <div class="flex space-x-2">
                                 <button type="submit" 
                                         class="px-4 py-2 rounded-xl {% if paper.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
@@ -142,4 +149,49 @@
         </div>
     </main>
 </div>
+<script>
+function handleCompletion(event, topic, itemId) {
+    event.preventDefault();
+    
+    fetch(`/mark-recommendation/${encodeURIComponent(topic)}/${itemId}`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Get the form that triggered this event
+            const form = event.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            const qaButton = form.querySelector('button[type="button"]');
+            
+            // Update the submit button appearance
+            if (data.completed) {
+                submitButton.innerHTML = '<i class="fas fa-check mr-2"></i>Completed';
+                submitButton.classList.add('bg-green-500/20', 'text-green-500');
+                submitButton.classList.remove('bg-white/5', 'text-white/70');
+                
+                // Enable Q&A button
+                qaButton.classList.remove('bg-white/5', 'cursor-not-allowed');
+                qaButton.classList.add('bg-primary', 'hover:bg-primary/90');
+                qaButton.disabled = false;
+            } else {
+                submitButton.textContent = 'Mark as Complete';
+                submitButton.classList.remove('bg-green-500/20', 'text-green-500');
+                submitButton.classList.add('bg-white/5', 'text-white/70');
+                
+                // Disable Q&A button
+                qaButton.classList.add('bg-white/5', 'cursor-not-allowed');
+                qaButton.classList.remove('bg-primary', 'hover:bg-primary/90');
+                qaButton.disabled = true;
+            }
+            
+            // Reload the page to show the flash message
+            window.location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+</script>
 {% endblock %}

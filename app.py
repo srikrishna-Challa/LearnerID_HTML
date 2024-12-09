@@ -252,10 +252,20 @@ def mark_recommendation(topic, item_id):
         for item in recommendations_data[topic][section]:
             if item['id'] == item_id:
                 item['completed'] = not item['completed']
-                return jsonify({
-                    'status': 'success',
-                    'message': f"Item marked as {'completed' if item['completed'] else 'incomplete'}"
-                })
+                if item['completed']:
+                    flash('Congratulations for completing the topic! You can take a quick test to evaluate your knowledge on this topic.', 'success')
+                    return jsonify({
+                        'status': 'success',
+                        'message': 'Topic marked as completed',
+                        'completed': True
+                    })
+                else:
+                    flash('Topic status changed to In Progress.', 'info')
+                    return jsonify({
+                        'status': 'success',
+                        'message': 'Topic marked as in progress',
+                        'completed': False
+                    })
     
     return jsonify({'status': 'error', 'message': 'Item not found'}), 404
 
