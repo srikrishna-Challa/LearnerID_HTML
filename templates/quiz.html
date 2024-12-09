@@ -26,12 +26,13 @@
 
             <form id="quizForm" method="POST" action="{{ url_for('submit_quiz', topic=topic, item_id=item_id) }}" class="space-y-8">
                 {% for question in questions %}
+                {% set outer_loop = loop %}
                 <div class="bg-surface rounded-2xl p-6 border border-white/10">
-                    <h3 class="text-xl font-semibold text-white mb-4">{{ loop.index }}. {{ question.text }}</h3>
+                    <h3 class="text-xl font-semibold text-white mb-4">{{ outer_loop.index }}. {{ question.text }}</h3>
                     <div class="space-y-3">
                         {% for option in question.options %}
                         <label class="flex items-center p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10">
-                            <input type="radio" name="q{{ loop.parent.loop.index }}" value="{{ loop.index0 }}" 
+                            <input type="radio" name="q{{ outer_loop.index }}" value="{{ loop.index0 }}" 
                                    class="mr-3" required>
                             <span class="text-white">{{ option }}</span>
                         </label>
