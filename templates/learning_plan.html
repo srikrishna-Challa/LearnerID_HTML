@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-background">
+    <!-- Navigation Bar -->
+    <nav class="bg-surface px-4 py-3 flex justify-between items-center">
+        <a href="{{ url_for('index') }}" class="text-2xl font-bold text-primary">LearnerID</a>
+        <div class="flex items-center space-x-4">
+            <a href="{{ url_for('index') }}" class="text-white/70 hover:text-white">Home</a>
+            <a href="{{ url_for('about') }}" class="text-white/70 hover:text-white">About</a>
+            <a href="{{ url_for('how_it_works') }}" class="text-white/70 hover:text-white">How it Works</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-white">My Learning Plan</h1>
+            <div class="flex space-x-4">
+                <button onclick="savePlan()" class="px-6 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
+                    Save
+                </button>
+                <button onclick="editPlan()" class="px-6 py-2 border border-white/10 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
+                    Edit
+                </button>
+            </div>
+        </div>
+
+        <!-- Learning Week Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for week in learning_weeks %}
+            <div class="bg-surface rounded-2xl p-6 border border-white/10">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-semibold text-white">Week {{ week.week }}</h3>
+                    <span class="px-3 py-1 bg-primary/20 rounded-full text-primary text-sm">In Progress</span>
+                </div>
+                <h4 class="text-lg font-medium text-white mb-2">{{ week.title }}</h4>
+                <p class="text-white/70 mb-4">{{ week.description }}</p>
+                <div class="border-t border-white/10 pt-4">
+                    <div class="flex justify-between text-sm">
+                        <div>
+                            <p class="text-white/50">Start Date</p>
+                            <p class="text-white">{{ week.start_date }}</p>
+                        </div>
+                        <div>
+                            <p class="text-white/50">End Date</p>
+                            <p class="text-white">{{ week.end_date }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</div>
+
+<script>
+function savePlan() {
+    // TODO: Implement save functionality
+    alert('Save functionality will be implemented soon');
+}
+
+function editPlan() {
+    // TODO: Implement edit functionality
+    alert('Edit functionality will be implemented soon');
+}
+</script>
+{% endblock %}
