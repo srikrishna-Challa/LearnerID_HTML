@@ -60,11 +60,17 @@
                                         Mark as Complete
                                     {% endif %}
                                 </button>
-                                <button type="button"
-                                        {% if not video.completed %}disabled{% endif %}
-                                        class="px-4 py-2 rounded-xl {% if video.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
-                                    Generate Q&A
-                                </button>
+                                {% if video.credits_unlocked %}
+                                    <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
+                                        Learning Credits Unlocked
+                                    </span>
+                                {% else %}
+                                    <a href="{{ url_for('show_quiz', topic=topic, item_id=video.id) }}"
+                                       {% if not video.completed %}tabindex="-1"{% endif %}
+                                       class="px-4 py-2 rounded-xl {% if video.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
+                                        Generate Q&A
+                                    </a>
+                                {% endif %}
                             </div>
                         </form>
                     </div>
@@ -97,11 +103,17 @@
                                         Mark as Complete
                                     {% endif %}
                                 </button>
-                                <button type="button"
-                                        {% if not article.completed %}disabled{% endif %}
-                                        class="px-4 py-2 rounded-xl {% if article.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
-                                    Generate Q&A
-                                </button>
+                                {% if article.credits_unlocked %}
+                                    <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
+                                        Learning Credits Unlocked
+                                    </span>
+                                {% else %}
+                                    <a href="{{ url_for('show_quiz', topic=topic, item_id=article.id) }}"
+                                       {% if not article.completed %}tabindex="-1"{% endif %}
+                                       class="px-4 py-2 rounded-xl {% if article.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
+                                        Generate Q&A
+                                    </a>
+                                {% endif %}
                             </div>
                         </form>
                     </div>
@@ -135,11 +147,17 @@
                                         Mark as Complete
                                     {% endif %}
                                 </button>
-                                <button type="button"
-                                        {% if not paper.completed %}disabled{% endif %}
-                                        class="px-4 py-2 rounded-xl {% if paper.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
-                                    Generate Q&A
-                                </button>
+                                {% if paper.credits_unlocked %}
+                                    <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
+                                        Learning Credits Unlocked
+                                    </span>
+                                {% else %}
+                                    <a href="{{ url_for('show_quiz', topic=topic, item_id=paper.id) }}"
+                                       {% if not paper.completed %}tabindex="-1"{% endif %}
+                                       class="px-4 py-2 rounded-xl {% if paper.completed %}bg-primary hover:bg-primary/90{% else %}bg-white/5 cursor-not-allowed{% endif %} text-white">
+                                        Generate Q&A
+                                    </a>
+                                {% endif %}
                             </div>
                         </form>
                     </div>

@@ -1,12 +1,9 @@
 import logging
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
-
-# Configure logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key'  # Change this to a secure secret key
+app.secret_key = 'your-secret-key-here'  # TODO: Move to environment variable
+logging.basicConfig(level=logging.DEBUG)
 
 # Topic details for learning paths
 topic_details = {
@@ -94,19 +91,21 @@ recommendations_data = {
         'videos': [
             {
                 'id': 'v1',
-                'title': 'Programming Fundamentals',
+                'title': 'Introduction to Programming Concepts',
                 'description': 'A comprehensive introduction to programming concepts',
                 'duration': '45 min',
                 'url': 'https://example.com/video1',
-                'completed': False
+                'completed': False,
+                'credits_unlocked': False
             },
             {
                 'id': 'v2',
-                'title': 'Variables and Data Types',
+                'title': 'Data Types and Variables',
                 'description': 'Understanding different types of data in programming',
                 'duration': '30 min',
                 'url': 'https://example.com/video2',
-                'completed': False
+                'completed': False,
+                'credits_unlocked': False
             }
         ],
         'articles': [
@@ -116,7 +115,8 @@ recommendations_data = {
                 'description': 'A beginner-friendly guide to programming',
                 'reading_time': '10 min',
                 'url': 'https://example.com/article1',
-                'completed': False
+                'completed': False,
+                'credits_unlocked': False
             }
         ],
         'papers': [
@@ -127,11 +127,160 @@ recommendations_data = {
                 'abstract': 'An overview of current programming paradigms',
                 'published_date': '2024',
                 'url': 'https://example.com/paper1',
-                'completed': False
+                'completed': False,
+                'credits_unlocked': False
             }
         ]
     }
 }
+
+# Mock quiz data
+quiz_data = {
+    'Introduction to Programming': {
+        'questions': [
+            {
+                'text': 'What is a variable in programming?',
+                'options': [
+                    'A fixed value that cannot change',
+                    'A container for storing data values',
+                    'A type of loop',
+                    'A programming language'
+                ],
+                'correct': 1
+            },
+            {
+                'text': 'Which of the following is a correct way to comment code in Python?',
+                'options': [
+                    '// This is a comment',
+                    '/* This is a comment */',
+                    '# This is a comment',
+                    '-- This is a comment'
+                ],
+                'correct': 2
+            },
+            {
+                'text': 'What is the purpose of a loop in programming?',
+                'options': [
+                    'To store multiple values',
+                    'To repeat a block of code',
+                    'To define functions',
+                    'To import libraries'
+                ],
+                'correct': 1
+            },
+            {
+                'text': 'What is the result of 5 + "3" in Python?',
+                'options': [
+                    '8',
+                    '53',
+                    'Error',
+                    'None'
+                ],
+                'correct': 2
+            },
+            {
+                'text': 'Which data type is used to store a sequence of characters?',
+                'options': [
+                    'Integer',
+                    'Float',
+                    'Boolean',
+                    'String'
+                ],
+                'correct': 3
+            },
+            {
+                'text': 'What is the purpose of an if statement?',
+                'options': [
+                    'To define a function',
+                    'To create a loop',
+                    'To make decisions in code',
+                    'To store data'
+                ],
+                'correct': 2
+            },
+            {
+                'text': 'What does len() function do in Python?',
+                'options': [
+                    'Converts to lowercase',
+                    'Returns the length',
+                    'Rounds a number',
+                    'Creates a list'
+                ],
+                'correct': 1
+            },
+            {
+                'text': 'Which operator is used for exponentiation in Python?',
+                'options': [
+                    '^',
+                    '**',
+                    '^^',
+                    '//'
+                ],
+                'correct': 1
+            },
+            {
+                'text': 'What is the correct way to define a function in Python?',
+                'options': [
+                    'function myFunc():',
+                    'def myFunc():',
+                    'func myFunc():',
+                    'define myFunc():'
+                ],
+                'correct': 1
+            },
+            {
+                'text': 'Which of these is not a valid variable name in Python?',
+                'options': [
+                    'my_variable',
+                    '_hidden',
+                    '2start',
+                    'camelCase'
+                ],
+                'correct': 2
+            }
+        ],
+        'passing_score': 7  # Need 7 out of 10 correct to pass
+    }
+}
+
+@app.route('/quiz/<topic>/<item_id>')
+def show_quiz(topic, item_id):
+    if topic not in quiz_data:
+        flash('Quiz not available for this topic', 'error')
+        return redirect(url_for('learning_recommendations', topic=topic))
+    
+    questions = quiz_data[topic]['questions']
+    return render_template('quiz.html', topic=topic, item_id=item_id, questions=questions)
+
+@app.route('/submit-quiz/<topic>/<item_id>', methods=['POST'])
+def submit_quiz(topic, item_id):
+    if topic not in quiz_data:
+        return jsonify({'status': 'error', 'message': 'Quiz not found'}), 404
+    
+    questions = quiz_data[topic]['questions']
+    correct_count = 0
+    
+    # Grade the quiz
+    for i in range(len(questions)):
+        user_answer = request.form.get(f'q{i+1}')
+        if user_answer and int(user_answer) == questions[i]['correct']:
+            correct_count += 1
+    
+    # Check if passed
+    passed = correct_count >= quiz_data[topic]['passing_score']
+    
+    if passed:
+        # Find and update the item's credits status
+        for section in recommendations_data[topic].values():
+            for item in section:
+                if item['id'] == item_id:
+                    item['credits_unlocked'] = True
+        
+        flash(f'Congratulations! You passed the quiz with {correct_count} correct answers. Learning credits have been unlocked!', 'success')
+    else:
+        flash(f'You got {correct_count} answers correct. You need {quiz_data[topic]["passing_score"]} to pass. Try again!', 'error')
+    
+    return redirect(url_for('learning_recommendations', topic=topic))
 
 @app.route('/')
 def index():
@@ -248,10 +397,12 @@ def mark_recommendation(topic, item_id):
         return jsonify({'status': 'error', 'message': 'Topic not found'}), 404
     
     # Find and toggle the completion status of the item
-    for section in ['videos', 'articles', 'papers']:
-        for item in recommendations_data[topic][section]:
+    item_found = False
+    for section in recommendations_data[topic].values():
+        for item in section:
             if item['id'] == item_id:
                 item['completed'] = not item['completed']
+                item_found = True
                 if item['completed']:
                     flash('Congratulations for completing the topic! You can take a quick test to evaluate your knowledge on this topic.', 'success')
                     return jsonify({
@@ -267,7 +418,8 @@ def mark_recommendation(topic, item_id):
                         'completed': False
                     })
     
-    return jsonify({'status': 'error', 'message': 'Item not found'}), 404
+    if not item_found:
+        return jsonify({'status': 'error', 'message': 'Item not found'}), 404
 
 @app.route('/learning-history')
 def learning_history():

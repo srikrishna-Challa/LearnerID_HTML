@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-background">
+    <!-- Navigation Bar -->
+    <nav class="bg-surface px-4 py-3 flex justify-between items-center">
+        <a href="{{ url_for('index') }}" class="text-2xl font-bold text-primary">LearnerID</a>
+        <div class="flex items-center space-x-4">
+            <a href="{{ url_for('index') }}" class="text-white/70 hover:text-white">Home</a>
+            <a href="{{ url_for('learning_history') }}" class="text-white/70 hover:text-white">Learning History</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-3xl mx-auto">
+            <div class="mb-8">
+                <a href="{{ url_for('learning_recommendations', topic=topic) }}" 
+                   class="inline-flex items-center text-white/70 hover:text-white">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Learning Resources
+                </a>
+                <h1 class="text-3xl font-bold text-white mt-4">Knowledge Assessment</h1>
+                <p class="text-white/70 mt-2">Test your understanding of {{ topic }}</p>
+            </div>
+
+            <form id="quizForm" method="POST" action="{{ url_for('submit_quiz', topic=topic, item_id=item_id) }}" class="space-y-8">
+                {% for question in questions %}
+                <div class="bg-surface rounded-2xl p-6 border border-white/10">
+                    <h3 class="text-xl font-semibold text-white mb-4">{{ loop.index }}. {{ question.text }}</h3>
+                    <div class="space-y-3">
+                        {% for option in question.options %}
+                        <label class="flex items-center p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10">
+                            <input type="radio" name="q{{ loop.parent.index }}" value="{{ loop.index0 }}" 
+                                   class="mr-3" required>
+                            <span class="text-white">{{ option }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="flex justify-end">
+                    <button type="submit" 
+                            class="px-8 py-3 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
+                        Submit Quiz
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+{% endblock %}
