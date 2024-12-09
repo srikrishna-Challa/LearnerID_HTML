@@ -465,14 +465,20 @@ def submit_quiz(topic, item_id):
 @app.route('/')
 def index():
     if 'user_id' in session:
-        return render_template('user_loggedin_page.html')
+        return redirect(url_for('user_loggedin_page'))
     return render_template('index.html')
+
+@app.route('/user_loggedin_page')
+def user_loggedin_page():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('user_loggedin_page.html')
 
 @app.route('/mails')
 def mails():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    return render_template('user_loggedin_page.html')
+    return render_template('mails.html')
 
 @app.route('/learning-credits')
 def learning_credits():
@@ -500,9 +506,10 @@ def login():
         password = request.form.get('password')
         remember = request.form.get('remember') == 'on'
         
-        # TODO: Add authentication logic
-        flash('Login functionality will be implemented soon.')
-        return redirect(url_for('index'))
+        # Mock login for demonstration
+        session['user_id'] = 1  # Mock user ID
+        flash('Successfully logged in!', 'success')
+        return redirect(url_for('user_loggedin_page'))
     
     return render_template('login.html')
 
