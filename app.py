@@ -531,31 +531,49 @@ def signup():
 @app.route('/learning-plan', methods=['GET', 'POST'])
 def learning_plan():
     if request.method == 'POST':
-        # Simulate AI processing time
-        import time
-        time.sleep(2)
+        # Process the learning preferences
+        preferences = request.get_json()
         flash('Your learning plan has been updated successfully!', 'success')
         return jsonify({'status': 'success', 'message': 'Learning plan updated'})
 
-    # Default to beginner weeks
-    learning_weeks = [
+    # Sample learning topics
+    learning_topics = [
         {
-            'week': 1,
             'title': 'Introduction to Programming',
-            'description': 'Basic concepts, syntax, and fundamental programming principles',
-            'start_date': '2024-12-10',
-            'end_date': '2024-12-16'
+            'description': 'Learn the fundamentals of programming including basic concepts, syntax, and problem-solving approaches',
+            'time_required': '20',
+            'objectives': [
+                'Understand basic programming concepts and terminology',
+                'Learn about variables, data types, and operators',
+                'Master control structures (if/else, loops)',
+                'Write basic functions and understand scope'
+            ]
         },
         {
-            'week': 2,
-            'title': 'Variables and Data Types',
-            'description': 'Understanding different types of data and how to work with variables',
-            'start_date': '2024-12-17',
-            'end_date': '2024-12-23'
+            'title': 'Web Development Fundamentals',
+            'description': 'Explore the core technologies that power the modern web including HTML, CSS, and JavaScript',
+            'time_required': '25',
+            'objectives': [
+                'Build responsive web pages using HTML and CSS',
+                'Understand DOM manipulation with JavaScript',
+                'Learn about web accessibility principles',
+                'Practice modern web development workflows'
+            ]
+        },
+        {
+            'title': 'Data Science Essentials',
+            'description': 'Get started with data analysis and visualization using Python and popular data science libraries',
+            'time_required': '30',
+            'objectives': [
+                'Learn data manipulation with pandas',
+                'Create insightful visualizations',
+                'Perform basic statistical analysis',
+                'Work with real-world datasets'
+            ]
         }
     ]
     
-    return render_template('learning_plan.html', learning_weeks=learning_weeks)
+    return render_template('learning_plan.html', learning_topics=learning_topics)
 
 @app.route('/my-learning-details/<topic>')
 def my_learning_details(topic):
