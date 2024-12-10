@@ -42,7 +42,23 @@
                     <p class="text-white/70 mt-1">Progress: {{ topic_info.progress }}%</p>
                     {% endif %}
                 </div>
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-4">
+                    <form onsubmit="handleTopicCompletion(event, '{{ topic }}')" class="flex-shrink-0">
+                        <button type="submit" 
+                                class="px-4 py-2 rounded-xl {% if topic_info and topic_info.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
+                            {% if topic_info and topic_info.completed %}
+                                <i class="fas fa-check mr-2"></i>Completed
+                            {% else %}
+                                Mark as Complete
+                            {% endif %}
+                        </button>
+                    </form>
+                    {% if not topic_info or not topic_info.completed %}
+                        <a href="{{ url_for('show_topic_quiz', topic=topic) }}"
+                           class="px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-white">
+                            Launch a Test
+                        </a>
+                    {% endif %}
                     {% if quiz_stats %}
                     <div class="grid grid-cols-3 gap-4">
                         <div class="bg-surface/50 p-3 rounded-lg text-center">
@@ -78,26 +94,11 @@
                                    class="ml-4 text-primary hover:text-primary/90">Watch Video</a>
                             </div>
                         </div>
-                        <div class="flex items-center space-x-3 ml-4">
-                            <form onsubmit="handleCompletion(event, '{{ topic }}', '{{ video.id }}')" class="flex-shrink-0">
-                                <button type="submit" 
-                                        class="px-4 py-2 rounded-xl {% if video.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
-                                    {% if video.completed %}
-                                        <i class="fas fa-check mr-2"></i>Completed
-                                    {% else %}
-                                        Mark as Complete
-                                    {% endif %}
-                                </button>
-                            </form>
+                        <div class="flex items-center ml-4">
                             {% if video.credits_unlocked %}
                                 <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
                                     Learning Credits Unlocked
                                 </span>
-                            {% else %}
-                                <a href="{{ url_for('show_quiz', topic=topic, item_id=video.id) }}"
-                                   class="px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-white">
-                                    Launch a Test
-                                </a>
                             {% endif %}
                         </div>
                     </div>
@@ -302,10 +303,10 @@ function toggleMaterialInput(type) {
     }
 }
 
-function handleCompletion(event, topic, itemId) {
+function handleTopicCompletion(event, topic) {
     event.preventDefault();
     
-    fetch(`/mark-recommendation/${encodeURIComponent(topic)}/${itemId}`, {
+    fetch(`/mark-topic-completed/${encodeURIComponent(topic)}`, {
         method: 'POST'
     })
     .then(response => response.json())
