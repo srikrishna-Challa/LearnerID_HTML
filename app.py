@@ -662,6 +662,33 @@ def delete_material(material_id):
     flash('Material not found', 'error')
     return redirect(request.referrer)
 
+@app.route('/mark-resource-completed/<topic>/<resource_id>', methods=['POST'])
+def mark_resource_completed(topic, resource_id):
+    app.logger.debug(f"Marking resource {resource_id} as completed for topic: {topic}")
+    
+    # Find and mark the resource as completed
+    resource_found = False
+    for section in recommendations_data.get(topic, {}).values():
+        for item in section:
+            if item['id'] == resource_id:
+                item['completed'] = True
+                resource_found = True
+                break
+        if resource_found:
+            break
+    
+    if resource_found:
+        flash('Resource has been marked as completed!', 'success')
+        return jsonify({
+            'status': 'success',
+            'message': 'Resource marked as completed'
+        })
+    else:
+        flash('Resource not found', 'error')
+        return jsonify({
+            'status': 'error',
+            'message': 'Resource not found'
+        }), 404
 @app.route('/mark-topic-completed/<topic>', methods=['POST'])
 def mark_topic_completed(topic):
     app.logger.debug(f"Marking topic as completed: {topic}")

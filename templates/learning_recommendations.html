@@ -343,9 +343,53 @@
 </div>
 
 <script>
+// Knowledge Assessment Toggle
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handler for quiz section toggle
+    const quizToggle = document.querySelector('[onclick="toggleQuizSection()"]');
+    if (quizToggle) {
+        quizToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleQuizSection();
+        });
+    }
+
+    // Add click handlers for complete buttons
+    const topicCompleteBtn = document.querySelector('[onclick*="handleTopicCompletion"]');
+    if (topicCompleteBtn) {
+        const topic = topicCompleteBtn.getAttribute('onclick').match(/'([^']+)'/)[1];
+        topicCompleteBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleTopicCompletion(topic);
+        });
+    }
+
+    // Add handlers for resource complete buttons
+    document.querySelectorAll('[onclick*="handleResourceCompletion"]').forEach(btn => {
+        const [_, topic, resourceId] = btn.getAttribute('onclick').match(/'([^']+)'/g).map(s => s.slice(1, -1));
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleResourceCompletion(topic, resourceId);
+        });
+    });
+
+    // Initialize material form handlers
+    const materialTypeSelect = document.querySelector('select[name="material_type"]');
+    if (materialTypeSelect) {
+        materialTypeSelect.addEventListener('change', function() {
+            toggleMaterialInput(this.value);
+        });
+    }
+});
+
 function toggleQuizSection() {
     const content = document.getElementById('quizContent');
     const icon = document.getElementById('quizToggleIcon');
+    
+    if (!content || !icon) {
+        console.error('Quiz section elements not found');
+        return;
+    }
     
     content.classList.toggle('hidden');
     icon.classList.toggle('rotate-180');
@@ -353,8 +397,14 @@ function toggleQuizSection() {
 
 function toggleAddMaterialForm() {
     const form = document.getElementById('addMaterialForm');
+    if (!form) {
+        console.error('Add material form not found');
+        return;
+    }
+    
     form.classList.toggle('hidden');
     if (!form.classList.contains('hidden')) {
+        form.reset();
         const materialType = document.querySelector('select[name="material_type"]').value;
         toggleMaterialInput(materialType);
     }
@@ -363,6 +413,11 @@ function toggleAddMaterialForm() {
 function toggleMaterialInput(type) {
     const documentInput = document.getElementById('documentInput');
     const urlInput = document.getElementById('urlInput');
+    
+    if (!documentInput || !urlInput) {
+        console.error('Material input elements not found');
+        return;
+    }
     
     if (type === 'document') {
         documentInput.classList.remove('hidden');
@@ -374,6 +429,8 @@ function toggleMaterialInput(type) {
 }
 
 function handleTopicCompletion(topic) {
+    console.log('Marking topic as completed:', topic);
+    
     fetch(`/mark-topic-completed/${encodeURIComponent(topic)}`, {
         method: 'POST',
         headers: {
@@ -383,23 +440,21 @@ function handleTopicCompletion(topic) {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            // Show success message and reload
-            const flashMessage = document.createElement('div');
-            flashMessage.className = 'mb-4 p-4 rounded-xl bg-green-500/10 text-green-500';
-            flashMessage.textContent = 'Topic marked as completed successfully!';
-            document.querySelector('main').insertBefore(flashMessage, document.querySelector('main').firstChild);
+            showFlashMessage('Topic marked as completed successfully!', 'success');
             setTimeout(() => location.reload(), 1000);
         } else {
-            alert('Error marking topic as completed: ' + data.message);
+            showFlashMessage(data.message || 'Error marking topic as completed', 'error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error marking topic as completed');
+        showFlashMessage('Error marking topic as completed', 'error');
     });
 }
 
 function handleResourceCompletion(topic, resourceId) {
+    console.log('Marking resource as completed:', resourceId, 'for topic:', topic);
+    
     fetch(`/mark-resource-completed/${encodeURIComponent(topic)}/${resourceId}`, {
         method: 'POST',
         headers: {
@@ -409,29 +464,33 @@ function handleResourceCompletion(topic, resourceId) {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            // Show success message and reload
-            const flashMessage = document.createElement('div');
-            flashMessage.className = 'mb-4 p-4 rounded-xl bg-green-500/10 text-green-500';
-            flashMessage.textContent = 'Resource marked as completed successfully!';
-            document.querySelector('main').insertBefore(flashMessage, document.querySelector('main').firstChild);
+            showFlashMessage('Resource marked as completed successfully!', 'success');
             setTimeout(() => location.reload(), 1000);
         } else {
-            alert('Error marking resource as completed: ' + data.message);
+            showFlashMessage(data.message || 'Error marking resource as completed', 'error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error marking resource as completed');
+        showFlashMessage('Error marking resource as completed', 'error');
     });
 }
 
+function showFlashMessage(message, type = 'success') {
+    const flashMessage = document.createElement('div');
+    flashMessage.className = `mb-4 p-4 rounded-xl ${type === 'success' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`;
+    flashMessage.textContent = message;
+    const main = document.querySelector('main');
+    main.insertBefore(flashMessage, main.firstChild);
+}
+
 function openNotesModal(resourceId, resourceType, title) {
-    // Placeholder -  Actual implementation would involve opening a modal and fetching/displaying notes
+    // Will be implemented in the next iteration
     console.log('Opening notes modal:', { resourceId, resourceType, title });
 }
 
 function generateSummary(resourceId) {
-    // Placeholder - Actual implementation would involve a call to a backend API to generate a summary
+    // Will be implemented in the next iteration
     console.log('Generating summary for:', resourceId);
 }
 </script>
