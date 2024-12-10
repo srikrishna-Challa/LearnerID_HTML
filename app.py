@@ -18,6 +18,29 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf', 'doc', 'docx'}
 
+from flask_sqlalchemy import SQLAlchemy
+import os
+
+# Configure database
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///learning.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# Models
+class UserNote(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)  # We'll link this to users once auth is implemented
+    resource_id = db.Column(db.String(50), nullable=False)
+    resource_type = db.Column(db.String(20), nullable=False)  # 'video', 'article', or 'paper'
+    note_content = db.Column(db.Text, nullable=False)
+    summary = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+
+# Create tables
+with app.app_context():
+    db.create_all()
+
 # Mock data structures
 quiz_data = {
     'Introduction to Programming': {
@@ -509,6 +532,95 @@ def download_material(material_id):
                     as_attachment=True
                 )
     return 'Material not found', 404
+
+@app.route('/get-notes/<resource_id>')
+def get_notes(resource_id):
+    note = UserNote.query.filter_by(
+        user_id=1,  # Mock user_id until authentication is implemented
+        resource_id=resource_id
+    ).order_by(UserNote.created_at.desc()).first()
+    
+    if note:
+        return jsonify({
+            'status': 'success',
+            'note': {
+                'content': note.note_content,
+                'summary': note.summary
+            }
+        })
+    return jsonify({
+        'status': 'success',
+        'note': {
+            'content': '',
+            'summary': None
+        }
+    })
+
+@app.route('/add-note/<topic>/<resource_id>', methods=['POST'])
+def add_note(topic, resource_id):
+    note_content = request.form.get('note_content')
+    resource_type = request.form.get('resource_type')
+    
+    if not note_content:
+        flash('Note content is required', 'error')
+        return redirect(url_for('learning_recommendations', topic=topic))
+    
+    # For now, using a mock user_id (1) until authentication is implemented
+    note = UserNote(
+        user_id=1,
+        resource_id=resource_id,
+        resource_type=resource_type,
+        note_content=note_content
+    )
+    
+    try:
+        db.session.add(note)
+        db.session.commit()
+        flash('Note added successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error adding note: {str(e)}")
+        flash('Error adding note', 'error')
+    
+    return redirect(url_for('learning_recommendations', topic=topic))
+
+@app.route('/update-note/<note_id>', methods=['POST'])
+def update_note(note_id):
+    note = UserNote.query.get_or_404(note_id)
+    note_content = request.form.get('note_content')
+    
+    if not note_content:
+        return jsonify({'status': 'error', 'message': 'Note content is required'}), 400
+    
+    try:
+        note.note_content = note_content
+        db.session.commit()
+        return jsonify({'status': 'success', 'message': 'Note updated successfully'})
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error updating note: {str(e)}")
+        return jsonify({'status': 'error', 'message': 'Error updating note'}), 500
+
+@app.route('/generate-summary/<note_id>', methods=['POST'])
+def generate_summary(note_id):
+    note = UserNote.query.get_or_404(note_id)
+    
+    try:
+        # Mock summary generation for now
+        # TODO: Integrate with OpenAI or similar API for actual summary generation
+        summary = f"Summary of: {note.note_content[:100]}..."
+        
+        note.summary = summary
+        db.session.commit()
+        
+        return jsonify({
+            'status': 'success',
+            'summary': summary
+        })
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error generating summary: {str(e)}")
+        return jsonify({'status': 'error', 'message': 'Error generating summary'}), 500
 
 @app.route('/delete-material/<material_id>', methods=['POST'])
 def delete_material(material_id):

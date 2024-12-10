@@ -131,6 +131,10 @@
                                     {% if video.completed %}Completed{% else %}Mark Complete{% endif %}
                                 </button>
                             </form>
+                            <button onclick="openNotesModal('{{ video.id }}', 'video', '{{ video.title }}')"
+                                    class="inline-flex items-center px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
+                                <i class="fas fa-sticky-note mr-2"></i>Notes
+                            </button>
                             {% if video.credits_unlocked %}
                                 <span class="inline-flex items-center px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
                                     <i class="fas fa-star mr-2"></i>Credits Unlocked
@@ -410,6 +414,150 @@ function handleResourceCompletion(event, topic, resourceId) {
     .catch(error => {
         console.error('Error:', error);
     });
+}
+</script>
+<!-- Notes Modal -->
+<div id="notesModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="bg-surface rounded-2xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-start mb-4">
+            <div>
+                <h3 id="notesModalTitle" class="text-xl font-semibold text-white"></h3>
+                <p class="text-white/70">Your learning notes and summaries</p>
+            </div>
+            <button onclick="closeNotesModal()" class="text-white/70 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="notesForm" onsubmit="handleNotesSubmit(event)" class="space-y-4">
+            <input type="hidden" id="noteResourceId" name="resource_id">
+            <input type="hidden" id="noteResourceType" name="resource_type">
+            
+            <div>
+                <label class="block text-sm font-medium text-white mb-2">Your Notes</label>
+                <textarea id="noteContent" name="note_content" rows="6" 
+                        class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40"
+                        placeholder="Write your notes here..."></textarea>
+            </div>
+            
+            <div class="flex justify-between items-center">
+                <button type="submit" 
+                        class="px-4 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
+                    <i class="fas fa-save mr-2"></i>Save Notes
+                </button>
+                <button type="button" onclick="generateSummary()"
+                        class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
+                    <i class="fas fa-magic mr-2"></i>Generate Summary
+                </button>
+            </div>
+        </form>
+        
+        <div id="summarySection" class="mt-6 pt-6 border-t border-white/10 hidden">
+            <h4 class="text-lg font-medium text-white mb-3">AI-Generated Summary</h4>
+            <div id="summaryContent" class="p-4 bg-white/5 rounded-xl text-white"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openNotesModal(resourceId, resourceType, title) {
+    document.getElementById('notesModal').classList.remove('hidden');
+    document.getElementById('notesModal').classList.add('flex');
+    document.getElementById('notesModalTitle').textContent = `Notes for: ${title}`;
+    document.getElementById('noteResourceId').value = resourceId;
+    document.getElementById('noteResourceType').value = resourceType;
+    
+    // Load existing notes if any
+    fetch(`/get-notes/${resourceId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById('noteContent').value = data.note.content;
+                if (data.note.summary) {
+                    showSummary(data.note.summary);
+                }
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function closeNotesModal() {
+    document.getElementById('notesModal').classList.add('hidden');
+    document.getElementById('notesModal').classList.remove('flex');
+    document.getElementById('noteContent').value = '';
+    document.getElementById('summarySection').classList.add('hidden');
+}
+
+function handleNotesSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const resourceId = formData.get('resource_id');
+    
+    fetch(`/add-note/${encodeURIComponent('{{ topic }}')}/${resourceId}`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            closeNotesModal();
+            window.location.reload();
+        } else {
+            console.error('Error:', data.message);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function generateSummary() {
+    const resourceId = document.getElementById('noteResourceId').value;
+    const noteContent = document.getElementById('noteContent').value;
+    
+    if (!noteContent.trim()) {
+        alert('Please add some notes before generating a summary.');
+        return;
+    }
+    
+    fetch(`/generate-summary/${resourceId}`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showSummary(data.summary);
+        } else {
+            console.error('Error:', data.message);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function showSummary(summary) {
+    const summarySection = document.getElementById('summarySection');
+    const summaryContent = document.getElementById('summaryContent');
+    summarySection.classList.remove('hidden');
+    summaryContent.textContent = summary;
+}
+
+// Keep existing functions
+function toggleQuizSection() {
+    // ... existing code ...
+}
+
+function toggleAddMaterialForm() {
+    // ... existing code ...
+}
+
+function toggleMaterialInput(type) {
+    // ... existing code ...
+}
+
+function handleTopicCompletion(event, topic) {
+    // ... existing code ...
+}
+
+function handleResourceCompletion(event, topic, resourceId) {
+    // ... existing code ...
 }
 </script>
 {% endblock %}
