@@ -508,8 +508,10 @@ def learning_credits():
     return render_template('learning_credits.html')
 
 @app.route('/logout', methods=['POST'])
+@login_required
 def logout():
-    session.clear()
+    logout_user()
+    flash('You have been logged out.', 'success')
     return redirect(url_for('index'))
 
 @app.route('/about')
@@ -523,15 +525,29 @@ def how_it_works():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
+        email = request.form.get('email')
         password = request.form.get('password')
         remember = request.form.get('remember') == 'on'
         
-        # Mock login for demonstration
-        session['user_id'] = 1  # Mock user ID
-        flash('Successfully logged in!', 'success')
-        return redirect(url_for('user_loggedin_page'))
-    
+        # Create a mock user for demonstration
+        if not users:
+            user_id = 1
+            user = User(
+                user_id=user_id,
+                name="Demo User",
+                email="demo@example.com",
+                password_hash=generate_password_hash("password")
+            )
+            users[user_id] = user
+        
+        user = next((u for u in users.values() if u.email == email), None)
+        if user and check_password_hash(user.password_hash, password):
+            login_user(user, remember=remember)
+            flash('Successfully logged in!', 'success')
+            return redirect(url_for('user_loggedin_page'))
+        else:
+            flash('Invalid email or password.', 'error')
+        
     return render_template('login.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
