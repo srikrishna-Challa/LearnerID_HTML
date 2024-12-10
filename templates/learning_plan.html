@@ -36,14 +36,26 @@
             </div>
         </div>
 
+        <!-- Select All Option -->
+        <div class="mb-6 flex items-center">
+            <label class="flex items-center p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10">
+                <input type="checkbox" id="selectAll" class="mr-3">
+                <span class="text-white">Select All Topics</span>
+            </label>
+        </div>
+
         <!-- Learning Topics -->
         <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {% for topic in learning_topics %}
             <div class="bg-surface rounded-2xl p-6 border border-white/10">
-                <div class="mb-4">
-                    <h3 class="text-xl font-semibold text-white mb-2">{{ topic.title }}</h3>
-                    <p class="text-white/70">{{ topic.description }}</p>
+                <div class="flex justify-between items-start mb-4">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" name="selected_topics" value="{{ topic.title }}" class="mr-3 topic-checkbox">
+                        <h3 class="text-xl font-semibold text-white">{{ topic.title }}</h3>
+                    </label>
                 </div>
+                
+                <p class="text-white/70 mb-4">{{ topic.description }}</p>
                 
                 <!-- Time Required -->
                 <div class="flex items-center text-sm text-white/70 mb-4">
@@ -60,24 +72,52 @@
                         {% endfor %}
                     </ul>
                 </div>
-                
-                <button onclick="addToLearningGoals('{{ topic.title }}')"
-                        class="w-full mt-4 px-4 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
-                    Add to Learning Goals
-                </button>
             </div>
             {% endfor %}
         </div>
 
+        <!-- Add Selected Topics Button -->
+        <div class="mt-8 flex justify-center">
+            <button onclick="addSelectedToLearningGoals()" 
+                    class="px-8 py-3 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
+                Add Selected Topics to Learning Goals
+            </button>
+        </div>
+
         <script>
-        function addToLearningGoals(topicTitle) {
+        // Handle "Select All" functionality
+        document.getElementById('selectAll').addEventListener('change', function(e) {
+            const topicCheckboxes = document.querySelectorAll('.topic-checkbox');
+            topicCheckboxes.forEach(checkbox => {
+                checkbox.checked = e.target.checked;
+            });
+        });
+
+        // Update "Select All" when individual checkboxes change
+        document.querySelectorAll('.topic-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const allCheckboxes = document.querySelectorAll('.topic-checkbox');
+                const selectAllCheckbox = document.getElementById('selectAll');
+                selectAllCheckbox.checked = Array.from(allCheckboxes).every(cb => cb.checked);
+            });
+        });
+
+        function addSelectedToLearningGoals() {
+            const selectedTopics = Array.from(document.querySelectorAll('.topic-checkbox:checked'))
+                                      .map(checkbox => checkbox.value);
+            
+            if (selectedTopics.length === 0) {
+                alert('Please select at least one topic');
+                return;
+            }
+
             fetch('/add-to-learning-goals', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    topic: topicTitle
+                    topics: selectedTopics
                 })
             })
             .then(response => response.json())

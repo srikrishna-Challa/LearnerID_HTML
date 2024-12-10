@@ -528,6 +528,26 @@ def signup():
     
     return render_template('signup.html')
 
+@app.route('/add-to-learning-goals', methods=['POST'])
+def add_to_learning_goals():
+    topics = request.json.get('topics', [])
+    if not topics:
+        return jsonify({'status': 'error', 'message': 'No topics selected'}), 400
+    
+    # Add selected topics to learning history
+    for topic_title in topics:
+        if topic_title not in topic_details:
+            topic_details[topic_title] = {
+                'title': topic_title,
+                'level': 'Beginner',
+                'progress': 0,
+                'start_date': datetime.now().strftime('%Y-%m-%d'),
+                'topics': []
+            }
+    
+    flash(f'Added {len(topics)} topics to your learning goals!', 'success')
+    return jsonify({'status': 'success'})
+
 @app.route('/learning-plan', methods=['GET', 'POST'])
 def learning_plan():
     if request.method == 'POST':
