@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-background">
+    <!-- Navigation Bar -->
+    <nav class="bg-surface px-4 py-3 flex justify-between items-center">
+        <a href="{{ url_for('index') }}" class="text-2xl font-bold text-primary">LearnerID</a>
+        <div class="flex items-center space-x-4">
+            <a href="{{ url_for('index') }}" class="text-white/70 hover:text-white">Home</a>
+            <a href="{{ url_for('about') }}" class="text-white/70 hover:text-white">About</a>
+            <a href="{{ url_for('how_it_works') }}" class="text-white/70 hover:text-white">How it Works</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-white mb-8">About LearnerID</h1>
+            
+            <div class="bg-surface rounded-2xl p-8 border border-white/10 mb-8">
+                <h2 class="text-2xl font-semibold text-white mb-4">Our Mission</h2>
+                <p class="text-white/70 leading-relaxed mb-6">
+                    LearnerID is dedicated to revolutionizing the way people learn by providing personalized, 
+                    AI-powered educational experiences that adapt to each learner's unique needs and goals.
+                </p>
+                
+                <h3 class="text-xl font-semibold text-white mb-3">What Sets Us Apart</h3>
+                <ul class="space-y-3 text-white/70">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                        <span>Personalized learning pathways tailored to your goals</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                        <span>AI-powered content generation and recommendations</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                        <span>Comprehensive progress tracking and analytics</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                        <span>Interactive and engaging learning experiences</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
