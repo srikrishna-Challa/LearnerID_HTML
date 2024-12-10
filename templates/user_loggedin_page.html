@@ -86,24 +86,86 @@
                 </div>
             </div>
             
-            <!-- Learning Options -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <a href="{{ url_for('learning_plan') }}" 
-                   class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-white">Create Learning Plan</h3>
-                        <i class="fas fa-plus-circle text-primary text-xl"></i>
+            <!-- Learning Plan Creation -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-white mb-6">Create Your Learning Journey</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- AI-Powered Plan Creation -->
+                    <div class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors group cursor-pointer">
+                        <a href="{{ url_for('learning_plan') }}" class="block">
+                            <div class="flex items-start space-x-4 mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+                                    <i class="fas fa-robot text-2xl text-primary"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-white mb-2">AI-Powered Learning Plan</h3>
+                                    <p class="text-white/70 text-sm leading-relaxed">Let our AI create a personalized learning path based on your goals, experience, and preferences.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center text-primary mt-4">
+                                <span class="text-sm font-medium">Get Started</span>
+                                <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </a>
                     </div>
-                    <p class="text-white/70">Design your personalized learning journey with AI assistance</p>
-                </a>
-                
-                <a href="#" class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-white">Browse Popular Plans</h3>
-                        <i class="fas fa-fire text-primary text-xl"></i>
+
+                    <!-- Custom Plan Creation -->
+                    <div class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors group cursor-pointer">
+                        <a href="{{ url_for('learning_plan') }}?mode=custom" class="block">
+                            <div class="flex items-start space-x-4 mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+                                    <i class="fas fa-pencil-ruler text-2xl text-primary"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-white mb-2">Custom Learning Plan</h3>
+                                    <p class="text-white/70 text-sm leading-relaxed">Design your own learning path by selecting topics, setting pace, and choosing resources.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center text-primary mt-4">
+                                <span class="text-sm font-medium">Create Plan</span>
+                                <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </a>
                     </div>
-                    <p class="text-white/70">Explore trending learning paths and topics</p>
-                </a>
+
+                    <!-- Browse Templates -->
+                    <div class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors group cursor-pointer">
+                        <a href="#" class="block">
+                            <div class="flex items-start space-x-4 mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+                                    <i class="fas fa-th-large text-2xl text-primary"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-white mb-2">Learning Templates</h3>
+                                    <p class="text-white/70 text-sm leading-relaxed">Start with pre-designed learning paths created by experts in various fields.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center text-primary mt-4">
+                                <span class="text-sm font-medium">Browse Templates</span>
+                                <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Community Plans -->
+                    <div class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors group cursor-pointer">
+                        <a href="#" class="block">
+                            <div class="flex items-start space-x-4 mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+                                    <i class="fas fa-users text-2xl text-primary"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-white mb-2">Community Plans</h3>
+                                    <p class="text-white/70 text-sm leading-relaxed">Discover and follow learning paths created by other learners in the community.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center text-primary mt-4">
+                                <span class="text-sm font-medium">Explore Community</span>
+                                <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
             
             <!-- Featured Categories -->
