@@ -24,7 +24,9 @@
                 <p class="text-white/70 mt-2">Test your understanding of {{ topic }}</p>
             </div>
 
-            <form id="quizForm" method="POST" action="{{ url_for('submit_quiz', topic=topic, item_id=item_id) }}" class="space-y-8">
+            <form id="quizForm" method="POST" 
+                  action="{{ url_for('submit_topic_quiz', topic=topic) if item_id is none else url_for('submit_quiz', topic=topic, item_id=item_id) }}" 
+                  class="space-y-8">
                 {% for question in questions %}
                 {% set outer_loop = loop %}
                 <div class="bg-surface rounded-2xl p-6 border border-white/10">
