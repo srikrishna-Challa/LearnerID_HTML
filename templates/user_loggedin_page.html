@@ -74,35 +74,53 @@
             <h1 class="text-3xl font-bold text-white mb-8">Welcome to Your Learning Journey!</h1>
             
             <!-- Search Section -->
-            <div class="bg-surface p-6 rounded-2xl border border-white/10 mb-8">
-                <h2 class="text-xl font-semibold text-white mb-4">Find Your Next Learning Path</h2>
-                <div class="relative">
+            <div class="bg-surface p-8 rounded-2xl border border-white/10 mb-8">
+                <h2 class="text-2xl font-bold text-white mb-6">Start Your Learning Journey</h2>
+                <div class="relative mb-6">
                     <input type="text" 
-                           placeholder="Search for learning plans..." 
-                           class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary">
-                    <button class="absolute right-3 top-1/2 -translate-y-1/2 text-primary">
+                           placeholder="What do you want to learn today?" 
+                           class="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-lg text-white placeholder-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+                    <button class="absolute right-4 top-1/2 -translate-y-1/2 text-primary text-xl hover:text-primary/80 transition-colors">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
+                <p class="text-white/70">Popular searches: Python Programming, Data Science, Web Development</p>
             </div>
             
-            <!-- Learning Options -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Learning Plan Creation -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <a href="{{ url_for('learning_plan') }}" 
-                   class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-white">Create Learning Plan</h3>
-                        <i class="fas fa-plus-circle text-primary text-xl"></i>
+                   class="group bg-surface p-8 rounded-2xl border border-white/10 hover:bg-white/5 transition-all hover:scale-[1.02]">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-plus-circle text-primary text-2xl group-hover:scale-110 transition-transform"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-2">Create Your Learning Plan</h3>
+                            <p class="text-white/70 leading-relaxed">Design a personalized learning journey with AI assistance tailored to your goals and schedule</p>
+                        </div>
                     </div>
-                    <p class="text-white/70">Design your personalized learning journey with AI assistance</p>
+                    <div class="flex items-center text-primary">
+                        <span class="mr-2">Get Started</span>
+                        <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
                 </a>
                 
-                <a href="#" class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-white">Browse Popular Plans</h3>
-                        <i class="fas fa-fire text-primary text-xl"></i>
+                <a href="#" 
+                   class="group bg-surface p-8 rounded-2xl border border-white/10 hover:bg-white/5 transition-all hover:scale-[1.02]">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-fire text-primary text-2xl group-hover:scale-110 transition-transform"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-2">Explore Popular Plans</h3>
+                            <p class="text-white/70 leading-relaxed">Discover trending learning paths and join other learners on their journey</p>
+                        </div>
                     </div>
-                    <p class="text-white/70">Explore trending learning paths and topics</p>
+                    <div class="flex items-center text-primary">
+                        <span class="mr-2">Browse Plans</span>
+                        <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
                 </a>
             </div>
             
