@@ -1,7 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, send_file
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import os
 import logging
@@ -11,40 +9,6 @@ logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'  # Change this to a secure secret key
-
-# Initialize Flask-Login
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
-
-# Mock user database
-users = {}
-
-class User(UserMixin):
-    def __init__(self, user_id, name, email, password_hash):
-        self.id = user_id
-        self.name = name
-        self.email = email
-        self.password_hash = password_hash
-
-@login_manager.user_loader
-def load_user(user_id):
-    app.logger.debug(f"Loading user {user_id}")
-    try:
-        return users.get(int(user_id))
-    except Exception as e:
-        app.logger.error(f"Error loading user: {e}")
-        return None
-
-# Create a demo user
-user_id = 1
-demo_user = User(
-    user_id=user_id,
-    name="Demo User",
-    email="demo@example.com",
-    password_hash=generate_password_hash("password")
-)
-users[user_id] = demo_user
 
 # Configure upload folder
 UPLOAD_FOLDER = 'uploads'
@@ -500,30 +464,31 @@ def submit_quiz(topic, item_id):
 
 @app.route('/')
 def index():
-    if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
+    if 'user_id' in session:
+        return redirect(url_for('user_loggedin_page'))
     return render_template('index.html')
 
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    return render_template('dashboard.html', user=current_user)
+@app.route('/user_loggedin_page')
+def user_loggedin_page():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('user_loggedin_page.html')
 
 @app.route('/mails')
-@login_required
 def mails():
-    return render_template('mails.html', user=current_user)
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('mails.html')
 
 @app.route('/learning-credits')
-@login_required
 def learning_credits():
-    return render_template('learning_credits.html', user=current_user)
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('learning_credits.html')
 
 @app.route('/logout', methods=['POST'])
-@login_required
 def logout():
-    logout_user()
-    flash('You have been logged out.', 'success')
+    session.clear()
     return redirect(url_for('index'))
 
 @app.route('/about')
@@ -536,32 +501,16 @@ def how_it_works():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    app.logger.debug("Login route accessed")
-    
-    if current_user.is_authenticated:
-        app.logger.debug("User already authenticated, redirecting to dashboard")
-        return redirect(url_for('dashboard'))
-        
     if request.method == 'POST':
-        email = request.form.get('email')
+        username = request.form.get('username')
         password = request.form.get('password')
         remember = request.form.get('remember') == 'on'
         
-        app.logger.debug(f"Login attempt for email: {email}")
-        
-        user = next((u for u in users.values() if u.email == email), None)
-        if user and check_password_hash(user.password_hash, password):
-            login_user(user, remember=remember)
-            app.logger.debug(f"Login successful for user: {user.email}")
-            flash('Successfully logged in!', 'success')
-            next_page = request.args.get('next')
-            if next_page and url_for('login') in next_page:
-                next_page = url_for('dashboard')
-            return redirect(next_page if next_page else url_for('dashboard'))
-        else:
-            app.logger.debug("Login failed: Invalid credentials")
-            flash('Invalid email or password. Default credentials are demo@example.com / password', 'error')
-        
+        # Mock login for demonstration
+        session['user_id'] = 1  # Mock user ID
+        flash('Successfully logged in!', 'success')
+        return redirect(url_for('user_loggedin_page'))
+    
     return render_template('login.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -580,7 +529,6 @@ def signup():
     return render_template('signup.html')
 
 @app.route('/learning-plan', methods=['GET', 'POST'])
-@login_required
 def learning_plan():
     if request.method == 'POST':
         # Simulate AI processing time
@@ -607,7 +555,7 @@ def learning_plan():
         }
     ]
     
-    return render_template('learning_plan.html', learning_weeks=learning_weeks, user=current_user)
+    return render_template('learning_plan.html', learning_weeks=learning_weeks)
 
 @app.route('/my-learning-details/<topic>')
 def my_learning_details(topic):
@@ -806,8 +754,9 @@ def mark_recommendation(topic, item_id):
         return jsonify({'status': 'error', 'message': 'Item not found'}), 404
 
 @app.route('/learning-history')
-@login_required
 def learning_history():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
 
     # Mock data for learning history and progress
     learning_history = [
@@ -865,15 +814,4 @@ def learning_history():
                          progress_stats=progress_stats)
 
 if __name__ == '__main__':
-    # Try to find an available port starting from 5000
-    port = 5000
-    max_port = 5010  # Maximum port to try
-    while port <= max_port:
-        try:
-            app.run(host='0.0.0.0', port=port, debug=True)
-            break
-        except OSError:
-            logging.warning(f"Port {port} is in use, trying next port")
-            port += 1
-    if port > max_port:
-        logging.error("No available ports found")
+    app.run(host='0.0.0.0', port=5000, debug=True)
