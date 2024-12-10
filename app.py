@@ -602,6 +602,30 @@ def update_note(note_id):
         return jsonify({'status': 'error', 'message': 'Error updating note'}), 500
 
 @app.route('/generate-summary/<note_id>', methods=['POST'])
+@app.route('/mark-resource-completed/<topic>/<resource_id>', methods=['POST'])
+def mark_resource_completed(topic, resource_id):
+    app.logger.debug(f"Marking resource completed: {topic}/{resource_id}")
+    
+    # Find and update the resource completion status
+    resource_found = False
+    if topic in recommendations_data:
+        for section in recommendations_data[topic].values():
+            for resource in section:
+                if resource['id'] == resource_id:
+                    resource['completed'] = True
+                    resource_found = True
+                    flash('Resource has been marked as completed!', 'success')
+                    return jsonify({
+                        'status': 'success',
+                        'message': 'Resource marked as completed'
+                    })
+    
+    if not resource_found:
+        flash('Resource not found', 'error')
+        return jsonify({
+            'status': 'error',
+            'message': 'Resource not found'
+        }), 404
 def generate_summary(note_id):
     note = UserNote.query.get_or_404(note_id)
     
@@ -644,20 +668,25 @@ def mark_topic_completed(topic):
     app.logger.debug(f"Marking topic as completed: {topic}")
     
     # Find and update the topic status
+    topic_found = False
     for course in topic_details.values():
         for week_topic in course['topics']:
             if week_topic['title'] == topic:
                 week_topic['status'] = 'Completed'
                 week_topic['progress'] = 100
+                topic_found = True
+                flash('Topic has been marked as completed successfully!', 'success')
                 return jsonify({
                     'status': 'success',
                     'message': 'Topic marked as completed'
                 })
     
-    return jsonify({
-        'status': 'error',
-        'message': 'Topic not found'
-    }), 404
+    if not topic_found:
+        flash('Topic not found', 'error')
+        return jsonify({
+            'status': 'error',
+            'message': 'Topic not found'
+        }), 404
 
 @app.route('/learning-history')
 def learning_history():

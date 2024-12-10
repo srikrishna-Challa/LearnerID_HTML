@@ -135,6 +135,10 @@
                                     class="inline-flex items-center px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
                                 <i class="fas fa-sticky-note mr-2"></i>Notes
                             </button>
+                            <button onclick="generateSummary('{{ video.id }}')"
+                                    class="inline-flex items-center px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
+                                <i class="fas fa-magic mr-2"></i>Generate Summary
+                            </button>
                             {% if video.credits_unlocked %}
                                 <span class="inline-flex items-center px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
                                     <i class="fas fa-star mr-2"></i>Credits Unlocked
@@ -313,23 +317,31 @@
                         <div class="flex-1">
                             <h4 class="text-white font-medium">{{ material.title }}</h4>
                             <p class="text-white/70 text-sm mt-1">{{ material.description }}</p>
-                            <div class="flex items-center mt-2">
+                            <div class="flex items-center space-x-4 mt-4">
                                 <span class="text-white/50 text-sm">Type: {{ material.type }}</span>
                                 {% if material.type == 'document' %}
                                     <a href="{{ url_for('download_material', material_id=material.id) }}" 
-                                       class="ml-4 text-primary hover:text-primary/90">Download</a>
+                                       class="text-primary hover:text-primary/90">Download</a>
                                 {% else %}
                                     <a href="{{ material.url }}" target="_blank" 
-                                       class="ml-4 text-primary hover:text-primary/90">Open Link</a>
+                                       class="text-primary hover:text-primary/90">Open Link</a>
                                 {% endif %}
+                                <button onclick="openNotesModal('{{ material.id }}', '{{ material.type }}', '{{ material.title }}')"
+                                        class="inline-flex items-center px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
+                                    <i class="fas fa-sticky-note mr-2"></i>Notes
+                                </button>
+                                <button onclick="generateSummary('{{ material.id }}')"
+                                        class="inline-flex items-center px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
+                                    <i class="fas fa-magic mr-2"></i>Generate Summary
+                                </button>
+                                <form action="{{ url_for('delete_material', material_id=material.id) }}" method="POST"
+                                      onsubmit="return confirm('Are you sure you want to delete this material?')">
+                                    <button type="submit" class="text-red-500 hover:text-red-400">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                        <form action="{{ url_for('delete_material', material_id=material.id) }}" method="POST"
-                              onsubmit="return confirm('Are you sure you want to delete this material?')">
-                            <button type="submit" class="text-red-500 hover:text-red-400">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
                     </div>
                     {% endfor %}
                 </div>
@@ -451,9 +463,34 @@ function handleResourceCompletion(event, topic, resourceId) {
             
             <div>
                 <label class="block text-sm font-medium text-white mb-2">Your Notes</label>
-                <textarea id="noteContent" name="note_content" rows="8" 
-                        class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40"
-                        placeholder="Write your notes here..."></textarea>
+                <div id="toolbar" class="border border-white/10 rounded-t-xl p-2 bg-white/5 flex items-center space-x-2">
+                    <button type="button" onclick="formatText('bold')" class="p-1 hover:bg-white/10 rounded">
+                        <i class="fas fa-bold"></i>
+                    </button>
+                    <button type="button" onclick="formatText('italic')" class="p-1 hover:bg-white/10 rounded">
+                        <i class="fas fa-italic"></i>
+                    </button>
+                    <button type="button" onclick="formatText('underline')" class="p-1 hover:bg-white/10 rounded">
+                        <i class="fas fa-underline"></i>
+                    </button>
+                    <div class="border-l border-white/10 h-6 mx-2"></div>
+                    <button type="button" onclick="formatList('bullet')" class="p-1 hover:bg-white/10 rounded">
+                        <i class="fas fa-list-ul"></i>
+                    </button>
+                    <button type="button" onclick="formatList('number')" class="p-1 hover:bg-white/10 rounded">
+                        <i class="fas fa-list-ol"></i>
+                    </button>
+                    <button type="button" onclick="formatIndent('increase')" class="p-1 hover:bg-white/10 rounded">
+                        <i class="fas fa-indent"></i>
+                    </button>
+                    <button type="button" onclick="formatIndent('decrease')" class="p-1 hover:bg-white/10 rounded">
+                        <i class="fas fa-outdent"></i>
+                    </button>
+                </div>
+                <div id="editor" contenteditable="true"
+                     class="w-full h-64 px-3 py-2 bg-white/5 border border-white/10 border-t-0 rounded-b-xl text-white overflow-y-auto focus:outline-none"
+                     placeholder="Write your notes here..."></div>
+                <input type="hidden" id="noteContent" name="note_content">
             </div>
             
             <button type="submit" 
@@ -493,10 +530,29 @@ function closeNotesModal() {
     document.getElementById('summarySection').classList.add('hidden');
 }
 
+function formatText(command) {
+    document.execCommand(command, false, null);
+    document.getElementById('editor').focus();
+}
+
+function formatList(type) {
+    document.execCommand(type === 'bullet' ? 'insertUnorderedList' : 'insertOrderedList', false, null);
+    document.getElementById('editor').focus();
+}
+
+function formatIndent(direction) {
+    document.execCommand(direction === 'increase' ? 'indent' : 'outdent', false, null);
+    document.getElementById('editor').focus();
+}
+
 function handleNotesSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     const resourceId = formData.get('resource_id');
+    
+    // Get the HTML content from the editor and store it in the hidden input
+    const editorContent = document.getElementById('editor').innerHTML;
+    document.getElementById('noteContent').value = editorContent;
     
     fetch(`/add-note/${encodeURIComponent('{{ topic }}')}/${resourceId}`, {
         method: 'POST',
@@ -512,6 +568,32 @@ function handleNotesSubmit(event) {
         }
     })
     .catch(error => console.error('Error:', error));
+}
+
+// Update openNotesModal to populate the editor
+function openNotesModal(resourceId, resourceType, title) {
+    document.getElementById('notesModal').classList.remove('hidden');
+    document.getElementById('notesModal').classList.add('flex');
+    document.getElementById('notesModalTitle').textContent = `Notes for: ${title}`;
+    document.getElementById('noteResourceId').value = resourceId;
+    document.getElementById('noteResourceType').value = resourceType;
+    
+    // Load existing notes if any
+    fetch(`/get-notes/${resourceId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById('editor').innerHTML = data.note.content;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function closeNotesModal() {
+    document.getElementById('notesModal').classList.add('hidden');
+    document.getElementById('notesModal').classList.remove('flex');
+    document.getElementById('editor').innerHTML = '';
+    document.getElementById('noteContent').value = '';
 }
 
 function generateSummary(resourceId) {    
