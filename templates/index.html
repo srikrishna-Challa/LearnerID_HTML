@@ -37,17 +37,17 @@
 </nav>
 
 <main class="md:ml-64 min-h-screen bg-background p-8 dark:bg-background dark:text-white">
-    <section class="max-w-4xl mx-auto text-center pt-16">
+    <section class="max-w-4xl mx-auto text-center pt-24 px-4">
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-12">Your Hub of Lifelong Learning</h1>
         
         <div class="w-full max-w-2xl mx-auto">
-            <form class="search-box w-full max-w-2xl mx-auto">
-                <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-2xl p-3">
+            <form class="search-box w-full mx-auto">
+                <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-2xl p-4 shadow-lg">
                     <input type="text" 
                            class="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder-white/60" 
                            placeholder="Learn with the help of LearnerID AI">
                     <button type="submit" 
-                            class="disabled:opacity-50 p-2 bg-primary rounded-xl text-white" 
+                            class="disabled:opacity-50 px-4 py-2 bg-primary rounded-xl text-white transition-colors duration-200" 
                             disabled>
                         <i class="fas fa-wand-magic-sparkles"></i>
                     </button>
@@ -64,14 +64,24 @@
             </div>
         </div>
         
-        <div class="mt-12">
+        <div class="mt-16">
             <h4 class="text-2xl font-semibold text-white mb-8">Create your own learning plan</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <button onclick="showQuestionnaire()" class="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors">Technology and Computer Science</button>
-                <button onclick="showQuestionnaire()" class="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors">Business Management</button>
-                <button onclick="showQuestionnaire()" class="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors">Data Science and Analytics</button>
-                <button onclick="showQuestionnaire()" class="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors">Engineering</button>
-                <button onclick="showQuestionnaire()" class="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors">Accounting and Finance</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto px-4">
+                <button onclick="showQuestionnaire()" class="p-6 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors shadow-lg hover:shadow-xl">
+                    <span class="block text-lg">Technology and Computer Science</span>
+                </button>
+                <button onclick="showQuestionnaire()" class="p-6 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors shadow-lg hover:shadow-xl">
+                    <span class="block text-lg">Business Management</span>
+                </button>
+                <button onclick="showQuestionnaire()" class="p-6 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors shadow-lg hover:shadow-xl">
+                    <span class="block text-lg">Data Science and Analytics</span>
+                </button>
+                <button onclick="showQuestionnaire()" class="p-6 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors shadow-lg hover:shadow-xl">
+                    <span class="block text-lg">Engineering</span>
+                </button>
+                <button onclick="showQuestionnaire()" class="p-6 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-colors shadow-lg hover:shadow-xl">
+                    <span class="block text-lg">Accounting and Finance</span>
+                </button>
             </div>
         </div>
     </section>

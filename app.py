@@ -490,10 +490,9 @@ def index():
     return render_template('index.html')
 
 @app.route('/user_loggedin_page')
+@login_required
 def user_loggedin_page():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    return render_template('user_loggedin_page.html')
+    return render_template('user_loggedin_page.html', user=current_user)
 
 @app.route('/mails')
 def mails():
@@ -791,9 +790,8 @@ def mark_recommendation(topic, item_id):
         return jsonify({'status': 'error', 'message': 'Item not found'}), 404
 
 @app.route('/learning-history')
+@login_required
 def learning_history():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
 
     # Mock data for learning history and progress
     learning_history = [
