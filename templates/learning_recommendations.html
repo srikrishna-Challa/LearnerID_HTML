@@ -355,92 +355,150 @@ function toggleQuizSection() {
     const content = document.getElementById('quizContent');
     const icon = document.getElementById('quizToggleIcon');
     
-    // Toggle the content visibility with a smooth transition
+    if (!content || !icon) {
+        console.error('Quiz section elements not found');
+        return;
+    }
+    
     if (content.classList.contains('hidden')) {
+        // Show content
         content.classList.remove('hidden');
+        content.style.display = 'block';
         content.style.maxHeight = '0';
         content.style.opacity = '0';
         
-        // Force a reflow
+        // Force reflow
         content.offsetHeight;
         
-        // Add transition properties
+        // Add transition and show
         content.style.transition = 'max-height 0.5s ease-in-out, opacity 0.3s ease-in-out';
         content.style.maxHeight = content.scrollHeight + 'px';
         content.style.opacity = '1';
-        
-        // Rotate icon
         icon.style.transform = 'rotate(180deg)';
     } else {
+        // Hide content
         content.style.maxHeight = '0';
         content.style.opacity = '0';
+        icon.style.transform = 'rotate(0deg)';
         
-        // Reset after animation
+        // After animation, reset styles
         setTimeout(() => {
             content.classList.add('hidden');
+            content.style.display = 'none';
             content.style.maxHeight = '';
             content.style.opacity = '';
             content.style.transition = '';
         }, 500);
-        
-        // Rotate icon back
-        icon.style.transform = 'rotate(0deg)';
     }
 }
 
 function toggleAddMaterialForm() {
     const form = document.getElementById('addMaterialForm');
-    form.classList.toggle('hidden');
+    if (!form) {
+        console.error('Add material form not found');
+        return;
+    }
+    
+    if (form.classList.contains('hidden')) {
+        form.classList.remove('hidden');
+        form.style.display = 'block';
+        // Reset form when showing
+        form.reset();
+        // Reset input visibility
+        toggleMaterialInput(document.querySelector('select[name="material_type"]').value);
+    } else {
+        form.classList.add('hidden');
+        form.style.display = 'none';
+    }
 }
 
 function toggleMaterialInput(type) {
     const documentInput = document.getElementById('documentInput');
     const urlInput = document.getElementById('urlInput');
     
+    if (!documentInput || !urlInput) {
+        console.error('Material input elements not found');
+        return;
+    }
+    
     if (type === 'document') {
         documentInput.classList.remove('hidden');
+        documentInput.style.display = 'block';
         urlInput.classList.add('hidden');
+        urlInput.style.display = 'none';
     } else {
         documentInput.classList.add('hidden');
+        documentInput.style.display = 'none';
         urlInput.classList.remove('hidden');
+        urlInput.style.display = 'block';
     }
 }
 
+// Remove all duplicate function definitions at the end of the file
+
 function handleTopicCompletion(event, topic) {
     event.preventDefault();
+    console.log('Marking topic as completed:', topic);
     
     fetch(`/mark-topic-completed/${encodeURIComponent(topic)}`, {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
     })
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            window.location.reload();
+            // Show success message before reload
+            const flashMessage = document.createElement('div');
+            flashMessage.className = 'mb-4 p-4 rounded-xl bg-green-500/10 text-green-500';
+            flashMessage.textContent = 'Topic marked as completed successfully!';
+            document.querySelector('main').insertBefore(flashMessage, document.querySelector('main').firstChild);
+            
+            // Reload after a short delay to show the message
+            setTimeout(() => window.location.reload(), 1000);
         } else {
             console.error('Error:', data.message);
+            alert('Error marking topic as completed: ' + data.message);
         }
     })
     .catch(error => {
         console.error('Error:', error);
+        alert('Error marking topic as completed. Please try again.');
     });
 }
 
 function handleResourceCompletion(event, topic, resourceId) {
     event.preventDefault();
+    console.log('Marking resource as completed:', resourceId, 'for topic:', topic);
     
     fetch(`/mark-resource-completed/${encodeURIComponent(topic)}/${resourceId}`, {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
     })
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            window.location.reload();
+            // Show success message before reload
+            const flashMessage = document.createElement('div');
+            flashMessage.className = 'mb-4 p-4 rounded-xl bg-green-500/10 text-green-500';
+            flashMessage.textContent = 'Resource marked as completed successfully!';
+            document.querySelector('main').insertBefore(flashMessage, document.querySelector('main').firstChild);
+            
+            // Reload after a short delay to show the message
+            setTimeout(() => window.location.reload(), 1000);
         } else {
             console.error('Error:', data.message);
+            alert('Error marking resource as completed: ' + data.message);
         }
     })
     .catch(error => {
         console.error('Error:', error);
+        alert('Error marking resource as completed. Please try again.');
     });
 }
 </script>
