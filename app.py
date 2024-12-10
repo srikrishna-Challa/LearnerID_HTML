@@ -1,31 +1,67 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, send_file
-from werkzeug.utils import secure_filename
-from datetime import datetime
 import os
 import logging
+import secrets
+from datetime import datetime
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_file
+from flask_login import LoginManager, current_user, login_required
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.utils import secure_filename
+
+# Initialize Flask app
+app = Flask(__name__)
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
-app.secret_key = 'your-secret-key-here'  # Change this to a secure secret key
+# App configuration
+app.secret_key = secrets.token_hex(32)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///app.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
-# Configure upload folder
+# Initialize extensions
+db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+
+# Configure uploads
 UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
-
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
-
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
+
+# Request middleware
+@app.before_request
+def before_request():
+    logger.debug(f"Incoming request: {request.method} {request.path}")
+
+@app.after_request
+def after_request(response):
+    logger.debug(f"Outgoing response: {response.status_code}")
+    return response
+
+# Error handlers
+@app.errorhandler(404)
+def not_found_error(error):
+    logger.error(f"404 error: {error}")
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    logger.error(f"500 error: {error}")
+    db.session.rollback()
+    return render_template('500.html'), 500
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Mock quiz attempts storage
-quiz_attempts = {}  # Format: {topic: {'attempts': int, 'scores': [float], 'max_attempts': int}}
-
-# Mock quiz data storage
+# Mock data storage
+quiz_attempts = {}
 quiz_data = {
     'Technology and Computer Science': {
         'questions': [
@@ -79,7 +115,6 @@ quiz_data = {
     }
 }
 
-# Mock recommendations data storage
 recommendations_data = {
     'Technology and Computer Science': {
         'videos': [
@@ -173,10 +208,8 @@ recommendations_data = {
     }
 }
 
-# Mock user materials storage
-user_materials = {}  # Format: {topic: [{'id': str, 'type': str, 'title': str, 'description': str, 'url': str, 'filename': str}]}
+user_materials = {}
 
-# Mock topic details storage
 topic_details = {
     'Technology and Computer Science': {
         'title': 'Technology and Computer Science',
@@ -244,235 +277,23 @@ topic_details = {
     }
 }
 
-# Mock quiz data storage
-quiz_data = {
-    'Technology and Computer Science': {
-        'questions': [
-            {
-                'text': 'What is a variable in programming?',
-                'options': [
-                    'A container for storing data values',
-                    'A type of loop',
-                    'A mathematical operation',
-                    'A programming language'
-                ],
-                'correct': 0
-            },
-            {
-                'text': 'What is object-oriented programming?',
-                'options': [
-                    'A way to write faster code',
-                    'A programming paradigm based on objects containing data and code',
-                    'A type of database',
-                    'A programming language'
-                ],
-                'correct': 1
-            }
-        ],
-        'passing_score': 1
-    },
-    'Data Science and Analytics': {
-        'questions': [
-            {
-                'text': 'What is data preprocessing?',
-                'options': [
-                    'Analyzing data',
-                    'Collecting data',
-                    'Cleaning and preparing data for analysis',
-                    'Visualizing data'
-                ],
-                'correct': 2
-            },
-            {
-                'text': 'Which is NOT a common type of data visualization?',
-                'options': [
-                    'Bar chart',
-                    'Pie chart',
-                    'Line graph',
-                    'Sound wave'
-                ],
-                'correct': 3
-            }
-        ],
-        'passing_score': 1
-    }
-}
 
-# Mock recommendations data storage
-recommendations_data = {
-    'Technology and Computer Science': {
-        'videos': [
-            {
-                'id': 'v1',
-                'title': 'Introduction to Programming Concepts',
-                'description': 'A comprehensive overview of basic programming concepts',
-                'duration': '45 minutes',
-                'url': 'https://example.com/video1',
-                'completed': False,
-                'credits_unlocked': False
-            },
-            {
-                'id': 'v2',
-                'title': 'Object-Oriented Programming Basics',
-                'description': 'Learn about classes, objects, and OOP principles',
-                'duration': '60 minutes',
-                'url': 'https://example.com/video2',
-                'completed': False,
-                'credits_unlocked': False
-            }
-        ],
-        'articles': [
-            {
-                'id': 'a1',
-                'title': 'Getting Started with Python',
-                'description': 'A beginner-friendly guide to Python programming',
-                'reading_time': '15 minutes',
-                'url': 'https://example.com/article1',
-                'completed': False,
-                'credits_unlocked': False
-            },
-            {
-                'id': 'a2',
-                'title': 'Best Practices in Software Development',
-                'description': 'Essential practices for writing clean, maintainable code',
-                'reading_time': '20 minutes',
-                'url': 'https://example.com/article2',
-                'completed': False,
-                'credits_unlocked': False
-            }
-        ],
-        'papers': [
-            {
-                'id': 'p1',
-                'title': 'Modern Software Development Methodologies',
-                'authors': 'John Doe, Jane Smith',
-                'abstract': 'An analysis of current software development practices',
-                'published_date': '2024-01-15',
-                'url': 'https://example.com/paper1',
-                'completed': False,
-                'credits_unlocked': False
-            }
-        ]
-    },
-    'Data Science and Analytics': {
-        'videos': [
-            {
-                'id': 'v3',
-                'title': 'Introduction to Data Science',
-                'description': 'Understanding the basics of data science',
-                'duration': '50 minutes',
-                'url': 'https://example.com/video3',
-                'completed': False,
-                'credits_unlocked': False
-            }
-        ],
-        'articles': [
-            {
-                'id': 'a3',
-                'title': 'Data Analysis Fundamentals',
-                'description': 'Learn the basics of data analysis',
-                'reading_time': '25 minutes',
-                'url': 'https://example.com/article3',
-                'completed': False,
-                'credits_unlocked': False
-            }
-        ],
-        'papers': [
-            {
-                'id': 'p2',
-                'title': 'Advanced Data Visualization Techniques',
-                'authors': 'Alice Johnson, Bob Wilson',
-                'abstract': 'Exploring modern data visualization methods',
-                'published_date': '2024-02-01',
-                'url': 'https://example.com/paper2',
-                'completed': False,
-                'credits_unlocked': False
-            }
-        ]
-    }
-}
-
-@app.route('/quiz/<topic>/<item_id>')
-def show_quiz(topic, item_id):
-    if topic not in quiz_data:
-        flash('Quiz not available for this topic', 'error')
-        return redirect(url_for('learning_recommendations', topic=topic))
-    
-    # Initialize attempts tracking if not exists
-    if topic not in quiz_attempts:
-        quiz_attempts[topic] = {
-            'attempts': 0,
-            'scores': [],
-            'max_attempts': 3
-        }
-    
-    attempts_info = quiz_attempts[topic]
-    avg_score = sum(attempts_info['scores']) / len(attempts_info['scores']) if attempts_info['scores'] else 0
-    attempts_left = attempts_info['max_attempts'] - attempts_info['attempts']
-    
-    questions = quiz_data[topic]['questions']
-    return render_template('quiz.html', 
-                         topic=topic, 
-                         item_id=item_id, 
-                         questions=questions,
-                         attempts=attempts_info['attempts'],
-                         avg_score=round(avg_score, 2),
-                         attempts_left=attempts_left)
-
-@app.route('/submit-quiz/<topic>/<item_id>', methods=['POST'])
-def submit_quiz(topic, item_id):
-    if topic not in quiz_data:
-        return jsonify({'status': 'error', 'message': 'Quiz not found'}), 404
-    
-    # Check if maximum attempts reached
-    if quiz_attempts[topic]['attempts'] >= quiz_attempts[topic]['max_attempts']:
-        flash('You have reached the maximum number of attempts for this quiz.', 'error')
-        return redirect(url_for('learning_recommendations', topic=topic))
-    
-    questions = quiz_data[topic]['questions']
-    correct_count = 0
-    
-    # Grade the quiz
-    for i in range(len(questions)):
-        user_answer = request.form.get(f'q{i+1}')
-        if user_answer and int(user_answer) == questions[i]['correct']:
-            correct_count += 1
-    
-    # Calculate score as percentage
-    score = (correct_count / len(questions)) * 100
-    
-    # Update attempts tracking
-    quiz_attempts[topic]['attempts'] += 1
-    quiz_attempts[topic]['scores'].append(score)
-    
-    # Check if passed
-    passed = correct_count >= quiz_data[topic]['passing_score']
-    
-    if passed:
-        # Find and update the item's credits status
-        for section in recommendations_data[topic].values():
-            for item in section:
-                if item['id'] == item_id:
-                    item['credits_unlocked'] = True
-        
-        flash(f'Congratulations! You passed the quiz with {correct_count} correct answers. Learning credits have been unlocked!', 'success')
-    else:
-        attempts_left = quiz_attempts[topic]['max_attempts'] - quiz_attempts[topic]['attempts']
-        flash(f'You got {correct_count} answers correct. You need {quiz_data[topic]["passing_score"]} to pass. You have {attempts_left} attempts left!', 'error')
-    
-    return redirect(url_for('learning_recommendations', topic=topic))
-
+# Routes
 @app.route('/')
 def index():
     if 'user_id' in session:
         return redirect(url_for('user_loggedin_page'))
-    return render_template('index.html')
+    return render_template('index.html', user=None)
 
 @app.route('/user_loggedin_page')
 def user_loggedin_page():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    return render_template('user_loggedin_page.html')
+    user = {
+        'name': 'Demo User',
+        'email': 'demo@example.com'
+    }
+    return render_template('user_loggedin_page.html', user=user)
 
 @app.route('/mails')
 def mails():
@@ -493,11 +314,11 @@ def logout():
 
 @app.route('/about')
 def about():
-    return render_template('index.html')
+    return render_template('about.html', user=None)
 
 @app.route('/how-it-works')
 def how_it_works():
-    return render_template('index.html')
+    return render_template('how_it_works.html', user=None)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -602,10 +423,7 @@ def learning_recommendations(topic):
         quiz_attempts[topic] = {'attempts': 0, 'scores': [], 'max_attempts': 3}
     
     # Get recommendations for the exact topic name
-    recommendations = recommendations_data.get(parent_course, None)
-    
-    if recommendations is None:
-        recommendations = {'videos': [], 'articles': [], 'papers': []}
+    recommendations = recommendations_data.get(str(parent_course), {'videos': [], 'articles': [], 'papers': []}) if parent_course else {'videos': [], 'articles': [], 'papers': []}
     
     topic_materials = user_materials.get(topic, [])
     
@@ -812,6 +630,77 @@ def learning_history():
                          learning_history=learning_history,
                          recent_activities=recent_activities,
                          progress_stats=progress_stats)
+
+@app.route('/quiz/<topic>/<item_id>')
+def show_quiz(topic, item_id):
+    if topic not in quiz_data:
+        flash('Quiz not available for this topic', 'error')
+        return redirect(url_for('learning_recommendations', topic=topic))
+    
+    # Initialize attempts tracking if not exists
+    if topic not in quiz_attempts:
+        quiz_attempts[topic] = {
+            'attempts': 0,
+            'scores': [],
+            'max_attempts': 3
+        }
+    
+    attempts_info = quiz_attempts[topic]
+    avg_score = sum(attempts_info['scores']) / len(attempts_info['scores']) if attempts_info['scores'] else 0
+    attempts_left = attempts_info['max_attempts'] - attempts_info['attempts']
+    
+    questions = quiz_data[topic]['questions']
+    return render_template('quiz.html', 
+                         topic=topic, 
+                         item_id=item_id, 
+                         questions=questions,
+                         attempts=attempts_info['attempts'],
+                         avg_score=round(avg_score, 2),
+                         attempts_left=attempts_left)
+
+@app.route('/submit-quiz/<topic>/<item_id>', methods=['POST'])
+def submit_quiz(topic, item_id):
+    if topic not in quiz_data:
+        return jsonify({'status': 'error', 'message': 'Quiz not found'}), 404
+    
+    # Check if maximum attempts reached
+    if quiz_attempts[topic]['attempts'] >= quiz_attempts[topic]['max_attempts']:
+        flash('You have reached the maximum number of attempts for this quiz.', 'error')
+        return redirect(url_for('learning_recommendations', topic=topic))
+    
+    questions = quiz_data[topic]['questions']
+    correct_count = 0
+    
+    # Grade the quiz
+    for i in range(len(questions)):
+        user_answer = request.form.get(f'q{i+1}')
+        if user_answer and int(user_answer) == questions[i]['correct']:
+            correct_count += 1
+    
+    # Calculate score as percentage
+    score = (correct_count / len(questions)) * 100
+    
+    # Update attempts tracking
+    quiz_attempts[topic]['attempts'] += 1
+    quiz_attempts[topic]['scores'].append(score)
+    
+    # Check if passed
+    passed = correct_count >= quiz_data[topic]['passing_score']
+    
+    if passed:
+        # Find and update the item's credits status
+        for section in recommendations_data[topic].values():
+            for item in section:
+                if item['id'] == item_id:
+                    item['credits_unlocked'] = True
+        
+        flash(f'Congratulations! You passed the quiz with {correct_count} correct answers. Learning credits have been unlocked!', 'success')
+    else:
+        attempts_left = quiz_attempts[topic]['max_attempts'] - quiz_attempts[topic]['attempts']
+        flash(f'You got {correct_count} answers correct. You need {quiz_data[topic]["passing_score"]} to pass. You have {attempts_left} attempts left!', 'error')
+    
+    return redirect(url_for('learning_recommendations', topic=topic))
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
