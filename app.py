@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, send_file
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import os
 import logging
@@ -9,6 +11,25 @@ logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'  # Change this to a secure secret key
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+# Mock user database
+users = {}
+
+class User(UserMixin):
+    def __init__(self, user_id, name, email, password_hash):
+        self.id = user_id
+        self.name = name
+        self.email = email
+        self.password_hash = password_hash
+
+@login_manager.user_loader
+def load_user(user_id):
+    return users.get(int(user_id))
 
 # Configure upload folder
 UPLOAD_FOLDER = 'uploads'
@@ -814,4 +835,15 @@ def learning_history():
                          progress_stats=progress_stats)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Try to find an available port starting from 5000
+    port = 5000
+    max_port = 5010  # Maximum port to try
+    while port <= max_port:
+        try:
+            app.run(host='0.0.0.0', port=port, debug=True)
+            break
+        except OSError:
+            logging.warning(f"Port {port} is in use, trying next port")
+            port += 1
+    if port > max_port:
+        logging.error("No available ports found")

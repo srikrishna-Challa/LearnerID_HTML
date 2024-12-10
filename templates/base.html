@@ -22,7 +22,120 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-background text-white min-h-screen">
-    {% block content %}{% endblock %}
+    <div class="flex h-screen bg-background">
+        <!-- Sidebar -->
+        <aside class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full md:translate-x-0">
+            <div class="h-full bg-surface">
+                <!-- User Profile Section -->
+                {% if current_user.is_authenticated %}
+                <div class="flex flex-col items-center p-6 border-b border-white/10">
+                    <div class="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-user text-3xl text-primary"></i>
+                    </div>
+                    <h2 class="text-lg font-semibold text-white">{{ current_user.name }}</h2>
+                    <p class="text-sm text-white/70">{{ current_user.email }}</p>
+                </div>
+                {% endif %}
+                
+                <!-- Navigation -->
+                <nav class="p-4">
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="{{ url_for('index') }}" 
+                               class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'index' %}bg-white/10{% endif %}">
+                                <i class="fas fa-home w-6"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        {% if current_user.is_authenticated %}
+                        <li>
+                            <a href="{{ url_for('dashboard') }}" 
+                               class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'dashboard' %}bg-white/10{% endif %}">
+                                <i class="fas fa-tachometer-alt w-6"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('learning_history') }}" 
+                               class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'learning_history' %}bg-white/10{% endif %}">
+                                <i class="fas fa-history w-6"></i>
+                                <span>Learning History</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('learning_credits') }}" 
+                               class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'learning_credits' %}bg-white/10{% endif %}">
+                                <i class="fas fa-star w-6"></i>
+                                <span>Learning Credits</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <a href="{{ url_for('login') }}" 
+                               class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'login' %}bg-white/10{% endif %}">
+                                <i class="fas fa-sign-in-alt w-6"></i>
+                                <span>Login</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('signup') }}" 
+                               class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'signup' %}bg-white/10{% endif %}">
+                                <i class="fas fa-user-plus w-6"></i>
+                                <span>Sign Up</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a href="{{ url_for('about') }}" 
+                               class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'about' %}bg-white/10{% endif %}">
+                                <i class="fas fa-info-circle w-6"></i>
+                                <span>About Us</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('how_it_works') }}" 
+                               class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'how_it_works' %}bg-white/10{% endif %}">
+                                <i class="fas fa-question-circle w-6"></i>
+                                <span>How it Works</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <!-- Logout Button -->
+                {% if current_user.is_authenticated %}
+                <div class="absolute bottom-0 left-0 right-0 p-4">
+                    <form action="{{ url_for('logout') }}" method="POST" class="w-full">
+                        <button type="submit" 
+                                class="w-full flex items-center justify-center p-3 text-white rounded-xl hover:bg-white/5 transition-colors">
+                            <i class="fas fa-sign-out-alt w-6"></i>
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </aside>
+
+        <!-- Mobile Nav Toggle -->
+        <button type="button" 
+                class="fixed top-4 left-4 z-50 md:hidden text-white text-2xl bg-transparent border-none cursor-pointer"
+                onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 md:ml-64 min-h-screen">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('aside');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+    </script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
