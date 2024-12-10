@@ -474,12 +474,16 @@ def submit_quiz(topic, item_id):
 
 @app.route('/add-learning-material/<topic>', methods=['POST'])
 def add_learning_material(topic):
+    app.logger.debug(f"Adding learning material for topic: {topic}")
+    app.logger.debug(f"Form data: {request.form}")
+    app.logger.debug(f"Files: {request.files}")
+    
     if topic not in user_materials:
         user_materials[topic] = []
     
     material_type = request.form.get('material_type')
     title = request.form.get('title')
-    description = request.form.get('description')
+    description = request.form.get('description', '')
     
     if not all([material_type, title]):
         flash('Title and material type are required', 'error')
@@ -491,11 +495,13 @@ def add_learning_material(topic):
         'title': title,
         'description': description,
         'type': material_type,
+        'completed': False,
         'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
     
     if material_type == 'document':
         if 'document' not in request.files:
+            app.logger.error("No document file in request.files")
             flash('No file uploaded', 'error')
             return redirect(url_for('learning_recommendations', topic=topic))
         
@@ -505,9 +511,16 @@ def add_learning_material(topic):
             return redirect(url_for('learning_recommendations', topic=topic))
         
         if file and allowed_file(file.filename):
-            filename = secure_filename(f"{material_id}_{file.filename}")
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            material['filename'] = filename
+            try:
+                filename = secure_filename(f"{material_id}_{file.filename}")
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(file_path)
+                app.logger.debug(f"File saved successfully at: {file_path}")
+                material['filename'] = filename
+            except Exception as e:
+                app.logger.error(f"Error saving file: {str(e)}")
+                flash('Error uploading file', 'error')
+                return redirect(url_for('learning_recommendations', topic=topic))
         else:
             flash('Invalid file type. Please upload PDF or Word documents.', 'error')
             return redirect(url_for('learning_recommendations', topic=topic))
@@ -661,13 +674,15 @@ def mark_topic_completed(topic):
                 week_topic['status'] = 'Completed'
                 week_topic['progress'] = 100
                 topic_found = True
-                flash('Topic has been marked as completed successfully!', 'success')
-                return jsonify({
-                    'status': 'success',
-                    'message': 'Topic marked as completed'
-                })
+                break
     
-    if not topic_found:
+    if topic_found:
+        flash('Topic has been marked as completed successfully!', 'success')
+        return jsonify({
+            'status': 'success',
+            'message': 'Topic marked as completed'
+        })
+    else:
         flash('Topic not found', 'error')
         return jsonify({
             'status': 'error',
