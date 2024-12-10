@@ -35,43 +35,55 @@
 
         <!-- Topic Container -->
         <div class="bg-surface rounded-2xl p-6 border border-white/10 mb-8">
-            <div class="flex justify-between items-start mb-6">
-                <div>
-                    <h2 class="text-xl font-semibold text-white">{{ topic }}</h2>
-                    {% if topic_info %}
-                    <p class="text-white/70 mt-1">Progress: {{ topic_info.progress }}%</p>
-                    {% endif %}
-                </div>
-                <div class="flex items-center space-x-4">
+            <!-- Topic Header -->
+            <div class="mb-8">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-white">{{ topic }}</h2>
+                        {% if topic_info %}
+                        <p class="text-white/70 mt-1">Progress: {{ topic_info.progress }}%</p>
+                        {% endif %}
+                    </div>
                     <form onsubmit="handleTopicCompletion(event, '{{ topic }}')" class="flex-shrink-0">
                         <button type="submit" 
                                 class="px-4 py-2 rounded-xl {% if topic_info and topic_info.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
                             {% if topic_info and topic_info.completed %}
-                                <i class="fas fa-check mr-2"></i>Completed
+                                <i class="fas fa-check mr-2"></i>Topic Completed
                             {% else %}
-                                Mark as Complete
+                                Mark Topic as Complete
                             {% endif %}
                         </button>
                     </form>
-                    {% if not topic_info or not topic_info.completed %}
-                        <a href="{{ url_for('show_topic_quiz', topic=topic) }}"
-                           class="px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-white">
-                            Launch a Test
-                        </a>
-                    {% endif %}
+                </div>
+
+                <!-- Quiz Section -->
+                <div class="bg-surface/30 rounded-xl p-6 mb-6">
+                    <div class="flex justify-between items-center">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-medium text-white mb-2">Knowledge Assessment</h3>
+                            <p class="text-white/70">Test your understanding of {{ topic }}</p>
+                        </div>
+                        {% if not topic_info or not topic_info.completed %}
+                            <a href="{{ url_for('show_topic_quiz', topic=topic) }}"
+                               class="px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-medium">
+                                Launch Assessment
+                            </a>
+                        {% endif %}
+                    </div>
+
                     {% if quiz_stats %}
-                    <div class="grid grid-cols-3 gap-4">
-                        <div class="bg-surface/50 p-3 rounded-lg text-center">
-                            <p class="text-sm text-white/70">Attempts Made</p>
-                            <p class="text-lg font-semibold text-white">{{ quiz_stats.attempts_made }}</p>
+                    <div class="grid grid-cols-3 gap-6 mt-6">
+                        <div class="bg-surface/50 p-4 rounded-xl text-center">
+                            <p class="text-sm font-medium text-white/70 mb-1">Attempts Made</p>
+                            <p class="text-2xl font-semibold text-white">{{ quiz_stats.attempts_made }}</p>
                         </div>
-                        <div class="bg-surface/50 p-3 rounded-lg text-center">
-                            <p class="text-sm text-white/70">Average Score</p>
-                            <p class="text-lg font-semibold text-white">{{ "%.1f"|format(quiz_stats.avg_score) }}%</p>
+                        <div class="bg-surface/50 p-4 rounded-xl text-center">
+                            <p class="text-sm font-medium text-white/70 mb-1">Average Score</p>
+                            <p class="text-2xl font-semibold text-white">{{ "%.1f"|format(quiz_stats.avg_score) }}%</p>
                         </div>
-                        <div class="bg-surface/50 p-3 rounded-lg text-center">
-                            <p class="text-sm text-white/70">Attempts Left</p>
-                            <p class="text-lg font-semibold text-white">{{ quiz_stats.attempts_left }}</p>
+                        <div class="bg-surface/50 p-4 rounded-xl text-center">
+                            <p class="text-sm font-medium text-white/70 mb-1">Attempts Left</p>
+                            <p class="text-2xl font-semibold text-white">{{ quiz_stats.attempts_left }}</p>
                         </div>
                     </div>
                     {% endif %}
@@ -95,11 +107,23 @@
                             </div>
                         </div>
                         <div class="flex items-center ml-4">
-                            {% if video.credits_unlocked %}
-                                <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
-                                    Learning Credits Unlocked
-                                </span>
-                            {% endif %}
+                            <div class="flex items-center space-x-3">
+                                <form onsubmit="handleResourceCompletion(event, '{{ topic }}', '{{ video.id }}')" class="flex-shrink-0">
+                                    <button type="submit" 
+                                            class="px-4 py-2 rounded-xl {% if video.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
+                                        {% if video.completed %}
+                                            <i class="fas fa-check mr-2"></i>Completed
+                                        {% else %}
+                                            Mark as Complete
+                                        {% endif %}
+                                    </button>
+                                </form>
+                                {% if video.credits_unlocked %}
+                                    <span class="px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
+                                        Learning Credits Unlocked
+                                    </span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -307,6 +331,25 @@ function handleTopicCompletion(event, topic) {
     event.preventDefault();
     
     fetch(`/mark-topic-completed/${encodeURIComponent(topic)}`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            window.location.reload();
+        } else {
+            console.error('Error:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function handleResourceCompletion(event, topic, resourceId) {
+    event.preventDefault();
+    
+    fetch(`/mark-resource-completed/${encodeURIComponent(topic)}/${resourceId}`, {
         method: 'POST'
     })
     .then(response => response.json())
