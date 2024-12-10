@@ -29,7 +29,22 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return users.get(int(user_id))
+    app.logger.debug(f"Loading user {user_id}")
+    try:
+        return users.get(int(user_id))
+    except Exception as e:
+        app.logger.error(f"Error loading user: {e}")
+        return None
+
+# Create a demo user
+user_id = 1
+demo_user = User(
+    user_id=user_id,
+    name="Demo User",
+    email="demo@example.com",
+    password_hash=generate_password_hash("password")
+)
+users[user_id] = demo_user
 
 # Configure upload folder
 UPLOAD_FOLDER = 'uploads'
@@ -521,7 +536,10 @@ def how_it_works():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    app.logger.debug("Login route accessed")
+    
     if current_user.is_authenticated:
+        app.logger.debug("User already authenticated, redirecting to dashboard")
         return redirect(url_for('dashboard'))
         
     if request.method == 'POST':
@@ -529,24 +547,19 @@ def login():
         password = request.form.get('password')
         remember = request.form.get('remember') == 'on'
         
-        # Create a mock user for demonstration
-        if not users:
-            user_id = 1
-            user = User(
-                user_id=user_id,
-                name="Demo User",
-                email="demo@example.com",
-                password_hash=generate_password_hash("password")
-            )
-            users[user_id] = user
+        app.logger.debug(f"Login attempt for email: {email}")
         
         user = next((u for u in users.values() if u.email == email), None)
         if user and check_password_hash(user.password_hash, password):
             login_user(user, remember=remember)
+            app.logger.debug(f"Login successful for user: {user.email}")
             flash('Successfully logged in!', 'success')
             next_page = request.args.get('next')
+            if next_page and url_for('login') in next_page:
+                next_page = url_for('dashboard')
             return redirect(next_page if next_page else url_for('dashboard'))
         else:
+            app.logger.debug("Login failed: Invalid credentials")
             flash('Invalid email or password. Default credentials are demo@example.com / password', 'error')
         
     return render_template('login.html')
