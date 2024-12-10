@@ -494,22 +494,15 @@ def index():
 def dashboard():
     return render_template('dashboard.html', user=current_user)
 
-@app.route('/user_loggedin_page')
-@login_required
-def user_loggedin_page():
-    return redirect(url_for('dashboard'))
-
 @app.route('/mails')
+@login_required
 def mails():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    return render_template('mails.html')
+    return render_template('mails.html', user=current_user)
 
 @app.route('/learning-credits')
+@login_required
 def learning_credits():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    return render_template('learning_credits.html')
+    return render_template('learning_credits.html', user=current_user)
 
 @app.route('/logout', methods=['POST'])
 @login_required
@@ -574,6 +567,7 @@ def signup():
     return render_template('signup.html')
 
 @app.route('/learning-plan', methods=['GET', 'POST'])
+@login_required
 def learning_plan():
     if request.method == 'POST':
         # Simulate AI processing time
@@ -600,7 +594,7 @@ def learning_plan():
         }
     ]
     
-    return render_template('learning_plan.html', learning_weeks=learning_weeks)
+    return render_template('learning_plan.html', learning_weeks=learning_weeks, user=current_user)
 
 @app.route('/my-learning-details/<topic>')
 def my_learning_details(topic):
