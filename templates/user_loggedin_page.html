@@ -223,6 +223,42 @@
                         <option value="5+">5+ hours/week</option>
                     </select>
                 </div>
+                <div class="bg-white/5 p-4 rounded-xl">
+                    <label class="block text-sm font-medium text-white/70 mb-2">Learning Style</label>
+                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                        <option value="visual">Visual (Videos & Graphics)</option>
+                        <option value="reading">Reading & Writing</option>
+                        <option value="auditory">Auditory (Lectures & Discussions)</option>
+                        <option value="hands-on">Hands-on Practice</option>
+                    </select>
+                </div>
+                <div class="bg-white/5 p-4 rounded-xl">
+                    <label class="block text-sm font-medium text-white/70 mb-2">Content Format</label>
+                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                        <option value="video">Video Tutorials</option>
+                        <option value="interactive">Interactive Exercises</option>
+                        <option value="text">Text-based Materials</option>
+                        <option value="mixed">Mixed Format</option>
+                    </select>
+                </div>
+                <div class="bg-white/5 p-4 rounded-xl">
+                    <label class="block text-sm font-medium text-white/70 mb-2">Learning Goals</label>
+                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                        <option value="career">Career Development</option>
+                        <option value="academic">Academic Achievement</option>
+                        <option value="personal">Personal Interest</option>
+                        <option value="certification">Professional Certification</option>
+                    </select>
+                </div>
+                <div class="bg-white/5 p-4 rounded-xl">
+                    <label class="block text-sm font-medium text-white/70 mb-2">Topic Knowledge</label>
+                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                        <option value="none">No Prior Knowledge</option>
+                        <option value="basic">Basic Understanding</option>
+                        <option value="intermediate">Some Experience</option>
+                        <option value="advanced">Advanced Knowledge</option>
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -269,8 +305,18 @@ function generateLearningPlan() {
         return;
     }
     
-    // Submit to learning plan route
-    window.location.href = `/learning-plan?query=${encodeURIComponent(searchQuery)}`;
+    // Get all select values
+    const selects = document.querySelectorAll('#aiLearningModal select');
+    const params = new URLSearchParams();
+    params.append('query', searchQuery);
+    
+    selects.forEach(select => {
+        const label = select.previousElementSibling.textContent.toLowerCase().replace(/\s+/g, '_');
+        params.append(label, select.value);
+    });
+    
+    // Submit to learning plan route with all parameters
+    window.location.href = `/learning-plan?${params.toString()}`;
 }
 
 // Close modal when clicking outside
