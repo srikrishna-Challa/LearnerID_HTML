@@ -54,7 +54,7 @@
                         </button>
                     </form>
                     {% if not topic_info or not topic_info.completed %}
-                        <a href="{{ url_for('show_topic_quiz', topic=topic) }}"
+                        <a href="{{ url_for('show_quiz', topic=topic) }}"
                            class="px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-white">
                             Launch a Test
                         </a>
