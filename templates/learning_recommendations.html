@@ -58,36 +58,47 @@
 
                 <!-- Quiz Section -->
                 <div class="bg-surface/30 rounded-xl p-6 mb-8">
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1">
-                            <h3 class="text-xl font-semibold text-white mb-3">Knowledge Assessment</h3>
-                            <p class="text-white/70 text-lg mb-4">Test your understanding of {{ topic }}</p>
+                    <button onclick="toggleQuizSection()" 
+                            class="w-full flex justify-between items-center focus:outline-none group">
+                        <div class="flex items-center">
+                            <i class="fas fa-graduation-cap text-primary mr-3"></i>
+                            <div class="text-left">
+                                <h3 class="text-xl font-semibold text-white">Knowledge Assessment</h3>
+                                <p class="text-white/70">Test your understanding of {{ topic }}</p>
+                            </div>
                         </div>
-                        {% if not topic_info or not topic_info.completed %}
-                            <a href="{{ url_for('show_topic_quiz', topic=topic) }}"
-                               class="inline-flex items-center px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-medium transition-colors">
-                                <i class="fas fa-book-reader mr-2"></i>
-                                Start Assessment
-                            </a>
-                        {% endif %}
-                    </div>
+                        <i id="quizToggleIcon" 
+                           class="fas fa-chevron-down text-white/70 transform transition-transform duration-300"></i>
+                    </button>
 
-                    {% if quiz_stats %}
-                    <div class="grid grid-cols-3 gap-6 mt-6">
-                        <div class="bg-surface/50 p-4 rounded-xl text-center">
-                            <p class="text-sm font-medium text-white/70 mb-1">Attempts Made</p>
-                            <p class="text-2xl font-semibold text-white">{{ quiz_stats.attempts_made }}</p>
-                        </div>
-                        <div class="bg-surface/50 p-4 rounded-xl text-center">
-                            <p class="text-sm font-medium text-white/70 mb-1">Average Score</p>
-                            <p class="text-2xl font-semibold text-white">{{ "%.1f"|format(quiz_stats.avg_score) }}%</p>
-                        </div>
-                        <div class="bg-surface/50 p-4 rounded-xl text-center">
-                            <p class="text-sm font-medium text-white/70 mb-1">Attempts Left</p>
-                            <p class="text-2xl font-semibold text-white">{{ quiz_stats.attempts_left }}</p>
+                    <div id="quizContent" class="hidden mt-6 space-y-6">
+                        <div class="border-t border-white/10 pt-6">
+                            {% if not topic_info or not topic_info.completed %}
+                                <a href="{{ url_for('show_topic_quiz', topic=topic) }}"
+                                   class="inline-flex items-center px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-medium transition-colors">
+                                    <i class="fas fa-book-reader mr-2"></i>
+                                    Start Assessment
+                                </a>
+                            {% endif %}
+
+                            {% if quiz_stats %}
+                            <div class="grid grid-cols-3 gap-6 mt-6">
+                                <div class="bg-surface/50 p-4 rounded-xl text-center">
+                                    <p class="text-sm font-medium text-white/70 mb-1">Attempts Made</p>
+                                    <p class="text-2xl font-semibold text-white">{{ quiz_stats.attempts_made }}</p>
+                                </div>
+                                <div class="bg-surface/50 p-4 rounded-xl text-center">
+                                    <p class="text-sm font-medium text-white/70 mb-1">Average Score</p>
+                                    <p class="text-2xl font-semibold text-white">{{ "%.1f"|format(quiz_stats.avg_score) }}%</p>
+                                </div>
+                                <div class="bg-surface/50 p-4 rounded-xl text-center">
+                                    <p class="text-sm font-medium text-white/70 mb-1">Attempts Left</p>
+                                    <p class="text-2xl font-semibold text-white">{{ quiz_stats.attempts_left }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
-                    {% endif %}
                 </div>
             </div>
 
@@ -308,6 +319,43 @@
 </div>
 
 <script>
+function toggleQuizSection() {
+    const content = document.getElementById('quizContent');
+    const icon = document.getElementById('quizToggleIcon');
+    
+    // Toggle the content visibility with a smooth transition
+    if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        content.style.maxHeight = '0';
+        content.style.opacity = '0';
+        
+        // Force a reflow
+        content.offsetHeight;
+        
+        // Add transition properties
+        content.style.transition = 'max-height 0.5s ease-in-out, opacity 0.3s ease-in-out';
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.style.opacity = '1';
+        
+        // Rotate icon
+        icon.style.transform = 'rotate(180deg)';
+    } else {
+        content.style.maxHeight = '0';
+        content.style.opacity = '0';
+        
+        // Reset after animation
+        setTimeout(() => {
+            content.classList.add('hidden');
+            content.style.maxHeight = '';
+            content.style.opacity = '';
+            content.style.transition = '';
+        }, 500);
+        
+        // Rotate icon back
+        icon.style.transform = 'rotate(0deg)';
+    }
+}
+
 function toggleAddMaterialForm() {
     const form = document.getElementById('addMaterialForm');
     form.classList.toggle('hidden');
