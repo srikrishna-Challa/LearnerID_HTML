@@ -76,31 +76,15 @@
             <!-- Search Section -->
             <div class="bg-surface p-8 rounded-2xl border border-white/10 mb-8">
                 <h2 class="text-2xl font-bold text-white mb-6">Start Your Learning Journey</h2>
-                <div class="w-full max-w-2xl mx-auto">
-                    <form action="{{ url_for('search') }}" method="GET" class="search-box w-full max-w-2xl mx-auto">
-                        <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-2xl p-3">
-                            <input type="text" name="q"
-                                   class="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder-white/60" 
-                                   placeholder="Search topics, courses, or skills..."
-                                   required>
-                            <button type="submit" 
-                                    class="p-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </form>
-                    <div class="flex flex-wrap gap-2 justify-center mt-2">
-                        <a href="{{ url_for('search', q='Python Programming') }}" 
-                           class="text-sm text-white/60 hover:text-white">Python</a>
-                        <a href="{{ url_for('search', q='Data Science') }}" 
-                           class="text-sm text-white/60 hover:text-white">Data Science</a>
-                        <a href="{{ url_for('search', q='Web Development') }}" 
-                           class="text-sm text-white/60 hover:text-white">Web Development</a>
-                        <a href="{{ url_for('search', q='Machine Learning') }}" 
-                           class="text-sm text-white/60 hover:text-white">Machine Learning</a>
-                    </div>
+                <div class="relative mb-6">
+                    <input type="text" 
+                           placeholder="What do you want to learn today?" 
+                           class="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-lg text-white placeholder-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+                    <button class="absolute right-4 top-1/2 -translate-y-1/2 text-primary text-xl hover:text-primary/80 transition-colors">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
-                <p class="text-white/70 mt-4">Popular searches: Python Programming, Data Science, Web Development</p>
+                <p class="text-white/70">Popular searches: Python Programming, Data Science, Web Development</p>
             </div>
             
             <!-- Learning Plan Creation -->
