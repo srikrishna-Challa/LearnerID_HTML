@@ -178,6 +178,14 @@
                                     {% if article.completed %}Completed{% else %}Mark Complete{% endif %}
                                 </button>
                             </form>
+                            <button onclick="openNotesModal('{{ article.id }}', 'article', '{{ article.title }}')"
+                                    class="inline-flex items-center px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
+                                <i class="fas fa-sticky-note mr-2"></i>Notes
+                            </button>
+                            <button onclick="generateSummary('{{ article.id }}')"
+                                    class="inline-flex items-center px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
+                                <i class="fas fa-magic mr-2"></i>Generate Summary
+                            </button>
                             {% if article.credits_unlocked %}
                                 <span class="inline-flex items-center px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
                                     <i class="fas fa-star mr-2"></i>Credits Unlocked
@@ -222,6 +230,14 @@
                                     {% if paper.completed %}Completed{% else %}Mark Complete{% endif %}
                                 </button>
                             </form>
+                            <button onclick="openNotesModal('{{ paper.id }}', 'paper', '{{ paper.title }}')"
+                                    class="inline-flex items-center px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
+                                <i class="fas fa-sticky-note mr-2"></i>Notes
+                            </button>
+                            <button onclick="generateSummary('{{ paper.id }}')"
+                                    class="inline-flex items-center px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
+                                <i class="fas fa-magic mr-2"></i>Generate Summary
+                            </button>
                             {% if paper.credits_unlocked %}
                                 <span class="inline-flex items-center px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
                                     <i class="fas fa-star mr-2"></i>Credits Unlocked
@@ -422,7 +438,7 @@ function handleResourceCompletion(event, topic, resourceId) {
         <div class="flex justify-between items-start mb-4">
             <div>
                 <h3 id="notesModalTitle" class="text-xl font-semibold text-white"></h3>
-                <p class="text-white/70">Your learning notes and summaries</p>
+                <p class="text-white/70">Your learning notes</p>
             </div>
             <button onclick="closeNotesModal()" class="text-white/70 hover:text-white">
                 <i class="fas fa-times"></i>
@@ -435,27 +451,16 @@ function handleResourceCompletion(event, topic, resourceId) {
             
             <div>
                 <label class="block text-sm font-medium text-white mb-2">Your Notes</label>
-                <textarea id="noteContent" name="note_content" rows="6" 
+                <textarea id="noteContent" name="note_content" rows="8" 
                         class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40"
                         placeholder="Write your notes here..."></textarea>
             </div>
             
-            <div class="flex justify-between items-center">
-                <button type="submit" 
-                        class="px-4 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
-                    <i class="fas fa-save mr-2"></i>Save Notes
-                </button>
-                <button type="button" onclick="generateSummary()"
-                        class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
-                    <i class="fas fa-magic mr-2"></i>Generate Summary
-                </button>
-            </div>
+            <button type="submit" 
+                    class="w-full px-4 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
+                <i class="fas fa-save mr-2"></i>Save Notes
+            </button>
         </form>
-        
-        <div id="summarySection" class="mt-6 pt-6 border-t border-white/10 hidden">
-            <h4 class="text-lg font-medium text-white mb-3">AI-Generated Summary</h4>
-            <div id="summaryContent" class="p-4 bg-white/5 rounded-xl text-white"></div>
-        </div>
     </div>
 </div>
 
@@ -509,34 +514,19 @@ function handleNotesSubmit(event) {
     .catch(error => console.error('Error:', error));
 }
 
-function generateSummary() {
-    const resourceId = document.getElementById('noteResourceId').value;
-    const noteContent = document.getElementById('noteContent').value;
-    
-    if (!noteContent.trim()) {
-        alert('Please add some notes before generating a summary.');
-        return;
-    }
-    
+function generateSummary(resourceId) {    
     fetch(`/generate-summary/${resourceId}`, {
         method: 'POST'
     })
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            showSummary(data.summary);
+            alert('Summary generated: ' + data.summary);
         } else {
             console.error('Error:', data.message);
         }
     })
     .catch(error => console.error('Error:', error));
-}
-
-function showSummary(summary) {
-    const summarySection = document.getElementById('summarySection');
-    const summaryContent = document.getElementById('summaryContent');
-    summarySection.classList.remove('hidden');
-    summaryContent.textContent = summary;
 }
 
 // Keep existing functions
