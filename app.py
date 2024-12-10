@@ -1,29 +1,30 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_file
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, send_from_directory
 from werkzeug.utils import secure_filename
+from datetime import datetime
 import os
 import logging
-from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key'  # Change this to a secure key
-app.config['UPLOAD_FOLDER'] = 'uploads'
-
-# Configure logging
+app.secret_key = 'your-secret-key-here'  # Change this to a secure secret key
 logging.basicConfig(level=logging.DEBUG)
 
+# File upload configuration
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
+
 # Ensure upload directory exists
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf', 'doc', 'docx'}
-
-from flask_sqlalchemy import SQLAlchemy
-import os
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Configure database
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///learning.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
 
 # Models
@@ -41,51 +42,9 @@ class UserNote(db.Model):
 with app.app_context():
     db.create_all()
 
-# Mock data structures
-quiz_data = {
-    'Introduction to Programming': {
-        'questions': [
-            {
-                'text': 'What is a variable?',
-                'options': [
-                    'A container for storing data values',
-                    'A mathematical equation',
-                    'A programming language',
-                    'A type of computer'
-                ],
-                'correct': 0
-            },
-            {
-                'text': 'Which of these is a loop structure?',
-                'options': [
-                    'if-else',
-                    'try-catch',
-                    'for',
-                    'switch'
-                ],
-                'correct': 2
-            }
-        ],
-        'passing_score': 1
-    }
-}
-
-quiz_attempts = {}
+# Initialize data structures
 user_materials = {}
-
-topic_details = {
-    'Technology and Computer Science': {
-        'topics': [
-            {
-                'title': 'Introduction to Programming',
-                'week': 1,
-                'status': 'In Progress',
-                'progress': 30
-            }
-        ]
-    }
-}
-
+quiz_attempts = {}
 recommendations_data = {
     'Technology and Computer Science': {
         'videos': [
@@ -125,152 +84,49 @@ recommendations_data = {
     }
 }
 
-@app.route('/topic-quiz/<topic>')
-def show_topic_quiz(topic):
-    if topic not in quiz_data:
-        flash('Quiz not available for this topic', 'error')
-        return redirect(url_for('learning_recommendations', topic=topic))
-    
-    # Initialize attempts tracking if not exists
-    if topic not in quiz_attempts:
-        quiz_attempts[topic] = {
-            'attempts': 0,
-            'scores': [],
-            'max_attempts': 3
-        }
-    
-    attempts_info = quiz_attempts[topic]
-    avg_score = sum(attempts_info['scores']) / len(attempts_info['scores']) if attempts_info['scores'] else 0
-    attempts_left = attempts_info['max_attempts'] - attempts_info['attempts']
-    
-    questions = quiz_data[topic]['questions']
-    return render_template('quiz.html', 
-                         topic=topic,
-                         item_id=None,  # This indicates it's a topic-level quiz
-                         questions=questions,
-                         attempts=attempts_info['attempts'],
-                         avg_score=round(avg_score, 2),
-                         attempts_left=attempts_left)
+topic_details = {
+    'Technology and Computer Science': {
+        'topics': [
+            {
+                'title': 'Introduction to Programming',
+                'week': 1,
+                'status': 'In Progress',
+                'progress': 30
+            }
+        ]
+    }
+}
 
-@app.route('/quiz/<topic>/<item_id>')
-def show_quiz(topic, item_id):
-    if topic not in quiz_data:
-        flash('Quiz not available for this topic', 'error')
-        return redirect(url_for('learning_recommendations', topic=topic))
-    
-    # Initialize attempts tracking if not exists
-    if topic not in quiz_attempts:
-        quiz_attempts[topic] = {
-            'attempts': 0,
-            'scores': [],
-            'max_attempts': 3
-        }
-    
-    attempts_info = quiz_attempts[topic]
-    if attempts_info['attempts'] >= attempts_info['max_attempts']:
-        flash('You have reached the maximum number of attempts for this quiz.', 'error')
-        return redirect(url_for('learning_recommendations', topic=topic))
-    
-    questions = quiz_data[topic]['questions']
-    avg_score = sum(attempts_info['scores']) / len(attempts_info['scores']) if attempts_info['scores'] else 0
-    attempts_left = attempts_info['max_attempts'] - attempts_info['attempts']
-    
-    return render_template('quiz.html', 
-                         topic=topic,
-                         item_id=item_id,
-                         questions=questions,
-                         attempts=attempts_info['attempts'],
-                         avg_score=round(avg_score, 2),
-                         attempts_left=attempts_left)
+quiz_data = {
+    'Introduction to Programming': {
+        'questions': [
+            {
+                'text': 'What is a variable?',
+                'options': [
+                    'A container for storing data values',
+                    'A mathematical equation',
+                    'A programming language',
+                    'A type of computer'
+                ],
+                'correct': 0
+            },
+            {
+                'text': 'Which of these is a loop structure?',
+                'options': [
+                    'if-else',
+                    'try-catch',
+                    'for',
+                    'switch'
+                ],
+                'correct': 2
+            }
+        ],
+        'passing_score': 1
+    }
+}
 
-@app.route('/submit-topic-quiz/<topic>', methods=['POST'])
-def submit_topic_quiz(topic):
-    if topic not in quiz_data:
-        return jsonify({'status': 'error', 'message': 'Quiz not found'}), 404
-    
-    # Check if maximum attempts reached
-    if quiz_attempts[topic]['attempts'] >= quiz_attempts[topic]['max_attempts']:
-        flash('You have reached the maximum number of attempts for this quiz.', 'error')
-        return redirect(url_for('learning_recommendations', topic=topic))
-    
-    questions = quiz_data[topic]['questions']
-    correct_count = 0
-    
-    # Grade the quiz
-    for i in range(len(questions)):
-        user_answer = request.form.get(f'q{i+1}')
-        if user_answer and int(user_answer) == questions[i]['correct']:
-            correct_count += 1
-    
-    # Calculate score as percentage
-    score = (correct_count / len(questions)) * 100
-    
-    # Update attempts tracking
-    quiz_attempts[topic]['attempts'] += 1
-    quiz_attempts[topic]['scores'].append(score)
-    
-    # Check if passed
-    passed = correct_count >= quiz_data[topic]['passing_score']
-    
-    if passed:
-        # Update topic completion status
-        for course in topic_details.values():
-            for week_topic in course['topics']:
-                if week_topic['title'] == topic:
-                    week_topic['status'] = 'Completed'
-                    week_topic['progress'] = 100
-                    break
-        
-        flash(f'Congratulations! You passed the quiz with {correct_count} correct answers. Topic marked as completed!', 'success')
-    else:
-        attempts_left = quiz_attempts[topic]['max_attempts'] - quiz_attempts[topic]['attempts']
-        flash(f'You got {correct_count} answers correct. You need {quiz_data[topic]["passing_score"]} to pass. You have {attempts_left} attempts left!', 'error')
-    
-    return redirect(url_for('learning_recommendations', topic=topic))
 
-@app.route('/submit-quiz/<topic>/<item_id>', methods=['POST'])
-def submit_quiz(topic, item_id):
-    if topic not in quiz_data:
-        return jsonify({'status': 'error', 'message': 'Quiz not found'}), 404
-    
-    # Check if maximum attempts reached
-    if quiz_attempts[topic]['attempts'] >= quiz_attempts[topic]['max_attempts']:
-        flash('You have reached the maximum number of attempts for this quiz.', 'error')
-        return redirect(url_for('learning_recommendations', topic=topic))
-    
-    questions = quiz_data[topic]['questions']
-    correct_count = 0
-    
-    # Grade the quiz
-    for i in range(len(questions)):
-        user_answer = request.form.get(f'q{i+1}')
-        if user_answer and int(user_answer) == questions[i]['correct']:
-            correct_count += 1
-    
-    # Calculate score as percentage
-    score = (correct_count / len(questions)) * 100
-    
-    # Update attempts tracking
-    quiz_attempts[topic]['attempts'] += 1
-    quiz_attempts[topic]['scores'].append(score)
-    
-    # Check if passed
-    passed = correct_count >= quiz_data[topic]['passing_score']
-    
-    if passed:
-        # Find and update the item's credits status
-        for section in recommendations_data[topic].values():
-            for item in section:
-                if item['id'] == item_id:
-                    item['credits_unlocked'] = True
-        
-        flash(f'Congratulations! You passed the quiz with {correct_count} correct answers. Learning credits have been unlocked!', 'success')
-    else:
-        attempts_left = quiz_attempts[topic]['max_attempts'] - quiz_attempts[topic]['attempts']
-        flash(f'You got {correct_count} answers correct. You need {quiz_data[topic]["passing_score"]} to pass. You have {attempts_left} attempts left!', 'error')
-    
-    return redirect(url_for('learning_recommendations', topic=topic))
-
+# Routes
 @app.route('/')
 def index():
     if 'user_id' in session:
@@ -449,11 +305,7 @@ def learning_recommendations(topic):
         quiz_attempts[topic] = {'attempts': 0, 'scores': [], 'max_attempts': 3}
     
     # Get recommendations for the exact topic name
-    recommendations = recommendations_data.get(parent_course, None)
-    
-    if recommendations is None:
-        recommendations = {'videos': [], 'articles': [], 'papers': []}
-    
+    recommendations = recommendations_data.get(parent_course, {})
     topic_materials = user_materials.get(topic, [])
     
     # Calculate quiz statistics
@@ -464,17 +316,161 @@ def learning_recommendations(topic):
         'attempts_left': topic_attempts.get('max_attempts', 3) - topic_attempts.get('attempts', 0)
     }
     
-    app.logger.debug(f"Sending recommendations: {recommendations}")
-    
     return render_template('learning_recommendations.html', 
                          recommendations=recommendations,
                          topic=topic,
                          parent_course=parent_course,
                          week_number=week_number,
                          topic_info=topic_info,
-                         quiz_attempts=quiz_attempts,
                          quiz_stats=quiz_stats,
                          user_materials=topic_materials)
+
+@app.route('/topic-quiz/<topic>')
+def show_topic_quiz(topic):
+    if topic not in quiz_data:
+        flash('Quiz not available for this topic', 'error')
+        return redirect(url_for('learning_recommendations', topic=topic))
+    
+    # Initialize attempts tracking if not exists
+    if topic not in quiz_attempts:
+        quiz_attempts[topic] = {
+            'attempts': 0,
+            'scores': [],
+            'max_attempts': 3
+        }
+    
+    attempts_info = quiz_attempts[topic]
+    avg_score = sum(attempts_info['scores']) / len(attempts_info['scores']) if attempts_info['scores'] else 0
+    attempts_left = attempts_info['max_attempts'] - attempts_info['attempts']
+    
+    questions = quiz_data[topic]['questions']
+    return render_template('quiz.html', 
+                         topic=topic,
+                         item_id=None,  # This indicates it's a topic-level quiz
+                         questions=questions,
+                         attempts=attempts_info['attempts'],
+                         avg_score=round(avg_score, 2),
+                         attempts_left=attempts_left)
+
+@app.route('/quiz/<topic>/<item_id>')
+def show_quiz(topic, item_id):
+    if topic not in quiz_data:
+        flash('Quiz not available for this topic', 'error')
+        return redirect(url_for('learning_recommendations', topic=topic))
+    
+    # Initialize attempts tracking if not exists
+    if topic not in quiz_attempts:
+        quiz_attempts[topic] = {
+            'attempts': 0,
+            'scores': [],
+            'max_attempts': 3
+        }
+    
+    attempts_info = quiz_attempts[topic]
+    if attempts_info['attempts'] >= attempts_info['max_attempts']:
+        flash('You have reached the maximum number of attempts for this quiz.', 'error')
+        return redirect(url_for('learning_recommendations', topic=topic))
+    
+    questions = quiz_data[topic]['questions']
+    avg_score = sum(attempts_info['scores']) / len(attempts_info['scores']) if attempts_info['scores'] else 0
+    attempts_left = attempts_info['max_attempts'] - attempts_info['attempts']
+    
+    return render_template('quiz.html', 
+                         topic=topic,
+                         item_id=item_id,
+                         questions=questions,
+                         attempts=attempts_info['attempts'],
+                         avg_score=round(avg_score, 2),
+                         attempts_left=attempts_left)
+
+@app.route('/submit-topic-quiz/<topic>', methods=['POST'])
+def submit_topic_quiz(topic):
+    if topic not in quiz_data:
+        return jsonify({'status': 'error', 'message': 'Quiz not found'}), 404
+    
+    # Check if maximum attempts reached
+    if quiz_attempts[topic]['attempts'] >= quiz_attempts[topic]['max_attempts']:
+        flash('You have reached the maximum number of attempts for this quiz.', 'error')
+        return redirect(url_for('learning_recommendations', topic=topic))
+    
+    questions = quiz_data[topic]['questions']
+    correct_count = 0
+    
+    # Grade the quiz
+    for i in range(len(questions)):
+        user_answer = request.form.get(f'q{i+1}')
+        if user_answer and int(user_answer) == questions[i]['correct']:
+            correct_count += 1
+    
+    # Calculate score as percentage
+    score = (correct_count / len(questions)) * 100
+    
+    # Update attempts tracking
+    quiz_attempts[topic]['attempts'] += 1
+    quiz_attempts[topic]['scores'].append(score)
+    
+    # Check if passed
+    passed = correct_count >= quiz_data[topic]['passing_score']
+    
+    if passed:
+        # Update topic completion status
+        for course in topic_details.values():
+            for week_topic in course['topics']:
+                if week_topic['title'] == topic:
+                    week_topic['status'] = 'Completed'
+                    week_topic['progress'] = 100
+                    break
+        
+        flash(f'Congratulations! You passed the quiz with {correct_count} correct answers. Topic marked as completed!', 'success')
+    else:
+        attempts_left = quiz_attempts[topic]['max_attempts'] - quiz_attempts[topic]['attempts']
+        flash(f'You got {correct_count} answers correct. You need {quiz_data[topic]["passing_score"]} to pass. You have {attempts_left} attempts left!', 'error')
+    
+    return redirect(url_for('learning_recommendations', topic=topic))
+
+@app.route('/submit-quiz/<topic>/<item_id>', methods=['POST'])
+def submit_quiz(topic, item_id):
+    if topic not in quiz_data:
+        return jsonify({'status': 'error', 'message': 'Quiz not found'}), 404
+    
+    # Check if maximum attempts reached
+    if quiz_attempts[topic]['attempts'] >= quiz_attempts[topic]['max_attempts']:
+        flash('You have reached the maximum number of attempts for this quiz.', 'error')
+        return redirect(url_for('learning_recommendations', topic=topic))
+    
+    questions = quiz_data[topic]['questions']
+    correct_count = 0
+    
+    # Grade the quiz
+    for i in range(len(questions)):
+        user_answer = request.form.get(f'q{i+1}')
+        if user_answer and int(user_answer) == questions[i]['correct']:
+            correct_count += 1
+    
+    # Calculate score as percentage
+    score = (correct_count / len(questions)) * 100
+    
+    # Update attempts tracking
+    quiz_attempts[topic]['attempts'] += 1
+    quiz_attempts[topic]['scores'].append(score)
+    
+    # Check if passed
+    passed = correct_count >= quiz_data[topic]['passing_score']
+    
+    if passed:
+        # Find and update the item's credits status
+        for section in recommendations_data[topic].values():
+            for item in section:
+                if item['id'] == item_id:
+                    item['credits_unlocked'] = True
+        
+        flash(f'Congratulations! You passed the quiz with {correct_count} correct answers. Learning credits have been unlocked!', 'success')
+    else:
+        attempts_left = quiz_attempts[topic]['max_attempts'] - quiz_attempts[topic]['attempts']
+        flash(f'You got {correct_count} answers correct. You need {quiz_data[topic]["passing_score"]} to pass. You have {attempts_left} attempts left!', 'error')
+    
+    return redirect(url_for('learning_recommendations', topic=topic))
+
 
 @app.route('/add-learning-material/<topic>', methods=['POST'])
 def add_learning_material(topic):
@@ -485,13 +481,17 @@ def add_learning_material(topic):
     title = request.form.get('title')
     description = request.form.get('description')
     
-    material_id = f"{len(user_materials[topic])}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    if not all([material_type, title]):
+        flash('Title and material type are required', 'error')
+        return redirect(url_for('learning_recommendations', topic=topic))
     
+    material_id = f"user_material_{len(user_materials[topic])}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
     material = {
         'id': material_id,
-        'type': material_type,
         'title': title,
-        'description': description
+        'description': description,
+        'type': material_type,
+        'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
     
     if material_type == 'document':
@@ -514,7 +514,7 @@ def add_learning_material(topic):
     else:
         url = request.form.get('url')
         if not url:
-            flash('URL is required for video and article materials', 'error')
+            flash('URL is required for video/article materials', 'error')
             return redirect(url_for('learning_recommendations', topic=topic))
         material['url'] = url
     
@@ -527,11 +527,19 @@ def download_material(material_id):
     for materials in user_materials.values():
         for material in materials:
             if material['id'] == material_id and material['type'] == 'document':
-                return send_file(
-                    os.path.join(app.config['UPLOAD_FOLDER'], material['filename']),
-                    as_attachment=True
-                )
-    return 'Material not found', 404
+                try:
+                    return send_from_directory(
+                        app.config['UPLOAD_FOLDER'],
+                        material['filename'],
+                        as_attachment=True
+                    )
+                except Exception as e:
+                    app.logger.error(f"Error downloading material: {str(e)}")
+                    flash('Error downloading material', 'error')
+                    return redirect(request.referrer)
+    
+    flash('Material not found', 'error')
+    return redirect(request.referrer)
 
 @app.route('/get-notes/<resource_id>')
 def get_notes(resource_id):
@@ -565,9 +573,8 @@ def add_note(topic, resource_id):
         flash('Note content is required', 'error')
         return redirect(url_for('learning_recommendations', topic=topic))
     
-    # For now, using a mock user_id (1) until authentication is implemented
     note = UserNote(
-        user_id=1,
+        user_id=1,  # Mock user_id until authentication is implemented
         resource_id=resource_id,
         resource_type=resource_type,
         note_content=note_content
@@ -601,33 +608,9 @@ def update_note(note_id):
         app.logger.error(f"Error updating note: {str(e)}")
         return jsonify({'status': 'error', 'message': 'Error updating note'}), 500
 
-@app.route('/generate-summary/<note_id>', methods=['POST'])
-@app.route('/mark-resource-completed/<topic>/<resource_id>', methods=['POST'])
-def mark_resource_completed(topic, resource_id):
-    app.logger.debug(f"Marking resource completed: {topic}/{resource_id}")
-    
-    # Find and update the resource completion status
-    resource_found = False
-    if topic in recommendations_data:
-        for section in recommendations_data[topic].values():
-            for resource in section:
-                if resource['id'] == resource_id:
-                    resource['completed'] = True
-                    resource_found = True
-                    flash('Resource has been marked as completed!', 'success')
-                    return jsonify({
-                        'status': 'success',
-                        'message': 'Resource marked as completed'
-                    })
-    
-    if not resource_found:
-        flash('Resource not found', 'error')
-        return jsonify({
-            'status': 'error',
-            'message': 'Resource not found'
-        }), 404
-def generate_summary(note_id):
-    note = UserNote.query.get_or_404(note_id)
+@app.route('/generate-summary/<resource_id>', methods=['POST'])
+def generate_summary(resource_id):
+    note = UserNote.query.get_or_404(resource_id)
     
     try:
         # Mock summary generation for now
@@ -644,7 +627,10 @@ def generate_summary(note_id):
     except Exception as e:
         db.session.rollback()
         app.logger.error(f"Error generating summary: {str(e)}")
-        return jsonify({'status': 'error', 'message': 'Error generating summary'}), 500
+        return jsonify({
+            'status': 'error',
+            'message': 'Error generating summary'
+        }), 500
 
 @app.route('/delete-material/<material_id>', methods=['POST'])
 def delete_material(material_id):
