@@ -485,14 +485,19 @@ def submit_quiz(topic, item_id):
 
 @app.route('/')
 def index():
-    if 'user_id' in session:
-        return redirect(url_for('user_loggedin_page'))
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
     return render_template('index.html')
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('dashboard.html', user=current_user)
 
 @app.route('/user_loggedin_page')
 @login_required
 def user_loggedin_page():
-    return render_template('user_loggedin_page.html', user=current_user)
+    return redirect(url_for('dashboard'))
 
 @app.route('/mails')
 def mails():
@@ -523,6 +528,9 @@ def how_it_works():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+        
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -543,9 +551,10 @@ def login():
         if user and check_password_hash(user.password_hash, password):
             login_user(user, remember=remember)
             flash('Successfully logged in!', 'success')
-            return redirect(url_for('user_loggedin_page'))
+            next_page = request.args.get('next')
+            return redirect(next_page if next_page else url_for('dashboard'))
         else:
-            flash('Invalid email or password.', 'error')
+            flash('Invalid email or password. Default credentials are demo@example.com / password', 'error')
         
     return render_template('login.html')
 
