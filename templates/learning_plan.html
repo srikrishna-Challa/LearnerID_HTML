@@ -36,67 +36,59 @@
             </div>
         </div>
 
-        <!-- Learning Week Cards -->
+        <!-- Learning Topics -->
         <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {% for week in learning_weeks %}
+            {% for topic in learning_topics %}
             <div class="bg-surface rounded-2xl p-6 border border-white/10">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h3 class="text-xl font-semibold text-white mb-1">Week {{ week.week }}</h3>
-                        <p class="text-sm text-white/70">{{ week.start_date }} - {{ week.end_date }}</p>
-                    </div>
-                    <span class="px-3 py-1 bg-primary/20 rounded-full text-primary text-sm">{{ week.status }}</span>
+                <div class="mb-4">
+                    <h3 class="text-xl font-semibold text-white mb-2">{{ topic.title }}</h3>
+                    <p class="text-white/70">{{ topic.description }}</p>
                 </div>
                 
-                <h4 class="text-lg font-medium text-white mb-2">{{ week.title }}</h4>
-                <p class="text-white/70 mb-4">{{ week.description }}</p>
-                
-                <!-- Progress Bar -->
-                <div class="mb-4">
-                    <div class="flex justify-between text-sm mb-1">
-                        <span class="text-white/70">Progress</span>
-                        <span class="text-white">{{ week.progress }}%</span>
-                    </div>
-                    <div class="w-full bg-white/5 rounded-full h-2">
-                        <div class="bg-primary h-2 rounded-full transition-all duration-300" 
-                             style="width: {{ week.progress }}%"></div>
-                    </div>
+                <!-- Time Required -->
+                <div class="flex items-center text-sm text-white/70 mb-4">
+                    <i class="fas fa-clock mr-2"></i>
+                    <span>{{ topic.time_required }} hours required</span>
                 </div>
                 
                 <!-- Learning Objectives -->
-                <div class="space-y-2 mb-4">
+                <div class="space-y-2">
                     <h5 class="text-sm font-medium text-white">Learning Objectives:</h5>
                     <ul class="list-disc list-inside space-y-1 text-sm text-white/70">
-                        {% for objective in week.objectives %}
+                        {% for objective in topic.objectives %}
                         <li>{{ objective }}</li>
                         {% endfor %}
                     </ul>
                 </div>
                 
-                <!-- Resources -->
-                <div class="border-t border-white/10 pt-4">
-                    <div class="flex justify-between items-center">
-                        <h5 class="text-sm font-medium text-white">Resources:</h5>
-                        <span class="text-xs text-white/50">{{ week.resource_count }} items</span>
-                    </div>
-                    <div class="mt-2 space-y-2">
-                        {% for resource in week.resources %}
-                        <a href="{{ resource.url }}" 
-                           class="flex items-center p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                            <i class="fas {{ resource.icon }} text-primary mr-2"></i>
-                            <span class="text-sm text-white">{{ resource.title }}</span>
-                        </a>
-                        {% endfor %}
-                    </div>
-                </div>
-                
-                <a href="{{ url_for('my_learning_details', topic=week.title) }}" 
-                   class="block mt-4 text-center px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
-                    View Details
-                </a>
+                <button onclick="addToLearningGoals('{{ topic.title }}')"
+                        class="w-full mt-4 px-4 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
+                    Add to Learning Goals
+                </button>
             </div>
             {% endfor %}
         </div>
+
+        <script>
+        function addToLearningGoals(topicTitle) {
+            fetch('/add-to-learning-goals', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    topic: topicTitle
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = "{{ url_for('learning_history') }}";
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        </script>
     </main>
 </div>
 
