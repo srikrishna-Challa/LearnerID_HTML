@@ -80,8 +80,8 @@
                 <h2 class="text-2xl font-bold text-white mb-6">Create Your Learning Journey</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- AI-Powered Plan Creation -->
-                    <div class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors group cursor-pointer">
-                        <a href="{{ url_for('learning_plan') }}" class="block">
+                    <div onclick="openModal()" class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors group cursor-pointer">
+                        <div class="block">
                             <div class="flex items-start space-x-4 mb-4">
                                 <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
                                     <i class="fas fa-robot text-2xl text-primary"></i>
@@ -95,7 +95,7 @@
                                 <span class="text-sm font-medium">Get Started</span>
                                 <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
                             </div>
-                        </a>
+                        </div>
                     </div>
 
                     <!-- Custom Plan Creation -->
@@ -178,6 +178,61 @@
         </div>
     </main>
 </div>
+<!-- AI Learning Plan Modal -->
+<div id="aiLearningModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="bg-surface rounded-2xl p-8 max-w-2xl w-full mx-4 relative">
+        <!-- Close Button -->
+        <button onclick="closeModal()" class="absolute top-4 right-4 text-white/70 hover:text-white">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+        
+        <!-- Modal Content -->
+        <h2 class="text-2xl font-bold text-white mb-6">Create Your AI-Powered Learning Plan</h2>
+        
+        <!-- Search Section -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-white/70 mb-2">What would you like to learn?</label>
+            <div class="relative">
+                <input type="text" 
+                       id="learningSearch"
+                       placeholder="e.g., Python Programming, Data Science, Web Development..." 
+                       class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary">
+                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Additional Options -->
+        <div class="space-y-4 mb-6">
+            <h3 class="text-lg font-medium text-white">Customize Your Plan</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white/5 p-4 rounded-xl">
+                    <label class="block text-sm font-medium text-white/70 mb-2">Experience Level</label>
+                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+                <div class="bg-white/5 p-4 rounded-xl">
+                    <label class="block text-sm font-medium text-white/70 mb-2">Time Commitment</label>
+                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                        <option value="1-2">1-2 hours/week</option>
+                        <option value="3-5">3-5 hours/week</option>
+                        <option value="5+">5+ hours/week</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        <button onclick="generateLearningPlan()" 
+                class="w-full bg-primary hover:bg-primary/90 text-white rounded-xl py-3 font-medium transition-colors">
+            Generate Learning Plan
+        </button>
+    </div>
+</div>
 
 <!-- Mobile Nav Toggle -->
 <button type="button" 
@@ -191,5 +246,41 @@ function toggleSidebar() {
     const sidebar = document.querySelector('aside');
     sidebar.classList.toggle('-translate-x-full');
 }
+
+function openModal() {
+    const modal = document.getElementById('aiLearningModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    const modal = document.getElementById('aiLearningModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = 'auto';
+}
+
+function generateLearningPlan() {
+    // Get values from form
+    const searchQuery = document.getElementById('learningSearch').value;
+    if (!searchQuery) {
+        alert('Please enter what you would like to learn');
+        return;
+    }
+    
+    // Submit to learning plan route
+    window.location.href = `/learning-plan?query=${encodeURIComponent(searchQuery)}`;
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('aiLearningModal');
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+});
 </script>
 {% endblock %}
