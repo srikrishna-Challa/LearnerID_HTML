@@ -391,8 +391,13 @@ function toggleQuizSection() {
         return;
     }
     
-    content.classList.toggle('hidden');
-    icon.classList.toggle('rotate-180');
+    if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        icon.classList.add('rotate-180');
+    } else {
+        content.classList.add('hidden');
+        icon.classList.remove('rotate-180');
+    }
 }
 
 function toggleAddMaterialForm() {
@@ -430,6 +435,7 @@ function toggleMaterialInput(type) {
 
 function handleTopicCompletion(topic) {
     console.log('Marking topic as completed:', topic);
+    const button = document.querySelector(`[onclick="handleTopicCompletion('${topic}')"]`);
     
     fetch(`/mark-topic-completed/${encodeURIComponent(topic)}`, {
         method: 'POST',
@@ -441,6 +447,14 @@ function handleTopicCompletion(topic) {
     .then(data => {
         if (data.status === 'success') {
             showFlashMessage('Topic marked as completed successfully!', 'success');
+            
+            // Update button appearance immediately
+            if (button) {
+                button.innerHTML = '<i class="fas fa-check mr-2"></i>Topic Completed';
+                button.classList.remove('bg-white/5', 'text-white/70');
+                button.classList.add('bg-green-500/20', 'text-green-500');
+            }
+            
             setTimeout(() => location.reload(), 1000);
         } else {
             showFlashMessage(data.message || 'Error marking topic as completed', 'error');
@@ -454,6 +468,7 @@ function handleTopicCompletion(topic) {
 
 function handleResourceCompletion(topic, resourceId) {
     console.log('Marking resource as completed:', resourceId, 'for topic:', topic);
+    const button = document.querySelector(`[onclick="handleResourceCompletion('${topic}', '${resourceId}')"]`);
     
     fetch(`/mark-resource-completed/${encodeURIComponent(topic)}/${resourceId}`, {
         method: 'POST',
@@ -465,6 +480,14 @@ function handleResourceCompletion(topic, resourceId) {
     .then(data => {
         if (data.status === 'success') {
             showFlashMessage('Resource marked as completed successfully!', 'success');
+            
+            // Update button appearance immediately
+            if (button) {
+                button.innerHTML = '<i class="fas fa-check mr-2"></i>Completed';
+                button.classList.remove('bg-white/5', 'text-white/70');
+                button.classList.add('bg-green-500/20', 'text-green-500');
+            }
+            
             setTimeout(() => location.reload(), 1000);
         } else {
             showFlashMessage(data.message || 'Error marking resource as completed', 'error');
