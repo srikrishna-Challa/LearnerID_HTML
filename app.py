@@ -660,6 +660,38 @@ def delete_material(material_id):
                 return redirect(url_for('learning_recommendations', topic=topic))
     
     flash('Material not found', 'error')
+@app.route('/inbox')
+def inbox():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    # Mock email data for demonstration
+    emails = [
+        {
+            'subject': 'Welcome to LearnerID!',
+            'sender': 'support@learnerid.com',
+            'preview': 'Welcome to your personalized learning journey. Get started by exploring our courses...',
+            'date': '2024-12-11',
+            'unread': True
+        },
+        {
+            'subject': 'Course Recommendation: Advanced Python',
+            'sender': 'recommendations@learnerid.com',
+            'preview': 'Based on your learning progress, we think you might enjoy our Advanced Python course...',
+            'date': '2024-12-10',
+            'unread': False
+        },
+        {
+            'subject': 'Learning Milestone Achieved!',
+            'sender': 'achievements@learnerid.com',
+            'preview': "Congratulations! You've completed your first course milestone...",
+            'date': '2024-12-09',
+            'unread': False
+        }
+    ]
+
+    return render_template('inbox.html', emails=emails)
+
     return redirect(request.referrer)
 
 @app.route('/mark-resource-completed/<topic>/<resource_id>', methods=['POST'])
