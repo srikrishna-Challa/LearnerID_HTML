@@ -839,9 +839,23 @@ def create_learning_journal():
         )
         
         try:
+            # Add to learning journal
             db.session.add(entry)
+            
+            # Add to learning history
+            if category not in topic_details:
+                topic_details[category] = {
+                    'topics': [{
+                        'title': title,
+                        'week': 1,
+                        'status': 'Completed',
+                        'progress': 100
+                    }]
+                }
+            
             db.session.commit()
-            flash('Journal entry added successfully!', 'success')
+            flash('Journal entry has been added successfully! You can view it in your Learning History.', 'success')
+            
         except Exception as e:
             db.session.rollback()
             app.logger.error(f"Error adding journal entry: {str(e)}")
