@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-
 <button class="fixed top-4 left-4 md:hidden text-white text-2xl bg-transparent border-none cursor-pointer">
     <i class="fas fa-bars"></i>
 </button>
@@ -36,12 +34,12 @@
     </ul>
 </nav>
 
-<main class="md:ml-64 min-h-screen bg-background p-8 dark:bg-background dark:text-white">
+<main class="min-h-screen bg-background p-8 dark:bg-background dark:text-white">
     <section class="max-w-4xl mx-auto text-center pt-16">
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-12">Choose Your Learning Journey</h1>
         
         <div class="mt-8">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
                 <!-- Personal Learning Journal -->
                 <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-6 transition-colors">
                     <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-4">
@@ -82,6 +80,160 @@
                 </div>
             </div>
         </div>
+
+        <!-- Structured Learning Paths -->
+        <div id="learning-paths" class="bg-surface p-6 rounded-2xl border border-white/10 mt-12">
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold text-white">Explore Learning Paths</h2>
+                <p class="text-white/70 text-sm mt-1">Click on a category to discover learning paths</p>
+            </div>
+            <!-- Categories Container -->
+            <div class="relative overflow-hidden" style="min-height: 400px;">
+                <!-- Main Categories -->
+                <div id="mainCategories" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Technology & Programming -->
+                    <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group" 
+                         onclick="showSubcategories('tech')">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-laptop-code text-primary text-xl"></i>
+                                <div>
+                                    <h3 class="text-white font-medium">Technology & Programming</h3>
+                                    <p class="text-white/70 text-sm mt-2">Web development, mobile apps, software engineering</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right text-primary transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+
+                    <!-- Data Science & Analytics -->
+                    <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group"
+                         onclick="showSubcategories('data')">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-chart-line text-primary text-xl"></i>
+                                <div>
+                                    <h3 class="text-white font-medium">Data Science & Analytics</h3>
+                                    <p class="text-white/70 text-sm mt-2">Data analysis, machine learning, statistics</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right text-primary transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+
+                    <!-- Business & Management -->
+                    <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group"
+                         onclick="showSubcategories('business')">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-briefcase text-primary text-xl"></i>
+                                <div>
+                                    <h3 class="text-white font-medium">Business & Management</h3>
+                                    <p class="text-white/70 text-sm mt-2">Project management, leadership, entrepreneurship</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right text-primary transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technology Subcategories Panel -->
+                <div id="techSubcategories" class="absolute inset-0 transform translate-x-full opacity-0 transition-all duration-300">
+                    <div class="bg-surface h-full">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <button onclick="hideSubcategories('tech')" class="text-white hover:text-primary transition-colors">
+                                <i class="fas fa-arrow-left text-xl"></i>
+                            </button>
+                            <div>
+                                <h3 class="text-xl font-semibold text-white">Technology & Programming</h3>
+                                <p class="text-white/70 text-sm">Select your learning path</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 gap-4">
+                            <a href="{{ url_for('learning_plan') }}?path=web-development" 
+                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Web Development</h4>
+                                <p class="text-white/70 text-sm">Master front-end and back-end development</p>
+                            </a>
+                            <a href="{{ url_for('learning_plan') }}?path=mobile-development" 
+                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Mobile Development</h4>
+                                <p class="text-white/70 text-sm">Build iOS and Android applications</p>
+                            </a>
+                            <a href="{{ url_for('learning_plan') }}?path=cloud-computing" 
+                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Cloud Computing</h4>
+                                <p class="text-white/70 text-sm">Learn AWS, Azure, and Google Cloud</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Science Subcategories Panel -->
+                <div id="dataSubcategories" class="absolute inset-0 transform translate-x-full opacity-0 transition-all duration-300">
+                    <div class="bg-surface h-full">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <button onclick="hideSubcategories('data')" class="text-white hover:text-primary transition-colors">
+                                <i class="fas fa-arrow-left text-xl"></i>
+                            </button>
+                            <div>
+                                <h3 class="text-xl font-semibold text-white">Data Science & Analytics</h3>
+                                <p class="text-white/70 text-sm">Select your learning path</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 gap-4">
+                            <a href="{{ url_for('learning_plan') }}?path=machine-learning" 
+                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Machine Learning</h4>
+                                <p class="text-white/70 text-sm">Build intelligent systems and models</p>
+                            </a>
+                            <a href="{{ url_for('learning_plan') }}?path=data-analysis" 
+                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Data Analysis</h4>
+                                <p class="text-white/70 text-sm">Master data processing and visualization</p>
+                            </a>
+                            <a href="{{ url_for('learning_plan') }}?path=big-data" 
+                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Big Data</h4>
+                                <p class="text-white/70 text-sm">Handle and analyze large-scale datasets</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Subcategories Panel -->
+                <div id="businessSubcategories" class="absolute inset-0 transform translate-x-full opacity-0 transition-all duration-300">
+                    <div class="bg-surface h-full">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <button onclick="hideSubcategories('business')" class="text-white hover:text-primary transition-colors">
+                                <i class="fas fa-arrow-left text-xl"></i>
+                            </button>
+                            <div>
+                                <h3 class="text-xl font-semibold text-white">Business & Management</h3>
+                                <p class="text-white/70 text-sm">Select your learning path</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 gap-4">
+                            <a href="{{ url_for('learning_plan') }}?path=project-management" 
+                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Project Management</h4>
+                                <p class="text-white/70 text-sm">Learn to lead and deliver successful projects</p>
+                            </a>
+                            <a href="{{ url_for('learning_plan') }}?path=leadership" 
+                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Leadership</h4>
+                                <p class="text-white/70 text-sm">Develop essential leadership skills</p>
+                            </a>
+                            <a href="{{ url_for('learning_plan') }}?path=entrepreneurship" 
+                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Entrepreneurship</h4>
+                                <p class="text-white/70 text-sm">Start and grow your own business</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <footer class="mt-auto pt-12 pb-8">
@@ -96,433 +248,129 @@
     </footer>
 </main>
 
-<!-- AI Learning Plan Modal -->
-<div id="aiLearningModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
-    <div class="bg-surface rounded-2xl p-8 max-w-2xl w-full mx-4 relative">
-        <!-- Close Button -->
-        <button onclick="closeModal()" class="absolute top-4 right-4 text-white/70 hover:text-white">
-            <i class="fas fa-times"></i>
-        </button>
-        
-        <!-- Modal Content -->
-        <h2 class="text-2xl font-bold text-white mb-6">Create Your AI-Powered Learning Plan</h2>
-        
-        <!-- Search Section -->
-        <div class="mb-6">
-            <label class="block text-sm font-medium text-white/70 mb-2">What would you like to learn?</label>
-            <div class="relative">
-                <input type="text" 
-                       id="learningSearch"
-                       placeholder="e.g., Python Programming, Data Science, Web Development..." 
-                       class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary">
-                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Additional Options -->
-        <div class="space-y-4 mb-6">
-            <h3 class="text-lg font-medium text-white">Customize Your Plan</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white/5 p-4 rounded-xl">
-                    <label class="block text-sm font-medium text-white/70 mb-2">Experience Level</label>
-                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
-                        <option value="beginner">Beginner</option>
-                        <option value="intermediate">Intermediate</option>
-                        <option value="advanced">Advanced</option>
-                    </select>
-                </div>
-                <div class="bg-white/5 p-4 rounded-xl">
-                    <label class="block text-sm font-medium text-white/70 mb-2">Time Commitment</label>
-                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
-                        <option value="1-2">1-2 hours/week</option>
-                        <option value="3-5">3-5 hours/week</option>
-                        <option value="5+">5+ hours/week</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <!-- Action Button -->
-        <button onclick="generateLearningPlan()" 
-                class="w-full bg-primary hover:bg-primary/90 text-white rounded-xl py-3 font-medium transition-colors">
-            Generate Learning Plan
-        </button>
-    </div>
-</div>
-
-<!-- Multi-step Questionnaire Modal -->
-<div class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center" id="learningLevelModal">
-    <div class="w-full max-w-2xl mx-4 bg-surface p-8 rounded-2xl relative">
-        <!-- Close button -->
-        <button class="absolute top-4 right-4 text-white/70 hover:text-white">
-            <i class="fas fa-times"></i>
-        </button>
-        <div class="flex items-center justify-between mb-8 relative">
-            <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center" data-step="1">1</div>
-            <div class="absolute h-0.5 bg-white/20 left-0 right-0 top-1/2 -translate-y-1/2 z-0"></div>
-            <div class="w-8 h-8 rounded-full bg-white/10 text-white/70 flex items-center justify-center relative z-10" data-step="2">2</div>
-            <div class="w-8 h-8 rounded-full bg-white/10 text-white/70 flex items-center justify-center relative z-10" data-step="3">3</div>
-            <div class="w-8 h-8 rounded-full bg-white/10 text-white/70 flex items-center justify-center relative z-10" data-step="4">4</div>
-            <div class="w-8 h-8 rounded-full bg-white/10 text-white/70 flex items-center justify-center relative z-10" data-step="5">5</div>
-            <div class="w-8 h-8 rounded-full bg-white/10 text-white/70 flex items-center justify-center relative z-10" data-step="6">6</div>
-            <div class="w-8 h-8 rounded-full bg-white/10 text-white/70 flex items-center justify-center relative z-10" data-step="7">7</div>
-        </div>
-        
-        <!-- Step 1: Learning Level -->
-        <div class="question-slide" data-step="1">
-            <h2 class="text-2xl font-bold text-white mb-4">Select Your Learning Level</h2>
-            <p class="text-white/70 mb-8">Choose the level that best matches your current knowledge and experience</p>
-            <div class="space-y-4">
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="level" value="beginner" checked class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Beginner</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="level" value="intermediate" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Intermediate</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="level" value="advanced" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Advanced</span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Step 2: Learning Goals -->
-        <div class="question-slide" data-step="2" style="display: none;">
-            <h2 class="text-2xl font-bold text-white mb-4">What Are Your Learning Goals?</h2>
-            <p class="text-white/70 mb-8">Select the primary goal for your learning journey</p>
-            <div class="space-y-4">
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="goal" value="new_skill" checked class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Develop a new skill</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="goal" value="career" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Advance in my career</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="goal" value="certification" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Prepare for a certification or exam</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="goal" value="job_role" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Start a new job role</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="goal" value="portfolio" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Build a project or portfolio</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="goal" value="personal" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Learn out of personal interest</span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Step 3: Learning Style -->
-        <div class="question-slide" data-step="3" style="display: none;">
-            <h2 class="text-2xl font-bold text-white mb-4">How Do You Prefer to Learn?</h2>
-            <p class="text-white/70 mb-8">Choose your preferred learning style</p>
-            <div class="space-y-4">
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="style" value="video" checked class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Video Tutorials</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="style" value="reading" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Reading Articles and Books</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="style" value="interactive" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Interactive Exercises or Coding Challenges</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="style" value="instructor" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Instructor-led Courses</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="style" value="projects" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Hands-on Projects</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="style" value="group" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Group Learning or Discussions</span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Step 4: Time Commitment -->
-        <div class="question-slide" data-step="4" style="display: none;">
-            <h2 class="text-2xl font-bold text-white mb-4">How Much Time Can You Commit?</h2>
-            <p class="text-white/70 mb-8">Select your weekly time commitment for learning</p>
-            <div class="space-y-4">
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="timeCommitment" value="less_than_2" checked class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Less than 2 hours</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="timeCommitment" value="2_to_5" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">2–5 hours</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="timeCommitment" value="5_to_10" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">5–10 hours</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="timeCommitment" value="more_than_10" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">More than 10 hours</span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Step 5: Target Outcome -->
-        <div class="question-slide" data-step="5" style="display: none;">
-            <h2 class="text-2xl font-bold text-white mb-4">What's Your Target Outcome?</h2>
-            <p class="text-white/70 mb-8">Choose your primary learning objective</p>
-            <div class="space-y-4">
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="targetOutcome" value="basics" checked class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Master the basics of a subject</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="targetOutcome" value="expertise" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Gain in-depth expertise in a particular area</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="targetOutcome" value="interviews" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Prepare for interviews</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="targetOutcome" value="project" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Launch or enhance a project/startup</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="targetOutcome" value="certificate" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Earn a certificate or degree</span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Step 6: Content Language -->
-        <div class="question-slide" data-step="6" style="display: none;">
-            <h2 class="text-2xl font-bold text-white mb-4">Preferred Content Language</h2>
-            <p class="text-white/70 mb-8">Select your preferred language for learning materials</p>
-            <div class="space-y-4">
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="contentLanguage" value="english" checked class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">English</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="contentLanguage" value="spanish" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Spanish</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="contentLanguage" value="french" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">French</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="contentLanguage" value="mandarin" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Mandarin</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="contentLanguage" value="other" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Other</span>
-                </label>
-            </div>
-            <div id="otherLanguageInput" style="display: none;" class="mt-4">
-                <input type="text" 
-                       class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                       placeholder="Please specify your preferred language">
-            </div>
-        </div>
-
-        <!-- Step 7: Budget -->
-        <div class="question-slide" data-step="7" style="display: none;">
-            <h2 class="text-2xl font-bold text-white mb-4">What's Your Learning Budget?</h2>
-            <p class="text-white/70 mb-8">Select your preferred budget range for learning resources</p>
-            <div class="space-y-4">
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="budget" value="free" checked class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Free only</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="budget" value="up_to_50" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Up to $50</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="budget" value="up_to_200" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">Up to $200</span>
-                </label>
-                <label class="flex items-center p-4 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors group">
-                    <input type="radio" name="budget" value="no_limit" class="hidden">
-                    <div class="w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-primary mr-3 flex items-center justify-center">
-                        <div class="w-3 h-3 rounded-full bg-primary hidden group-hover:block"></div>
-                    </div>
-                    <span class="text-white group-hover:text-primary">No limit, as long as the content is high-quality</span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Navigation Buttons -->
-        <div class="flex justify-end gap-4 mt-8">
-            <button type="button" 
-                    id="prevButton" 
-                    class="px-6 py-2 border border-white/10 rounded-xl bg-white/5 hover:bg-white/10 text-white transition-colors"
-                    style="display: none;">
-                Previous
-            </button>
-            <button type="button" 
-                    id="nextButton" 
-                    class="px-6 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
-                Next
-            </button>
-        </div>
-    </div>
-</div>
 <script>
+// Function to show subcategories
+function showSubcategories(category) {
+    const mainCategoriesEl = document.getElementById('mainCategories');
+    const subCategoriesEl = document.getElementById(`${category}Subcategories`);
+    
+    if (mainCategoriesEl && subCategoriesEl) {
+        mainCategoriesEl.style.transform = 'translateX(-100%)';
+        subCategoriesEl.style.transform = 'translateX(0)';
+        subCategoriesEl.style.opacity = '1';
+    }
+}
+
+// Function to hide subcategories
+function hideSubcategories(category) {
+    const mainCategoriesEl = document.getElementById('mainCategories');
+    const subCategoriesEl = document.getElementById(`${category}Subcategories`);
+    
+    if (mainCategoriesEl && subCategoriesEl) {
+        mainCategoriesEl.style.transform = 'translateX(0)';
+        subCategoriesEl.style.transform = 'translateX(100%)';
+        subCategoriesEl.style.opacity = '0';
+    }
+}
+
+// Mobile menu toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const menuButton = document.querySelector('button.fixed.top-4.left-4');
+    const nav = document.querySelector('nav.fixed');
+    
+    if (menuButton && nav) {
+        menuButton.addEventListener('click', () => {
+            nav.classList.toggle('-translate-x-full');
+        });
+    }
+});
+
+// Modal functions
 function openModal() {
     const modal = document.getElementById('aiLearningModal');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    document.body.style.overflow = 'hidden';
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
 }
 
 function closeModal() {
     const modal = document.getElementById('aiLearningModal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    document.body.style.overflow = 'auto';
-}
-
-function generateLearningPlan() {
-    // Get values from form
-    const searchQuery = document.getElementById('learningSearch').value;
-    if (!searchQuery) {
-        alert('Please enter what you would like to learn');
-        return;
+    if (modal) {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
     }
-    
-    // Get all select values
-    const selects = document.querySelectorAll('#aiLearningModal select');
-    const params = new URLSearchParams();
-    params.append('query', searchQuery);
-    
-    selects.forEach(select => {
-        const label = select.previousElementSibling.textContent.toLowerCase().replace(/\s+/g, '_');
-        params.append(label, select.value);
-    });
-    
-    // Submit to learning plan route with all parameters
-    window.location.href = `/learning-plan?${params.toString()}`;
 }
 
-// Close modal when clicking outside
+function showQuestionnaire() {
+    const modal = document.getElementById('learningLevelModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+}
+
+function nextStep(){
+    const currentSlide = document.querySelector('.question-slide:not([style*="display: none;"])')
+    const nextSlide = currentSlide.nextElementSibling;
+    if(nextSlide){
+        currentSlide.style.display = "none";
+        nextSlide.style.display = "block";
+    }
+    updateStepIndicator();
+    updateNavigationButtons();
+}
+
+function prevStep(){
+    const currentSlide = document.querySelector('.question-slide:not([style*="display: none;"])')
+    const prevSlide = currentSlide.previousElementSibling;
+    if(prevSlide){
+        currentSlide.style.display = "none";
+        prevSlide.style.display = "block";
+    }
+    updateStepIndicator();
+    updateNavigationButtons();
+}
+
+function updateStepIndicator(){
+    const currentSlide = document.querySelector('.question-slide:not([style*="display: none;"])')
+    const step = currentSlide.dataset.step;
+    const indicators = document.querySelectorAll('#learningLevelModal [data-step]');
+    indicators.forEach(indicator => {
+        indicator.classList.remove('bg-primary','text-white');
+        indicator.classList.add('bg-white/10','text-white/70');
+    })
+    document.querySelector(`#learningLevelModal [data-step="${step}"]`).classList.add('bg-primary','text-white');
+}
+
+function updateNavigationButtons(){
+    const currentSlide = document.querySelector('.question-slide:not([style*="display: none;"])')
+    const prevButton = document.getElementById('prevButton');
+    const nextButton = document.getElementById('nextButton');
+    const step = currentSlide.dataset.step;
+    const totalSteps = document.querySelectorAll('.question-slide').length;
+
+    prevButton.style.display = (step > 1) ? "block" : "none";
+    nextButton.textContent = (step < totalSteps) ? "Next" : "Submit";
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('aiLearningModal');
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
+    const nextButton = document.getElementById('nextButton');
+    const prevButton = document.getElementById('prevButton');
+    updateStepIndicator();
+    updateNavigationButtons();
+    nextButton.addEventListener('click', nextStep);
+    prevButton.addEventListener('click', prevStep);
+
+    const otherLanguage = document.querySelector('input[value="other"]');
+    const otherLanguageInput = document.getElementById('otherLanguageInput')
+    if(otherLanguage && otherLanguageInput){
+        otherLanguage.addEventListener('change', ()=>{
+            otherLanguageInput.style.display = otherLanguage.checked ? 'block' : 'none';
+        })
+    }
 });
+
+
 </script>
 {% endblock %}
