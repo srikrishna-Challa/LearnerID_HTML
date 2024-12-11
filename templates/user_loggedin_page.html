@@ -75,60 +75,49 @@
             
             <!-- Three Main Options -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <!-- Personal Learning Journal -->
-                <div class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors group">
-                    <a href="{{ url_for('create_learning_journal') }}" class="block">
-                        <div class="flex items-start space-x-4 mb-4">
-                            <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-                                <i class="fas fa-book-open text-2xl text-primary"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-lg font-semibold text-white mb-2">Personal Learning Journal</h3>
-                                <p class="text-white/70 text-sm leading-relaxed">Track your learning progress and reflect on your journey.</p>
-                            </div>
+                <!-- Your Learning Journal -->
+                <div class="bg-surface p-8 rounded-2xl border border-white/10 hover:bg-white/5 transition-all duration-300 hover:scale-105 group flex flex-col h-[400px]">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                            <i class="fas fa-book-open text-3xl text-primary"></i>
                         </div>
-                        <div class="flex items-center text-primary mt-4">
-                            <span class="text-sm font-medium">Start Journaling</span>
-                            <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
-                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-4">Your Learning Journal</h3>
+                        <p class="text-white/70 text-base">Document your learning journey, and reflect on your learning experiences in a personalized space.</p>
+                    </div>
+                    <a href="{{ url_for('create_learning_journal') }}" 
+                       class="mt-6 w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
+                        Start Journal <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
 
                 <!-- AI-Guided Learning -->
-                <div class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors group cursor-pointer"
-                     onclick="openModal()">
-                    <div class="flex items-start space-x-4 mb-4">
-                        <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-                            <i class="fas fa-robot text-2xl text-primary"></i>
+                <div class="bg-surface p-8 rounded-2xl border border-white/10 hover:bg-white/5 transition-all duration-300 hover:scale-105 group flex flex-col h-[400px]">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                            <i class="fas fa-robot text-3xl text-primary"></i>
                         </div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-semibold text-white mb-2">AI-Guided Learning</h3>
-                            <p class="text-white/70 text-sm leading-relaxed">Get a personalized learning plan created by AI.</p>
-                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-4">AI-Guided Learning</h3>
+                        <p class="text-white/70 text-base">Experience personalized learning paths crafted by AI based on your goals, interests, and learning style.</p>
                     </div>
-                    <div class="flex items-center text-primary mt-4">
-                        <span class="text-sm font-medium">Create Plan</span>
-                        <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
-                    </div>
+                    <button onclick="openModal()" 
+                            class="mt-6 w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
+                        Create Plan <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
                 </div>
 
-                <!-- AI Learning Assistant -->
-                <div class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors group">
-                    <button onclick="openChatModal()" class="block w-full text-left">
-                        <div class="flex items-start space-x-4 mb-4">
-                            <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-                                <i class="fas fa-comments text-2xl text-primary"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-lg font-semibold text-white mb-2">AI Learning Assistant</h3>
-                                <p class="text-white/70 text-sm leading-relaxed">Chat with AI to get instant answers about learning paths and guidance.</p>
-                            </div>
+                <!-- Explore Learning Paths -->
+                <div class="bg-surface p-8 rounded-2xl border border-white/10 hover:bg-white/5 transition-all duration-300 hover:scale-105 group flex flex-col h-[400px]">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                            <i class="fas fa-compass text-3xl text-primary"></i>
                         </div>
-                        <div class="flex items-center text-primary mt-4">
-                            <span class="text-sm font-medium">Start Chat</span>
-                            <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
-                        </div>
-                    </button>
+                        <h3 class="text-xl font-semibold text-white mb-4">Explore Learning Paths</h3>
+                        <p class="text-white/70 text-base">Discover curated learning paths in technology, business, data science, and more. Find your perfect learning journey.</p>
+                    </div>
+                    <a href="{{ url_for('learning_plan') }}" 
+                       class="mt-6 w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
+                        Browse Paths <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
                 </div>
             </div>
             
