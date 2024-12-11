@@ -38,6 +38,15 @@ class UserNote(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
 
+class LearningJournalEntry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)  # We'll link this to users once auth is implemented
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String(100))
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+
 # Create tables
 with app.app_context():
     db.create_all()
@@ -749,6 +758,45 @@ def mark_topic_completed(topic):
         }), 404
 
 @app.route('/learning-history')
+@app.route('/learning-journal', methods=['GET', 'POST'])
+def create_learning_journal():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+        
+    if request.method == 'POST':
+        title = request.form.get('title')
+        content = request.form.get('content')
+        category = request.form.get('category')
+        
+        if not title or not content:
+            flash('Title and content are required', 'error')
+            return redirect(url_for('create_learning_journal'))
+        
+        entry = LearningJournalEntry(
+            user_id=session['user_id'],
+            title=title,
+            content=content,
+            category=category
+        )
+        
+        try:
+            db.session.add(entry)
+            db.session.commit()
+            flash('Journal entry added successfully!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            app.logger.error(f"Error adding journal entry: {str(e)}")
+            flash('Error adding journal entry', 'error')
+        
+        return redirect(url_for('create_learning_journal'))
+    
+    # Get existing entries for the user, sorted by created_at (newest first)
+    entries = LearningJournalEntry.query.filter_by(
+        user_id=session['user_id']
+    ).order_by(LearningJournalEntry.created_at.desc()).all()
+    
+    return render_template('learning_journal.html', entries=entries)
+
 def learning_history():
     if 'user_id' not in session:
         return redirect(url_for('login'))
