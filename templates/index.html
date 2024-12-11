@@ -104,26 +104,28 @@
         <h2 class="text-2xl font-semibold text-white mb-6">Create Your AI powered Learning Plan</h2>
         
         <div class="mb-8">
-            <form class="space-y-6">
-                <div class="space-y-2">
-                    <label for="learning-search" class="block text-white font-medium">What would you like to learn?</label>
+            <form id="learningSearchForm" class="space-y-6">
+                <div class="space-y-4">
+                    <label for="learning-search" class="block text-lg text-white font-medium">What would you like to learn?</label>
                     <div class="relative">
                         <input type="text" 
                                id="learning-search"
                                placeholder="e.g., Web Development, Data Science, AI"
-                               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
-                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80">
-                            <i class="fas fa-search text-lg"></i>
+                               class="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-white text-lg placeholder:text-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                               required>
+                        <button type="button" 
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80">
+                            <i class="fas fa-search text-xl"></i>
                         </button>
                     </div>
-                    <p class="text-white/70 text-sm">Our AI will create a personalized learning path based on your interests</p>
+                    <p class="text-white/70 text-base">Our AI will create a personalized learning path based on your interests</p>
                 </div>
 
-                <div class="flex justify-end pt-4">
+                <div class="flex justify-end pt-6">
                     <button type="submit" 
-                            class="px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl transition-colors flex items-center">
+                            class="px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-xl transition-colors flex items-center text-lg font-medium">
                         <span>Generate Learning Plan</span>
-                        <i class="fas fa-arrow-right ml-2"></i>
+                        <i class="fas fa-arrow-right ml-3"></i>
                     </button>
                 </div>
             </form>
