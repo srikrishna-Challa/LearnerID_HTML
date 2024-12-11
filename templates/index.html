@@ -86,7 +86,7 @@
                     </div>
                     <h5 class="text-lg font-semibold text-white mb-3">AI-Guided Learning</h5>
                     <p class="text-white/70 text-sm mb-4">Let our AI create a personalized learning path based on your goals and preferences.</p>
-                    <button onclick="showQuestionnaire()" class="inline-flex items-center text-primary hover:text-primary/80">
+                    <button onclick="openModal()" class="inline-flex items-center text-primary hover:text-primary/80">
                         Create Plan <i class="fas fa-arrow-right ml-2"></i>
                     </button>
                 </div>
@@ -120,6 +120,62 @@
         </div>
     </footer>
 </main>
+
+<!-- AI Learning Plan Modal -->
+<div id="aiLearningModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+    <div class="bg-surface rounded-2xl p-8 max-w-2xl w-full mx-4 relative">
+        <!-- Close Button -->
+        <button onclick="closeModal()" class="absolute top-4 right-4 text-white/70 hover:text-white">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <!-- Modal Content -->
+        <h2 class="text-2xl font-bold text-white mb-6">Create Your AI-Powered Learning Plan</h2>
+        
+        <!-- Search Section -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-white/70 mb-2">What would you like to learn?</label>
+            <div class="relative">
+                <input type="text" 
+                       id="learningSearch"
+                       placeholder="e.g., Python Programming, Data Science, Web Development..." 
+                       class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary">
+                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Additional Options -->
+        <div class="space-y-4 mb-6">
+            <h3 class="text-lg font-medium text-white">Customize Your Plan</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white/5 p-4 rounded-xl">
+                    <label class="block text-sm font-medium text-white/70 mb-2">Experience Level</label>
+                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+                <div class="bg-white/5 p-4 rounded-xl">
+                    <label class="block text-sm font-medium text-white/70 mb-2">Time Commitment</label>
+                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                        <option value="1-2">1-2 hours/week</option>
+                        <option value="3-5">3-5 hours/week</option>
+                        <option value="5+">5+ hours/week</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        <button onclick="generateLearningPlan()" 
+                class="w-full bg-primary hover:bg-primary/90 text-white rounded-xl py-3 font-medium transition-colors">
+            Generate Learning Plan
+        </button>
+    </div>
+</div>
 
 <!-- Multi-step Questionnaire Modal -->
 <div class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center" id="learningLevelModal">
@@ -447,4 +503,51 @@
         </div>
     </div>
 </div>
+<script>
+function openModal() {
+    const modal = document.getElementById('aiLearningModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    const modal = document.getElementById('aiLearningModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = 'auto';
+}
+
+function generateLearningPlan() {
+    // Get values from form
+    const searchQuery = document.getElementById('learningSearch').value;
+    if (!searchQuery) {
+        alert('Please enter what you would like to learn');
+        return;
+    }
+    
+    // Get all select values
+    const selects = document.querySelectorAll('#aiLearningModal select');
+    const params = new URLSearchParams();
+    params.append('query', searchQuery);
+    
+    selects.forEach(select => {
+        const label = select.previousElementSibling.textContent.toLowerCase().replace(/\s+/g, '_');
+        params.append(label, select.value);
+    });
+    
+    // Submit to learning plan route with all parameters
+    window.location.href = `/learning-plan?${params.toString()}`;
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('aiLearningModal');
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+});
+</script>
 {% endblock %}
