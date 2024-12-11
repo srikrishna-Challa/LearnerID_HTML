@@ -52,6 +52,13 @@
                             <span>How it Works</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ url_for('inbox') }}" 
+                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'inbox' %}bg-white/10{% endif %}">
+                            <i class="fas fa-envelope w-6"></i>
+                            <span>Emails</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
             
