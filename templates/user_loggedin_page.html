@@ -171,24 +171,152 @@
                 </div>
             </div>
             
-            <!-- Featured Categories -->
+            <!-- Structured Learning Plan -->
             <div class="bg-surface p-6 rounded-2xl border border-white/10">
-                <h2 class="text-xl font-semibold text-white mb-4">Featured Categories</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    <a href="#" class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                        <i class="fas fa-laptop-code text-primary text-xl mb-2"></i>
-                        <h3 class="text-white font-medium">Technology</h3>
-                    </a>
-                    <a href="#" class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                        <i class="fas fa-chart-bar text-primary text-xl mb-2"></i>
-                        <h3 class="text-white font-medium">Data Science</h3>
-                    </a>
-                    <a href="#" class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                        <i class="fas fa-paint-brush text-primary text-xl mb-2"></i>
-                        <h3 class="text-white font-medium">Design</h3>
-                    </a>
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-xl font-semibold text-white">Structured Learning Plan</h2>
+                        <p class="text-white/70 text-sm mt-1">Select categories to build your learning path</p>
+                    </div>
+                    <button onclick="saveSelectedCategories()" 
+                            class="px-4 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
+                        Save Selection
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Technology & Programming -->
+                    <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors group">
+                        <div class="flex items-start space-x-3">
+                            <input type="checkbox" 
+                                   name="learning_categories" 
+                                   value="Technology and Programming"
+                                   class="mt-1.5 h-4 w-4 rounded border-white/30 bg-white/5 text-primary focus:ring-primary">
+                            <div>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <i class="fas fa-laptop-code text-primary text-xl"></i>
+                                    <h3 class="text-white font-medium">Technology & Programming</h3>
+                                </div>
+                                <p class="text-white/70 text-sm">Web development, mobile apps, software engineering</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Science & Analytics -->
+                    <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors group">
+                        <div class="flex items-start space-x-3">
+                            <input type="checkbox" 
+                                   name="learning_categories" 
+                                   value="Data Science and Analytics"
+                                   class="mt-1.5 h-4 w-4 rounded border-white/30 bg-white/5 text-primary focus:ring-primary">
+                            <div>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <i class="fas fa-chart-line text-primary text-xl"></i>
+                                    <h3 class="text-white font-medium">Data Science & Analytics</h3>
+                                </div>
+                                <p class="text-white/70 text-sm">Data analysis, machine learning, statistics</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Design & Creative -->
+                    <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors group">
+                        <div class="flex items-start space-x-3">
+                            <input type="checkbox" 
+                                   name="learning_categories" 
+                                   value="Design and Creative"
+                                   class="mt-1.5 h-4 w-4 rounded border-white/30 bg-white/5 text-primary focus:ring-primary">
+                            <div>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <i class="fas fa-paint-brush text-primary text-xl"></i>
+                                    <h3 class="text-white font-medium">Design & Creative</h3>
+                                </div>
+                                <p class="text-white/70 text-sm">UI/UX design, graphic design, digital art</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Business & Management -->
+                    <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors group">
+                        <div class="flex items-start space-x-3">
+                            <input type="checkbox" 
+                                   name="learning_categories" 
+                                   value="Business and Management"
+                                   class="mt-1.5 h-4 w-4 rounded border-white/30 bg-white/5 text-primary focus:ring-primary">
+                            <div>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <i class="fas fa-briefcase text-primary text-xl"></i>
+                                    <h3 class="text-white font-medium">Business & Management</h3>
+                                </div>
+                                <p class="text-white/70 text-sm">Project management, leadership, entrepreneurship</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Language Learning -->
+                    <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors group">
+                        <div class="flex items-start space-x-3">
+                            <input type="checkbox" 
+                                   name="learning_categories" 
+                                   value="Language Learning"
+                                   class="mt-1.5 h-4 w-4 rounded border-white/30 bg-white/5 text-primary focus:ring-primary">
+                            <div>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <i class="fas fa-language text-primary text-xl"></i>
+                                    <h3 class="text-white font-medium">Language Learning</h3>
+                                </div>
+                                <p class="text-white/70 text-sm">Programming languages, foreign languages, communication</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal Development -->
+                    <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors group">
+                        <div class="flex items-start space-x-3">
+                            <input type="checkbox" 
+                                   name="learning_categories" 
+                                   value="Personal Development"
+                                   class="mt-1.5 h-4 w-4 rounded border-white/30 bg-white/5 text-primary focus:ring-primary">
+                            <div>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <i class="fas fa-user-graduate text-primary text-xl"></i>
+                                    <h3 class="text-white font-medium">Personal Development</h3>
+                                </div>
+                                <p class="text-white/70 text-sm">Soft skills, time management, productivity</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <script>
+            function saveSelectedCategories() {
+                const checkboxes = document.querySelectorAll('input[name="learning_categories"]:checked');
+                const selectedCategories = Array.from(checkboxes).map(cb => cb.value);
+                
+                if (selectedCategories.length === 0) {
+                    alert('Please select at least one category');
+                    return;
+                }
+
+                fetch('/add-to-learning-goals', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ topics: selectedCategories })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.location.href = '/learning-history';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving your selection');
+                });
+            }
+            </script>
         </div>
     </main>
 </div>
