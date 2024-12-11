@@ -36,47 +36,48 @@
 
 <main class="min-h-screen bg-background p-8 dark:bg-background dark:text-white">
     <section class="max-w-4xl mx-auto text-center pt-16">
-        <h1 class="text-4xl md:text-5xl font-bold text-white mb-12">Choose Your Learning Journey</h1>
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">Your AI powered Learning Bank</h1>
+        <p class="text-white/70 text-lg mb-12 max-w-2xl mx-auto">Personalized learning experiences powered by artificial intelligence</p>
         
         <div class="mt-8">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16 max-w-6xl mx-auto">
                 <!-- Personal Learning Journal -->
-                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-6 transition-colors">
-                    <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-4">
-                        <i class="fas fa-book-open text-2xl text-primary"></i>
+                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group">
+                    <div class="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                        <i class="fas fa-book-open text-3xl text-primary"></i>
                     </div>
-                    <h5 class="text-lg font-semibold text-white mb-3">Personal Learning Journal</h5>
-                    <p class="text-white/70 text-sm mb-4">Create a free-form learning journal to document your daily learning experiences, thoughts, and discoveries.</p>
-                    <a href="{{ url_for('create_learning_journal') }}" class="inline-flex items-center text-primary hover:text-primary/80">
-                        Start Journal <i class="fas fa-arrow-right ml-2"></i>
+                    <h5 class="text-xl font-semibold text-white mb-4">Personal Learning Journal</h5>
+                    <p class="text-white/70 text-base mb-6">Document your learning journey, track progress, and reflect on your educational experiences in a personalized space.</p>
+                    <a href="{{ url_for('create_learning_journal') }}" 
+                       class="inline-flex items-center px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors">
+                        Start Journal <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
 
                 <!-- AI-Guided Learning -->
-                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-6 transition-colors">
-                    <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-4">
-                        <i class="fas fa-robot text-2xl text-primary"></i>
+                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group">
+                    <div class="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                        <i class="fas fa-robot text-3xl text-primary"></i>
                     </div>
-                    <h5 class="text-lg font-semibold text-white mb-3">AI-Guided Learning</h5>
-                    <p class="text-white/70 text-sm mb-4">Let our AI create a personalized learning path based on your goals and preferences.</p>
-                    <button onclick="openModal()" class="inline-flex items-center text-primary hover:text-primary/80">
-                        Create Plan <i class="fas fa-arrow-right ml-2"></i>
+                    <h5 class="text-xl font-semibold text-white mb-4">AI-Guided Learning</h5>
+                    <p class="text-white/70 text-base mb-6">Experience personalized learning paths crafted by AI based on your goals, interests, and learning style.</p>
+                    <button onclick="openModal()" 
+                            class="inline-flex items-center px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors">
+                        Create Plan <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                     </button>
                 </div>
 
-                <!-- Structured Learning Paths -->
-                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-6 transition-colors">
-                    <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-4">
-                        <i class="fas fa-graduation-cap text-2xl text-primary"></i>
+                <!-- Explore Learning Paths -->
+                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group">
+                    <div class="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                        <i class="fas fa-compass text-3xl text-primary"></i>
                     </div>
-                    <h5 class="text-lg font-semibold text-white mb-3">Structured Learning Paths</h5>
-                    <p class="text-white/70 text-sm mb-4">Choose from our curated learning paths in various domains and subjects.</p>
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <button onclick="showQuestionnaire()" class="text-sm text-left text-white/70 hover:text-white">Technology</button>
-                        <button onclick="showQuestionnaire()" class="text-sm text-left text-white/70 hover:text-white">Business</button>
-                        <button onclick="showQuestionnaire()" class="text-sm text-left text-white/70 hover:text-white">Data Science</button>
-                        <button onclick="showQuestionnaire()" class="text-sm text-left text-white/70 hover:text-white">Engineering</button>
-                    </div>
+                    <h5 class="text-xl font-semibold text-white mb-4">Explore Learning Paths</h5>
+                    <p class="text-white/70 text-base mb-6">Discover curated learning paths in technology, business, data science, and more. Find your perfect learning journey.</p>
+                    <a href="{{ url_for('learning_plan') }}" 
+                       class="inline-flex items-center px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors">
+                        Browse Paths <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
                 </div>
             </div>
         </div>
