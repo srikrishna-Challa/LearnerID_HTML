@@ -112,23 +112,23 @@
                     </div>
                 </div>
 
-                <!-- Structured Learning Paths -->
+                <!-- AI Learning Assistant -->
                 <div class="bg-surface p-6 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors group">
-                    <a href="#learning-paths" class="block">
+                    <button onclick="openChatModal()" class="block w-full text-left">
                         <div class="flex items-start space-x-4 mb-4">
                             <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-                                <i class="fas fa-graduation-cap text-2xl text-primary"></i>
+                                <i class="fas fa-comments text-2xl text-primary"></i>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-lg font-semibold text-white mb-2">Structured Learning</h3>
-                                <p class="text-white/70 text-sm leading-relaxed">Follow pre-designed learning paths.</p>
+                                <h3 class="text-lg font-semibold text-white mb-2">AI Learning Assistant</h3>
+                                <p class="text-white/70 text-sm leading-relaxed">Chat with AI to get instant answers about learning paths and guidance.</p>
                             </div>
                         </div>
                         <div class="flex items-center text-primary mt-4">
-                            <span class="text-sm font-medium">Explore Paths</span>
+                            <span class="text-sm font-medium">Start Chat</span>
                             <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
                         </div>
-                    </a>
+                    </button>
                 </div>
             </div>
             
@@ -319,6 +319,45 @@
     </main>
 </div>
 
+<!-- AI Chat Modal -->
+<div id="aiChatModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="bg-surface rounded-2xl p-8 max-w-2xl w-full mx-4 relative h-[600px] flex flex-col">
+        <button onclick="closeChatModal()" class="absolute top-4 right-4 text-white/70 hover:text-white">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <h2 class="text-2xl font-bold text-white mb-6">Chat with AI Learning Assistant</h2>
+        
+        <!-- Chat Messages Container -->
+        <div id="chatMessages" class="flex-1 overflow-y-auto mb-6 space-y-4">
+            <!-- AI Welcome Message -->
+            <div class="flex items-start space-x-4">
+                <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-robot text-primary text-sm"></i>
+                </div>
+                <div class="flex-1 bg-white/5 rounded-xl p-4">
+                    <p class="text-white">Hi! I'm your AI Learning Assistant. Ask me anything about learning paths, courses, or study techniques!</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat Input -->
+        <form id="chatForm" class="flex items-end gap-4">
+            <div class="flex-1">
+                <input type="text" 
+                       id="chatInput"
+                       placeholder="Type your message..."
+                       class="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-white placeholder:text-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+            </div>
+            <button type="submit" 
+                    class="px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl transition-colors flex items-center">
+                <span>Send</span>
+                <i class="fas fa-paper-plane ml-2"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
 <!-- AI Learning Plan Modal -->
 <div id="aiLearningModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
     <div class="bg-surface rounded-2xl p-8 max-w-2xl w-full mx-4 relative">
@@ -428,6 +467,69 @@
 </button>
 
 <script>
+// Chat Modal Functions
+function openChatModal() {
+    const modal = document.getElementById('aiChatModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        // Focus chat input
+        setTimeout(() => {
+            document.getElementById('chatInput')?.focus();
+        }, 100);
+    }
+}
+
+function closeChatModal() {
+    const modal = document.getElementById('aiChatModal');
+    if (modal) {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+    }
+}
+
+// Handle chat form submission
+document.getElementById('chatForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const input = document.getElementById('chatInput');
+    const messagesContainer = document.getElementById('chatMessages');
+    
+    if (input && messagesContainer && input.value.trim()) {
+        // Add user message
+        const userMessage = `
+            <div class="flex items-start space-x-4 justify-end">
+                <div class="flex-1 bg-primary/10 rounded-xl p-4">
+                    <p class="text-white">${input.value}</p>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-user text-primary text-sm"></i>
+                </div>
+            </div>
+        `;
+        messagesContainer.insertAdjacentHTML('beforeend', userMessage);
+        
+        // Simulate AI response (replace with actual API call)
+        setTimeout(() => {
+            const aiResponse = `
+                <div class="flex items-start space-x-4">
+                    <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-primary text-sm"></i>
+                    </div>
+                    <div class="flex-1 bg-white/5 rounded-xl p-4">
+                        <p class="text-white">I'd be happy to help you with that! Let me provide some guidance about learning paths and resources.</p>
+                    </div>
+                </div>
+            `;
+            messagesContainer.insertAdjacentHTML('beforeend', aiResponse);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 1000);
+        
+        // Clear input
+        input.value = '';
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+});
+
 function toggleSidebar() {
     const sidebar = document.querySelector('aside');
     sidebar.classList.toggle('-translate-x-full');
