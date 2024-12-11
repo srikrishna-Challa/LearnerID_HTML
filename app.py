@@ -758,6 +758,65 @@ def mark_topic_completed(topic):
         }), 404
 
 @app.route('/learning-history')
+def learning_history():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    # Mock data for learning history and progress
+    learning_history = [
+        {
+            'topic': 'Technology and Computer Science',
+            'level': 'Intermediate',
+            'total_duration': '8 weeks',
+            'progress': 65,
+            'start_date': '2024-12-01',
+            'status': 'In Progress'
+        },
+        {
+            'topic': 'Data Science and Analytics',
+            'level': 'Beginner',
+            'total_duration': '12 weeks',
+            'progress': 25,
+            'start_date': '2024-11-15',
+            'status': 'In Progress'
+        }
+    ]
+
+    # Mock recent activity data
+    recent_activities = [
+        {
+            'type': 'completion',
+            'icon': 'book-open',
+            'text': 'Completed Module: Introduction to Programming',
+            'time': '2 hours ago'
+        },
+        {
+            'type': 'achievement',
+            'icon': 'trophy',
+            'text': 'Earned Badge: Python Basics',
+            'time': 'Yesterday'
+        },
+        {
+            'type': 'course',
+            'icon': 'tasks',
+            'text': 'Started New Course: Data Structures',
+            'time': '2 days ago'
+        }
+    ]
+
+    # Mock progress statistics
+    progress_stats = {
+        'current_progress': 65,
+        'current_course': 'Technology and Computer Science',
+        'learning_credits': 750,
+        'active_courses': 2
+    }
+
+    return render_template('learning_history.html', 
+                         learning_history=learning_history,
+                         recent_activities=recent_activities,
+                         progress_stats=progress_stats)
+
 @app.route('/learning-journal', methods=['GET', 'POST'])
 def create_learning_journal():
     if 'user_id' not in session:
@@ -796,8 +855,6 @@ def create_learning_journal():
     ).order_by(LearningJournalEntry.created_at.desc()).all()
     
     return render_template('learning_journal.html', entries=entries)
-
-def learning_history():
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
