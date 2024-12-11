@@ -42,196 +42,42 @@
         <div class="mt-8">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16 max-w-6xl mx-auto">
                 <!-- Personal Learning Journal -->
-                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group">
-                    <div class="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group flex flex-col items-center text-center">
+                    <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
                         <i class="fas fa-book-open text-3xl text-primary"></i>
                     </div>
                     <h5 class="text-xl font-semibold text-white mb-4">Personal Learning Journal</h5>
-                    <p class="text-white/70 text-base mb-6">Document your learning journey, track progress, and reflect on your educational experiences in a personalized space.</p>
+                    <p class="text-white/70 text-base mb-8">Document your learning journey, track progress, and reflect on your educational experiences in a personalized space.</p>
                     <a href="{{ url_for('create_learning_journal') }}" 
-                       class="inline-flex items-center px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors">
+                       class="w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
                         Start Journal <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
 
                 <!-- AI-Guided Learning -->
-                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group">
-                    <div class="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group flex flex-col items-center text-center">
+                    <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
                         <i class="fas fa-robot text-3xl text-primary"></i>
                     </div>
                     <h5 class="text-xl font-semibold text-white mb-4">AI-Guided Learning</h5>
-                    <p class="text-white/70 text-base mb-6">Experience personalized learning paths crafted by AI based on your goals, interests, and learning style.</p>
+                    <p class="text-white/70 text-base mb-8">Experience personalized learning paths crafted by AI based on your goals, interests, and learning style.</p>
                     <button onclick="openModal()" 
-                            class="inline-flex items-center px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors">
+                            class="w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
                         Create Plan <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                     </button>
                 </div>
 
                 <!-- Explore Learning Paths -->
-                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group">
-                    <div class="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group flex flex-col items-center text-center">
+                    <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
                         <i class="fas fa-compass text-3xl text-primary"></i>
                     </div>
                     <h5 class="text-xl font-semibold text-white mb-4">Explore Learning Paths</h5>
-                    <p class="text-white/70 text-base mb-6">Discover curated learning paths in technology, business, data science, and more. Find your perfect learning journey.</p>
+                    <p class="text-white/70 text-base mb-8">Discover curated learning paths in technology, business, data science, and more. Find your perfect learning journey.</p>
                     <a href="{{ url_for('learning_plan') }}" 
-                       class="inline-flex items-center px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors">
+                       class="w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
                         Browse Paths <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                     </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Structured Learning Paths -->
-        <div id="learning-paths" class="bg-surface p-6 rounded-2xl border border-white/10 mt-12">
-            <div class="mb-6">
-                <h2 class="text-xl font-semibold text-white">Explore Learning Paths</h2>
-                <p class="text-white/70 text-sm mt-1">Click on a category to discover learning paths</p>
-            </div>
-            <!-- Categories Container -->
-            <div class="relative overflow-hidden" style="min-height: 400px;">
-                <!-- Main Categories -->
-                <div id="mainCategories" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Technology & Programming -->
-                    <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group" 
-                         onclick="showSubcategories('tech')">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-laptop-code text-primary text-xl"></i>
-                                <div>
-                                    <h3 class="text-white font-medium">Technology & Programming</h3>
-                                    <p class="text-white/70 text-sm mt-2">Web development, mobile apps, software engineering</p>
-                                </div>
-                            </div>
-                            <i class="fas fa-chevron-right text-primary transform group-hover:translate-x-1 transition-transform"></i>
-                        </div>
-                    </div>
-
-                    <!-- Data Science & Analytics -->
-                    <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group"
-                         onclick="showSubcategories('data')">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-chart-line text-primary text-xl"></i>
-                                <div>
-                                    <h3 class="text-white font-medium">Data Science & Analytics</h3>
-                                    <p class="text-white/70 text-sm mt-2">Data analysis, machine learning, statistics</p>
-                                </div>
-                            </div>
-                            <i class="fas fa-chevron-right text-primary transform group-hover:translate-x-1 transition-transform"></i>
-                        </div>
-                    </div>
-
-                    <!-- Business & Management -->
-                    <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group"
-                         onclick="showSubcategories('business')">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-briefcase text-primary text-xl"></i>
-                                <div>
-                                    <h3 class="text-white font-medium">Business & Management</h3>
-                                    <p class="text-white/70 text-sm mt-2">Project management, leadership, entrepreneurship</p>
-                                </div>
-                            </div>
-                            <i class="fas fa-chevron-right text-primary transform group-hover:translate-x-1 transition-transform"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Technology Subcategories Panel -->
-                <div id="techSubcategories" class="absolute inset-0 transform translate-x-full opacity-0 transition-all duration-300">
-                    <div class="bg-surface h-full">
-                        <div class="flex items-center space-x-4 mb-6">
-                            <button onclick="hideSubcategories('tech')" class="text-white hover:text-primary transition-colors">
-                                <i class="fas fa-arrow-left text-xl"></i>
-                            </button>
-                            <div>
-                                <h3 class="text-xl font-semibold text-white">Technology & Programming</h3>
-                                <p class="text-white/70 text-sm">Select your learning path</p>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 gap-4">
-                            <a href="{{ url_for('learning_plan') }}?path=web-development" 
-                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                <h4 class="text-white font-medium mb-2">Web Development</h4>
-                                <p class="text-white/70 text-sm">Master front-end and back-end development</p>
-                            </a>
-                            <a href="{{ url_for('learning_plan') }}?path=mobile-development" 
-                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                <h4 class="text-white font-medium mb-2">Mobile Development</h4>
-                                <p class="text-white/70 text-sm">Build iOS and Android applications</p>
-                            </a>
-                            <a href="{{ url_for('learning_plan') }}?path=cloud-computing" 
-                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                <h4 class="text-white font-medium mb-2">Cloud Computing</h4>
-                                <p class="text-white/70 text-sm">Learn AWS, Azure, and Google Cloud</p>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Data Science Subcategories Panel -->
-                <div id="dataSubcategories" class="absolute inset-0 transform translate-x-full opacity-0 transition-all duration-300">
-                    <div class="bg-surface h-full">
-                        <div class="flex items-center space-x-4 mb-6">
-                            <button onclick="hideSubcategories('data')" class="text-white hover:text-primary transition-colors">
-                                <i class="fas fa-arrow-left text-xl"></i>
-                            </button>
-                            <div>
-                                <h3 class="text-xl font-semibold text-white">Data Science & Analytics</h3>
-                                <p class="text-white/70 text-sm">Select your learning path</p>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 gap-4">
-                            <a href="{{ url_for('learning_plan') }}?path=machine-learning" 
-                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                <h4 class="text-white font-medium mb-2">Machine Learning</h4>
-                                <p class="text-white/70 text-sm">Build intelligent systems and models</p>
-                            </a>
-                            <a href="{{ url_for('learning_plan') }}?path=data-analysis" 
-                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                <h4 class="text-white font-medium mb-2">Data Analysis</h4>
-                                <p class="text-white/70 text-sm">Master data processing and visualization</p>
-                            </a>
-                            <a href="{{ url_for('learning_plan') }}?path=big-data" 
-                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                <h4 class="text-white font-medium mb-2">Big Data</h4>
-                                <p class="text-white/70 text-sm">Handle and analyze large-scale datasets</p>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Business Subcategories Panel -->
-                <div id="businessSubcategories" class="absolute inset-0 transform translate-x-full opacity-0 transition-all duration-300">
-                    <div class="bg-surface h-full">
-                        <div class="flex items-center space-x-4 mb-6">
-                            <button onclick="hideSubcategories('business')" class="text-white hover:text-primary transition-colors">
-                                <i class="fas fa-arrow-left text-xl"></i>
-                            </button>
-                            <div>
-                                <h3 class="text-xl font-semibold text-white">Business & Management</h3>
-                                <p class="text-white/70 text-sm">Select your learning path</p>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 gap-4">
-                            <a href="{{ url_for('learning_plan') }}?path=project-management" 
-                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                <h4 class="text-white font-medium mb-2">Project Management</h4>
-                                <p class="text-white/70 text-sm">Learn to lead and deliver successful projects</p>
-                            </a>
-                            <a href="{{ url_for('learning_plan') }}?path=leadership" 
-                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                <h4 class="text-white font-medium mb-2">Leadership</h4>
-                                <p class="text-white/70 text-sm">Develop essential leadership skills</p>
-                            </a>
-                            <a href="{{ url_for('learning_plan') }}?path=entrepreneurship" 
-                               class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                <h4 class="text-white font-medium mb-2">Entrepreneurship</h4>
-                                <p class="text-white/70 text-sm">Start and grow your own business</p>
-                            </a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -250,30 +96,6 @@
 </main>
 
 <script>
-// Function to show subcategories
-function showSubcategories(category) {
-    const mainCategoriesEl = document.getElementById('mainCategories');
-    const subCategoriesEl = document.getElementById(`${category}Subcategories`);
-    
-    if (mainCategoriesEl && subCategoriesEl) {
-        mainCategoriesEl.style.transform = 'translateX(-100%)';
-        subCategoriesEl.style.transform = 'translateX(0)';
-        subCategoriesEl.style.opacity = '1';
-    }
-}
-
-// Function to hide subcategories
-function hideSubcategories(category) {
-    const mainCategoriesEl = document.getElementById('mainCategories');
-    const subCategoriesEl = document.getElementById(`${category}Subcategories`);
-    
-    if (mainCategoriesEl && subCategoriesEl) {
-        mainCategoriesEl.style.transform = 'translateX(0)';
-        subCategoriesEl.style.transform = 'translateX(100%)';
-        subCategoriesEl.style.opacity = '0';
-    }
-}
-
 // Mobile menu toggle
 document.addEventListener('DOMContentLoaded', function() {
     const menuButton = document.querySelector('button.fixed.top-4.left-4');
@@ -302,76 +124,5 @@ function closeModal() {
         modal.classList.add('hidden');
     }
 }
-
-function showQuestionnaire() {
-    const modal = document.getElementById('learningLevelModal');
-    if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-}
-
-function nextStep(){
-    const currentSlide = document.querySelector('.question-slide:not([style*="display: none;"])')
-    const nextSlide = currentSlide.nextElementSibling;
-    if(nextSlide){
-        currentSlide.style.display = "none";
-        nextSlide.style.display = "block";
-    }
-    updateStepIndicator();
-    updateNavigationButtons();
-}
-
-function prevStep(){
-    const currentSlide = document.querySelector('.question-slide:not([style*="display: none;"])')
-    const prevSlide = currentSlide.previousElementSibling;
-    if(prevSlide){
-        currentSlide.style.display = "none";
-        prevSlide.style.display = "block";
-    }
-    updateStepIndicator();
-    updateNavigationButtons();
-}
-
-function updateStepIndicator(){
-    const currentSlide = document.querySelector('.question-slide:not([style*="display: none;"])')
-    const step = currentSlide.dataset.step;
-    const indicators = document.querySelectorAll('#learningLevelModal [data-step]');
-    indicators.forEach(indicator => {
-        indicator.classList.remove('bg-primary','text-white');
-        indicator.classList.add('bg-white/10','text-white/70');
-    })
-    document.querySelector(`#learningLevelModal [data-step="${step}"]`).classList.add('bg-primary','text-white');
-}
-
-function updateNavigationButtons(){
-    const currentSlide = document.querySelector('.question-slide:not([style*="display: none;"])')
-    const prevButton = document.getElementById('prevButton');
-    const nextButton = document.getElementById('nextButton');
-    const step = currentSlide.dataset.step;
-    const totalSteps = document.querySelectorAll('.question-slide').length;
-
-    prevButton.style.display = (step > 1) ? "block" : "none";
-    nextButton.textContent = (step < totalSteps) ? "Next" : "Submit";
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const nextButton = document.getElementById('nextButton');
-    const prevButton = document.getElementById('prevButton');
-    updateStepIndicator();
-    updateNavigationButtons();
-    nextButton.addEventListener('click', nextStep);
-    prevButton.addEventListener('click', prevStep);
-
-    const otherLanguage = document.querySelector('input[value="other"]');
-    const otherLanguageInput = document.getElementById('otherLanguageInput')
-    if(otherLanguage && otherLanguageInput){
-        otherLanguage.addEventListener('change', ()=>{
-            otherLanguageInput.style.display = otherLanguage.checked ? 'block' : 'none';
-        })
-    }
-});
-
-
 </script>
 {% endblock %}
