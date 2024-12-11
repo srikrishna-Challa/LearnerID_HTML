@@ -330,70 +330,93 @@
         <!-- Modal Content -->
         <h2 class="text-2xl font-bold text-white mb-6">Create Your AI-Powered Learning Plan</h2>
         
-        <!-- Additional Options -->
-        <div class="space-y-4 mb-6">
-            <h3 class="text-lg font-medium text-white">Customize Your Plan</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white/5 p-4 rounded-xl">
-                    <label class="block text-sm font-medium text-white/70 mb-2">Experience Level</label>
-                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
-                        <option value="beginner">Beginner</option>
-                        <option value="intermediate">Intermediate</option>
-                        <option value="advanced">Advanced</option>
-                    </select>
+        <div class="mb-8">
+            <form id="learningSearchForm" class="space-y-6">
+                <!-- Search Bar -->
+                <div class="space-y-4">
+                    <label for="learning-search" class="block text-lg text-white font-medium">What would you like to learn?</label>
+                    <div class="relative">
+                        <input type="text" 
+                               id="learning-search"
+                               placeholder="e.g., Web Development, Data Science, AI"
+                               class="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-white text-lg placeholder:text-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                               required>
+                        <button type="button" 
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80">
+                            <i class="fas fa-search text-xl"></i>
+                        </button>
+                    </div>
+                    <p class="text-white/70 text-base">Our AI will create a personalized learning path based on your interests</p>
                 </div>
-                <div class="bg-white/5 p-4 rounded-xl">
-                    <label class="block text-sm font-medium text-white/70 mb-2">Time Commitment</label>
-                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
-                        <option value="1-2">1-2 hours/week</option>
-                        <option value="3-5">3-5 hours/week</option>
-                        <option value="5+">5+ hours/week</option>
-                    </select>
-                </div>
-                <div class="bg-white/5 p-4 rounded-xl">
-                    <label class="block text-sm font-medium text-white/70 mb-2">Learning Style</label>
-                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
-                        <option value="visual">Visual (Videos & Graphics)</option>
-                        <option value="reading">Reading & Writing</option>
-                        <option value="auditory">Auditory (Lectures & Discussions)</option>
-                        <option value="hands-on">Hands-on Practice</option>
-                    </select>
-                </div>
-                <div class="bg-white/5 p-4 rounded-xl">
-                    <label class="block text-sm font-medium text-white/70 mb-2">Content Format</label>
-                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
-                        <option value="video">Video Tutorials</option>
-                        <option value="interactive">Interactive Exercises</option>
-                        <option value="text">Text-based Materials</option>
-                        <option value="mixed">Mixed Format</option>
-                    </select>
-                </div>
-                <div class="bg-white/5 p-4 rounded-xl">
-                    <label class="block text-sm font-medium text-white/70 mb-2">Learning Goals</label>
-                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
-                        <option value="career">Career Development</option>
-                        <option value="academic">Academic Achievement</option>
-                        <option value="personal">Personal Interest</option>
-                        <option value="certification">Professional Certification</option>
-                    </select>
-                </div>
-                <div class="bg-white/5 p-4 rounded-xl">
-                    <label class="block text-sm font-medium text-white/70 mb-2">Topic Knowledge</label>
-                    <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
-                        <option value="none">No Prior Knowledge</option>
-                        <option value="basic">Basic Understanding</option>
-                        <option value="intermediate">Some Experience</option>
-                        <option value="advanced">Advanced Knowledge</option>
-                    </select>
-                </div>
-            </div>
-        </div>
 
-        <!-- Action Button -->
-        <button onclick="generateLearningPlan()" 
-                class="w-full bg-primary hover:bg-primary/90 text-white rounded-xl py-3 font-medium transition-colors">
-            Generate Learning Plan
-        </button>
+                <!-- Additional Options -->
+                <div class="space-y-4 mt-6">
+                    <h3 class="text-lg font-medium text-white">Customize Your Plan</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white/5 p-4 rounded-xl">
+                            <label class="block text-sm font-medium text-white/70 mb-2">Experience Level</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-xl">
+                            <label class="block text-sm font-medium text-white/70 mb-2">Time Commitment</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                                <option value="1-2">1-2 hours/week</option>
+                                <option value="3-5">3-5 hours/week</option>
+                                <option value="5+">5+ hours/week</option>
+                            </select>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-xl">
+                            <label class="block text-sm font-medium text-white/70 mb-2">Learning Style</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                                <option value="visual">Visual (Videos & Graphics)</option>
+                                <option value="reading">Reading & Writing</option>
+                                <option value="auditory">Auditory (Lectures & Discussions)</option>
+                                <option value="hands-on">Hands-on Practice</option>
+                            </select>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-xl">
+                            <label class="block text-sm font-medium text-white/70 mb-2">Content Format</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                                <option value="video">Video Tutorials</option>
+                                <option value="interactive">Interactive Exercises</option>
+                                <option value="text">Text-based Materials</option>
+                                <option value="mixed">Mixed Format</option>
+                            </select>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-xl">
+                            <label class="block text-sm font-medium text-white/70 mb-2">Learning Goals</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                                <option value="career">Career Development</option>
+                                <option value="academic">Academic Achievement</option>
+                                <option value="personal">Personal Interest</option>
+                                <option value="certification">Professional Certification</option>
+                            </select>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-xl">
+                            <label class="block text-sm font-medium text-white/70 mb-2">Topic Knowledge</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                                <option value="none">No Prior Knowledge</option>
+                                <option value="basic">Basic Understanding</option>
+                                <option value="intermediate">Some Experience</option>
+                                <option value="advanced">Advanced Knowledge</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-6">
+                    <button type="submit" 
+                            class="px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-xl transition-colors flex items-center text-lg font-medium">
+                        <span>Generate Learning Plan</span>
+                        <i class="fas fa-arrow-right ml-3"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -441,10 +464,17 @@ function hideSubcategories(category) {
 }
 
 function generateLearningPlan() {
-    // Get all select values
+    // Get search input value and all select values
+    const searchInput = document.getElementById('learning-search');
     const selects = document.querySelectorAll('#aiLearningModal select');
     const params = new URLSearchParams();
     
+    // Add search query
+    if (searchInput && searchInput.value) {
+        params.append('search_query', searchInput.value);
+    }
+    
+    // Add all select values
     selects.forEach(select => {
         const label = select.previousElementSibling.textContent.toLowerCase().replace(/\s+/g, '_');
         params.append(label, select.value);
@@ -452,6 +482,25 @@ function generateLearningPlan() {
     
     // Submit to learning plan route with all parameters
     window.location.href = `/learning-plan?${params.toString()}`;
+}
+
+// Handle form submission
+document.getElementById('learningSearchForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    generateLearningPlan();
+});
+
+// Focus search input when modal opens
+function openModal() {
+    const modal = document.getElementById('aiLearningModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        // Focus the search input when modal opens
+        setTimeout(() => {
+            document.getElementById('learning-search')?.focus();
+        }, 100);
+    }
 }
 
 // Close modal when clicking outside
