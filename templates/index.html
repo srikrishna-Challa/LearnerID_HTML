@@ -42,40 +42,46 @@
         <div class="mt-8">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16 max-w-6xl mx-auto">
                 <!-- Personal Learning Journal -->
-                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group flex flex-col items-center text-center">
-                    <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
-                        <i class="fas fa-book-open text-3xl text-primary"></i>
+                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group flex flex-col h-[400px]">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                            <i class="fas fa-book-open text-3xl text-primary"></i>
+                        </div>
+                        <h5 class="text-xl font-semibold text-white mb-4">Personal Learning Journal</h5>
+                        <p class="text-white/70 text-base">Document your learning journey, track progress, and reflect on your educational experiences in a personalized space.</p>
                     </div>
-                    <h5 class="text-xl font-semibold text-white mb-4">Personal Learning Journal</h5>
-                    <p class="text-white/70 text-base mb-8">Document your learning journey, track progress, and reflect on your educational experiences in a personalized space.</p>
                     <a href="{{ url_for('create_learning_journal') }}" 
-                       class="w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
+                       class="mt-6 w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
                         Start Journal <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
 
                 <!-- AI-Guided Learning -->
-                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group flex flex-col items-center text-center">
-                    <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
-                        <i class="fas fa-robot text-3xl text-primary"></i>
+                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group flex flex-col h-[400px]">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                            <i class="fas fa-robot text-3xl text-primary"></i>
+                        </div>
+                        <h5 class="text-xl font-semibold text-white mb-4">AI-Guided Learning</h5>
+                        <p class="text-white/70 text-base">Experience personalized learning paths crafted by AI based on your goals, interests, and learning style.</p>
                     </div>
-                    <h5 class="text-xl font-semibold text-white mb-4">AI-Guided Learning</h5>
-                    <p class="text-white/70 text-base mb-8">Experience personalized learning paths crafted by AI based on your goals, interests, and learning style.</p>
                     <button onclick="openModal()" 
-                            class="w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
+                            class="mt-6 w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
                         Create Plan <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                     </button>
                 </div>
 
                 <!-- Explore Learning Paths -->
-                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group flex flex-col items-center text-center">
-                    <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
-                        <i class="fas fa-compass text-3xl text-primary"></i>
+                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group flex flex-col h-[400px]">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                            <i class="fas fa-compass text-3xl text-primary"></i>
+                        </div>
+                        <h5 class="text-xl font-semibold text-white mb-4">Explore Learning Paths</h5>
+                        <p class="text-white/70 text-base">Discover curated learning paths in technology, business, data science, and more. Find your perfect learning journey.</p>
                     </div>
-                    <h5 class="text-xl font-semibold text-white mb-4">Explore Learning Paths</h5>
-                    <p class="text-white/70 text-base mb-8">Discover curated learning paths in technology, business, data science, and more. Find your perfect learning journey.</p>
                     <a href="{{ url_for('learning_plan') }}" 
-                       class="w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
+                       class="mt-6 w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
                         Browse Paths <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
