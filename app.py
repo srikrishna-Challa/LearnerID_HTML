@@ -732,6 +732,8 @@ def learning_recommendations(topic):
     
     # Get recommendations for the exact topic name
     recommendations = recommendations_data.get(parent_course, {})
+    video_resources = recommendations.get('Video Resources', [])
+    reading_materials = recommendations.get('Reading Materials', [])
     topic_materials = user_materials.get(topic, [])
     
     # Calculate quiz statistics
@@ -742,12 +744,16 @@ def learning_recommendations(topic):
         'attempts_left': topic_attempts.get('max_attempts', 3) - topic_attempts.get('attempts', 0)
     }
     
+    progress = topic_info.get('progress', 0) if topic_info else 0
+    
     return render_template('learning_recommendations.html', 
-                         recommendations=recommendations,
+                         video_resources=video_resources,
+                         reading_materials=reading_materials,
                          topic=topic,
                          parent_course=parent_course,
                          week_number=week_number,
                          topic_info=topic_info,
+                         progress=progress,
                          quiz_stats=quiz_stats,
                          user_materials=topic_materials)
 

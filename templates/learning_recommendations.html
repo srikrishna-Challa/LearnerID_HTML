@@ -2,8 +2,9 @@
 
 {% block content %}
 <div class="flex h-screen bg-background">
-    <!-- Sidebar -->
+    <!-- Sidebar (reuse from other templates) -->
     <aside class="fixed top-0 left-0 z-40 w-56 h-screen transition-transform -translate-x-full md:translate-x-0">
+        <!-- Sidebar content -->
         <div class="h-full bg-surface">
             <!-- User Profile Section -->
             <div class="flex flex-col items-center p-4 border-b border-white/10">
@@ -19,7 +20,7 @@
                 <ul class="space-y-1.5">
                     <li>
                         <a href="{{ url_for('user_loggedin_page') }}" 
-                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'user_loggedin_page' %}bg-white/10{% endif %}">
+                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5">
                             <i class="fas fa-home w-5"></i>
                             <span class="text-sm">Home</span>
                         </a>
@@ -76,511 +77,123 @@
 
     <!-- Main Content -->
     <main class="flex-1 md:ml-56 p-4 sm:p-6 lg:p-8">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="mb-4 p-4 rounded-xl {% if category == 'success' %}bg-green-500/10 text-green-500{% else %}bg-red-500/10 text-red-500{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        
+        <!-- Back to Course Details -->
+        <a href="{{ url_for('course_details', topic=topic) }}" class="flex items-center text-white/70 hover:text-white mb-6">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to Course Details
+        </a>
+
+        <!-- Learning Resources Header -->
         <div class="mb-8">
-            <a href="{{ url_for('my_learning_details', topic=parent_course) }}" 
-               class="inline-flex items-center text-white/70 hover:text-white">
-                <i class="fas fa-arrow-left mr-2"></i>
-                Back to Course Details
-            </a>
-            <h1 class="text-3xl font-bold text-white mt-4">Your Learning Resources</h1>
-            <p class="text-white/70 mt-2">Week {{ week_number }}: {{ topic }}</p>
+            <h1 class="text-3xl font-bold text-white">Your Learning Resources</h1>
+            <p class="text-white/70">Week 1: {{ topic }}</p>
         </div>
 
-        <!-- Topic Container -->
-        <div class="bg-surface rounded-2xl p-6 border border-white/10 mb-8">
-            <!-- Topic Header -->
-            <div class="mb-8">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h2 class="text-xl font-semibold text-white">{{ topic }}</h2>
-                        {% if topic_info %}
-                        <p class="text-white/70 mt-1">Progress: {{ topic_info.progress }}%</p>
-                        {% endif %}
-                    </div>
-                    <button onclick="handleTopicCompletion('{{ topic }}')"
-                            class="px-4 py-2 rounded-xl {% if topic_info and topic_info.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10">
-                        {% if topic_info and topic_info.completed %}
-                            <i class="fas fa-check mr-2"></i>Topic Completed
-                        {% else %}
-                            Mark Topic as Complete
-                        {% endif %}
-                    </button>
+        <!-- Knowledge Assessment Section -->
+        <div class="bg-surface rounded-2xl p-6 mb-6 border border-white/10">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <i class="fas fa-clipboard-check text-primary mr-3"></i>
+                    <h2 class="text-xl font-semibold text-white">Knowledge Assessment</h2>
                 </div>
+                <span class="px-3 py-1 bg-primary/20 rounded-full text-primary text-sm">
+                    Progress: {{ progress }}%
+                </span>
+            </div>
+            <p class="text-white/70 mb-4">Test your understanding of {{ topic }}</p>
+            <button class="px-6 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
+                Start Assessment
+            </button>
+        </div>
 
-                <!-- Quiz Section -->
-                <div class="bg-surface/30 rounded-xl p-6 mb-8">
-                    <div onclick="toggleQuizSection()" 
-                         class="w-full flex justify-between items-center cursor-pointer">
-                        <div class="flex items-center">
-                            <i class="fas fa-graduation-cap text-primary mr-3"></i>
-                            <div class="text-left">
-                                <h3 class="text-xl font-semibold text-white">Knowledge Assessment</h3>
-                                <p class="text-white/70">Test your understanding of {{ topic }}</p>
-                            </div>
-                        </div>
-                        <i id="quizToggleIcon" 
-                           class="fas fa-chevron-down text-white/70 transition-transform duration-300"></i>
-                    </div>
-
-                    <div id="quizContent" class="hidden mt-6">
-                        <div class="border-t border-white/10 pt-6">
-                            {% if not topic_info or not topic_info.completed %}
-                                <a href="{{ url_for('show_topic_quiz', topic=topic) }}"
-                                   class="inline-flex items-center px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-medium transition-colors">
-                                    <i class="fas fa-book-reader mr-2"></i>
-                                    Start Assessment
-                                </a>
-                            {% endif %}
-
-                            {% if quiz_stats %}
-                            <div class="grid grid-cols-3 gap-6 mt-6">
-                                <div class="bg-surface/50 p-4 rounded-xl text-center">
-                                    <p class="text-sm font-medium text-white/70 mb-1">Attempts Made</p>
-                                    <p class="text-2xl font-semibold text-white">{{ quiz_stats.attempts_made }}</p>
-                                </div>
-                                <div class="bg-surface/50 p-4 rounded-xl text-center">
-                                    <p class="text-sm font-medium text-white/70 mb-1">Average Score</p>
-                                    <p class="text-2xl font-semibold text-white">{{ "%.1f"|format(quiz_stats.avg_score) }}%</p>
-                                </div>
-                                <div class="bg-surface/50 p-4 rounded-xl text-center">
-                                    <p class="text-sm font-medium text-white/70 mb-1">Attempts Left</p>
-                                    <p class="text-2xl font-semibold text-white">{{ quiz_stats.attempts_left }}</p>
-                                </div>
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div>
+        <!-- Video Resources Section -->
+        <div class="bg-surface rounded-2xl p-6 mb-6 border border-white/10">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <i class="fas fa-video text-primary mr-3"></i>
+                    <h2 class="text-xl font-semibold text-white">Video Resources</h2>
                 </div>
             </div>
-
-            <!-- Learning Resources -->
-            <!-- Video Resources Section -->
-            <div class="bg-surface/80 rounded-xl p-6 mb-8">
-                <h3 class="text-xl font-semibold text-white flex items-center mb-6">
-                    <i class="fas fa-video mr-3 text-primary"></i>
-                    Video Resources
-                </h3>
+            
+            {% if video_resources %}
                 <div class="space-y-4">
-                    {% if recommendations.videos %}
-                        {% for video in recommendations.videos %}
-                        <div class="bg-surface p-6 rounded-xl border border-white/10">
-                            <div class="flex justify-between items-start">
-                                <div class="flex-1">
-                                    <h4 class="text-lg font-medium text-white">{{ video.title }}</h4>
-                                    <p class="text-white/70 mt-2">{{ video.description }}</p>
-                                    <div class="flex items-center mt-4">
-                                        <span class="text-white/50">
-                                            <i class="fas fa-clock mr-2"></i>{{ video.duration }}
-                                        </span>
-                                        <a href="{{ video.url }}" target="_blank" 
-                                           class="ml-6 text-primary hover:text-primary/90 inline-flex items-center">
-                                           <i class="fas fa-play-circle mr-2"></i>Watch Video
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="flex items-center space-x-3">
-                                    <button onclick="handleResourceCompletion('{{ topic }}', '{{ video.id }}')"
-                                            class="px-4 py-2 rounded-xl {% if video.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10 transition-colors">
-                                        <i class="fas {% if video.completed %}fa-check{% else %}fa-check-circle{% endif %} mr-2"></i>
-                                        {% if video.completed %}Completed{% else %}Mark Complete{% endif %}
-                                    </button>
-                                    <button onclick="openNotesModal('{{ video.id }}', 'video', '{{ video.title }}')"
-                                            class="px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
-                                        <i class="fas fa-sticky-note mr-2"></i>Notes
-                                    </button>
-                                    <button onclick="generateSummary('{{ video.id }}')"
-                                            class="px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
-                                        <i class="fas fa-magic mr-2"></i>Generate Summary
-                                    </button>
-                                </div>
+                    {% for video in video_resources %}
+                    <div class="p-4 bg-white/5 rounded-xl">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="text-lg font-medium text-white">{{ video.title }}</h3>
+                                <p class="text-white/70">Duration: {{ video.duration }}</p>
+                                <p class="text-white/70">{{ video.description }}</p>
                             </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <p class="text-white/70">No video resources available for this topic.</p>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Reading Materials Section -->
-            <div class="bg-surface/80 rounded-xl p-6 mb-8">
-                <h3 class="text-xl font-semibold text-white flex items-center mb-6">
-                    <i class="fas fa-book mr-3 text-primary"></i>
-                    Reading Materials
-                </h3>
-                <div class="space-y-4">
-                    {% if recommendations.articles %}
-                        {% for article in recommendations.articles %}
-                        <div class="bg-surface p-6 rounded-xl border border-white/10">
-                            <div class="flex justify-between items-start">
-                                <div class="flex-1">
-                                    <h4 class="text-lg font-medium text-white">{{ article.title }}</h4>
-                                    <p class="text-white/70 mt-2">{{ article.description }}</p>
-                                    <div class="flex items-center mt-4">
-                                        <span class="text-white/50">
-                                            <i class="fas fa-clock mr-2"></i>{{ article.reading_time }}
-                                        </span>
-                                        <a href="{{ article.url }}" target="_blank" 
-                                           class="ml-6 text-primary hover:text-primary/90 inline-flex items-center">
-                                           <i class="fas fa-book-open mr-2"></i>Read Article
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="flex items-center space-x-3">
-                                    <button onclick="handleResourceCompletion('{{ topic }}', '{{ article.id }}')"
-                                            class="px-4 py-2 rounded-xl {% if article.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10 transition-colors">
-                                        <i class="fas {% if article.completed %}fa-check{% else %}fa-check-circle{% endif %} mr-2"></i>
-                                        {% if article.completed %}Completed{% else %}Mark Complete{% endif %}
-                                    </button>
-                                    <button onclick="openNotesModal('{{ article.id }}', 'article', '{{ article.title }}')"
-                                            class="px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
-                                        <i class="fas fa-sticky-note mr-2"></i>Notes
-                                    </button>
-                                    <button onclick="generateSummary('{{ article.id }}')"
-                                            class="px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
-                                        <i class="fas fa-magic mr-2"></i>Generate Summary
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <p class="text-white/70">No reading materials available for this topic.</p>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Reading Materials -->
-            {% if recommendations.articles %}
-            <div class="space-y-8 mt-12">
-                <h3 class="text-xl font-semibold text-white flex items-center">
-                    <i class="fas fa-book mr-3 text-primary"></i>
-                    Reading Materials
-                </h3>
-                {% for article in recommendations.articles %}
-                <div class="bg-white/5 hover:bg-white/10 rounded-xl p-6 transition-colors">
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1">
-                            <h4 class="text-lg font-medium text-white">{{ article.title }}</h4>
-                            <p class="text-white/70 mt-2 mb-4">{{ article.description }}</p>
-                            <div class="flex items-center">
-                                <span class="text-white/50">
-                                    <i class="fas fa-clock mr-2"></i>{{ article.reading_time }}
-                                </span>
-                                <a href="{{ article.url }}" target="_blank" 
-                                   class="ml-6 text-primary hover:text-primary/90 inline-flex items-center">
-                                   <i class="fas fa-book-open mr-2"></i>Read Article
-                                </a>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-4 ml-6">
-                            <button onclick="handleResourceCompletion('{{ topic }}', '{{ article.id }}')"
-                                    class="inline-flex items-center px-4 py-2 rounded-xl {% if article.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10 transition-colors">
-                                <i class="fas {% if article.completed %}fa-check{% else %}fa-check-circle{% endif %} mr-2"></i>
-                                {% if article.completed %}Completed{% else %}Mark Complete{% endif %}
-                            </button>
-                            <button onclick="openNotesModal('{{ article.id }}', 'article', '{{ article.title }}')"
-                                    class="inline-flex items-center px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
-                                <i class="fas fa-sticky-note mr-2"></i>Notes
-                            </button>
-                            <button onclick="generateSummary('{{ article.id }}')"
-                                    class="inline-flex items-center px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
-                                <i class="fas fa-magic mr-2"></i>Generate Summary
-                            </button>
-                            {% if article.credits_unlocked %}
-                                <span class="inline-flex items-center px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
-                                    <i class="fas fa-star mr-2"></i>Credits Unlocked
-                                </span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            <!-- Research Papers -->
-            {% if recommendations.papers %}
-            <div class="space-y-8 mt-12">
-                <h3 class="text-xl font-semibold text-white flex items-center">
-                    <i class="fas fa-file-alt mr-3 text-primary"></i>
-                    Research Papers
-                </h3>
-                {% for paper in recommendations.papers %}
-                <div class="bg-white/5 hover:bg-white/10 rounded-xl p-6 transition-colors">
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1">
-                            <h4 class="text-lg font-medium text-white">{{ paper.title }}</h4>
-                            <p class="text-white/70 mt-2">{{ paper.authors }}</p>
-                            <p class="text-white/70 mt-2 mb-4">{{ paper.abstract }}</p>
-                            <div class="flex items-center">
-                                <span class="text-white/50">
-                                    <i class="fas fa-calendar mr-2"></i>Published: {{ paper.published_date }}
-                                </span>
-                                <a href="{{ paper.url }}" target="_blank" 
-                                   class="ml-6 text-primary hover:text-primary/90 inline-flex items-center">
-                                   <i class="fas fa-external-link-alt mr-2"></i>Read Paper
-                                </a>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-4 ml-6">
-                            <button onclick="handleResourceCompletion('{{ topic }}', '{{ paper.id }}')"
-                                    class="inline-flex items-center px-4 py-2 rounded-xl {% if paper.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} hover:bg-white/10 transition-colors">
-                                <i class="fas {% if paper.completed %}fa-check{% else %}fa-check-circle{% endif %} mr-2"></i>
-                                {% if paper.completed %}Completed{% else %}Mark Complete{% endif %}
-                            </button>
-                            <button onclick="openNotesModal('{{ paper.id }}', 'paper', '{{ paper.title }}')"
-                                    class="inline-flex items-center px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
-                                <i class="fas fa-sticky-note mr-2"></i>Notes
-                            </button>
-                            <button onclick="generateSummary('{{ paper.id }}')"
-                                    class="inline-flex items-center px-4 py-2 rounded-xl bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
-                                <i class="fas fa-magic mr-2"></i>Generate Summary
-                            </button>
-                            {% if paper.credits_unlocked %}
-                                <span class="inline-flex items-center px-4 py-2 rounded-xl bg-green-500/20 text-green-500">
-                                    <i class="fas fa-star mr-2"></i>Credits Unlocked
-                                </span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            <!-- User Materials -->
-            <div class="mt-12">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-medium text-white">Your Learning Materials</h3>
-                    <button onclick="toggleAddMaterialForm()"
-                            class="px-4 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
-                        <i class="fas fa-plus mr-2"></i>Add Material
-                    </button>
-                </div>
-
-                <!-- Add Material Form -->
-                <div id="addMaterialForm" class="hidden mb-6 bg-white/5 p-6 rounded-xl">
-                    <form action="{{ url_for('add_learning_material', topic=topic) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-white mb-2">Material Type</label>
-                            <select name="material_type" onchange="toggleMaterialInput(this.value)" 
-                                    class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white">
-                                <option value="document">Document (PDF/Word)</option>
-                                <option value="video">Video URL</option>
-                                <option value="article">Article URL</option>
-                            </select>
-                        </div>
-
-                        <div id="documentInput">
-                            <label class="block text-sm font-medium text-white mb-2">Upload Document</label>
-                            <input type="file" name="document" accept=".pdf,.doc,.docx"
-                                   class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white">
-                        </div>
-
-                        <div id="urlInput" class="hidden">
-                            <label class="block text-sm font-medium text-white mb-2">URL</label>
-                            <input type="url" name="url" placeholder="https://example.com"
-                                   class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-white mb-2">Title</label>
-                            <input type="text" name="title" required
-                                   class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40"
-                                   placeholder="Enter a title for this material">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-white mb-2">Description</label>
-                            <textarea name="description" rows="3" 
-                                    class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40"
-                                    placeholder="Add a brief description"></textarea>
-                        </div>
-
-                        <button type="submit" 
-                                class="w-full px-4 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
-                            Save Material
-                        </button>
-                    </form>
-                </div>
-
-                <!-- User Materials List -->
-                <div class="space-y-4">
-                    {% for material in user_materials %}
-                    <div class="flex items-start justify-between p-4 bg-white/5 rounded-xl">
-                        <div class="flex-1">
-                            <h4 class="text-white font-medium">{{ material.title }}</h4>
-                            <p class="text-white/70 text-sm mt-1">{{ material.description }}</p>
-                            <div class="flex items-center space-x-4 mt-4">
-                                <span class="text-white/50 text-sm">Type: {{ material.type }}</span>
-                                {% if material.type == 'document' %}
-                                    <a href="{{ url_for('download_material', material_id=material.id) }}" 
-                                       class="text-primary hover:text-primary/90">Download</a>
-                                {% else %}
-                                    <a href="{{ material.url }}" target="_blank" 
-                                       class="text-primary hover:text-primary/90">Open Link</a>
-                                {% endif %}
-                                <button onclick="openNotesModal('{{ material.id }}', '{{ material.type }}', '{{ material.title }}')"
-                                        class="inline-flex items-center text-white/70 hover:text-white">
-                                    <i class="fas fa-sticky-note mr-2"></i>Notes
+                            <div class="flex space-x-2">
+                                <button onclick="openNotesModal('{{ video.id }}', 'video', '{{ video.title }}')"
+                                        class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
+                                    <i class="fas fa-note-sticky mr-2"></i>Add Notes
                                 </button>
-                                <button onclick="generateSummary('{{ material.id }}')"
-                                        class="inline-flex items-center text-white/70 hover:text-white">
+                                <button onclick="generateSummary('{{ video.id }}')"
+                                        class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
                                     <i class="fas fa-magic mr-2"></i>Generate Summary
                                 </button>
-                                <form action="{{ url_for('delete_material', material_id=material.id) }}" method="POST"
-                                      onsubmit="return confirm('Are you sure you want to delete this material?')">
-                                    <button type="submit" class="text-red-500 hover:text-red-400">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                <button onclick="handleResourceCompletion('{{ topic }}', '{{ video.id }}')"
+                                        class="px-4 py-2 {% if video.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} rounded-xl transition-colors">
+                                    <i class="fas {% if video.completed %}fa-check{% else %}fa-circle{% endif %} mr-2"></i>
+                                    {% if video.completed %}Completed{% else %}Mark Complete{% endif %}
+                                </button>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
+            {% else %}
+                <p class="text-white/70">No video resources available for this topic.</p>
+            {% endif %}
+        </div>
+
+        <!-- Reading Materials Section -->
+        <div class="bg-surface rounded-2xl p-6 mb-6 border border-white/10">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <i class="fas fa-book text-primary mr-3"></i>
+                    <h2 class="text-xl font-semibold text-white">Reading Materials</h2>
+                </div>
             </div>
+            
+            {% if reading_materials %}
+                <div class="space-y-4">
+                    {% for material in reading_materials %}
+                    <div class="p-4 bg-white/5 rounded-xl">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="text-lg font-medium text-white">{{ material.title }}</h3>
+                                <p class="text-white/70">Estimated reading time: {{ material.reading_time }}</p>
+                                <p class="text-white/70">{{ material.description }}</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="openNotesModal('{{ material.id }}', 'reading', '{{ material.title }}')"
+                                        class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
+                                    <i class="fas fa-note-sticky mr-2"></i>Add Notes
+                                </button>
+                                <button onclick="generateSummary('{{ material.id }}')"
+                                        class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
+                                    <i class="fas fa-magic mr-2"></i>Generate Summary
+                                </button>
+                                <button onclick="handleResourceCompletion('{{ topic }}', '{{ material.id }}')"
+                                        class="px-4 py-2 {% if material.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} rounded-xl transition-colors">
+                                    <i class="fas {% if material.completed %}fa-check{% else %}fa-circle{% endif %} mr-2"></i>
+                                    {% if material.completed %}Completed{% else %}Mark Complete{% endif %}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-white/70">No reading materials available for this topic.</p>
+            {% endif %}
         </div>
     </main>
 </div>
 
-<script>
-// Knowledge Assessment Toggle
-document.addEventListener('DOMContentLoaded', function() {
-    // Add click handler for quiz section toggle
-    const quizToggle = document.querySelector('[onclick="toggleQuizSection()"]');
-    if (quizToggle) {
-        quizToggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            toggleQuizSection();
-        });
-    }
-
-    // Add click handlers for complete buttons
-    const topicCompleteBtn = document.querySelector('[onclick*="handleTopicCompletion"]');
-    if (topicCompleteBtn) {
-        const topic = topicCompleteBtn.getAttribute('onclick').match(/'([^']+)'/)[1];
-        topicCompleteBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            handleTopicCompletion(topic);
-        });
-    }
-
-    // Add handlers for resource complete buttons
-    document.querySelectorAll('[onclick*="handleResourceCompletion"]').forEach(btn => {
-        const [_, topic, resourceId] = btn.getAttribute('onclick').match(/'([^']+)'/g).map(s => s.slice(1, -1));
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            handleResourceCompletion(topic, resourceId);
-        });
-    });
-
-    // Initialize material form handlers
-    const materialTypeSelect = document.querySelector('select[name="material_type"]');
-    if (materialTypeSelect) {
-        materialTypeSelect.addEventListener('change', function() {
-            toggleMaterialInput(this.value);
-        });
-    }
-});
-
-function toggleQuizSection() {
-    const content = document.getElementById('quizContent');
-    const icon = document.getElementById('quizToggleIcon');
-    
-    if (!content || !icon) {
-        console.error('Quiz section elements not found');
-        return;
-    }
-    
-    if (content.classList.contains('hidden')) {
-        content.classList.remove('hidden');
-        icon.classList.add('rotate-180');
-    } else {
-        content.classList.add('hidden');
-        icon.classList.remove('rotate-180');
-    }
-}
-
-function toggleAddMaterialForm() {
-    const form = document.getElementById('addMaterialForm');
-    if (!form) {
-        console.error('Add material form not found');
-        return;
-    }
-    
-    form.classList.toggle('hidden');
-    if (!form.classList.contains('hidden')) {
-        form.reset();
-        const materialType = document.querySelector('select[name="material_type"]').value;
-        toggleMaterialInput(materialType);
-    }
-}
-
-function toggleMaterialInput(type) {
-    const documentInput = document.getElementById('documentInput');
-    const urlInput = document.getElementById('urlInput');
-    
-    if (!documentInput || !urlInput) {
-        console.error('Material input elements not found');
-        return;
-    }
-    
-    if (type === 'document') {
-        documentInput.classList.remove('hidden');
-        urlInput.classList.add('hidden');
-    } else {
-        documentInput.classList.add('hidden');
-        urlInput.classList.remove('hidden');
-    }
-}
-
-function handleTopicCompletion(topic) {
-    console.log('Marking topic as completed:', topic);
-    const button = document.querySelector(`[onclick="handleTopicCompletion('${topic}')"]`);
-    
-    fetch(`/mark-topic-completed/${encodeURIComponent(topic)}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showFlashMessage('Topic marked as completed successfully!', 'success');
-            
-            // Update button appearance immediately
-            if (button) {
-                button.innerHTML = '<i class="fas fa-check mr-2"></i>Topic Completed';
-                button.classList.remove('bg-white/5', 'text-white/70');
-                button.classList.add('bg-green-500/20', 'text-green-500');
-            }
-            
-            setTimeout(() => location.reload(), 1000);
-        } else {
-            showFlashMessage(data.message || 'Error marking topic as completed', 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showFlashMessage('Error marking topic as completed', 'error');
-    });
-}
-
-function handleResourceCompletion(topic, resourceId) {
-    console.log('Marking resource as completed:', resourceId, 'for topic:', topic);
 <!-- Notes Modal -->
 <div id="notesModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
     <div class="bg-surface rounded-2xl p-6 max-w-2xl w-full mx-4">
@@ -609,6 +222,7 @@ function handleResourceCompletion(topic, resourceId) {
 </div>
 
 <script>
+// Modal handling
 let currentResourceId = '';
 let currentResourceType = '';
 
@@ -621,10 +235,7 @@ function openNotesModal(resourceId, resourceType, title) {
     const notesContent = document.getElementById('notesContent');
     
     modalTitle.textContent = `Notes: ${title}`;
-    
-    // Here you would typically load existing notes from your backend
-    // For now, we'll just clear the textarea
-    notesContent.value = '';
+    notesContent.value = ''; // This would typically load existing notes
     
     modal.classList.remove('hidden');
     modal.classList.add('flex');
@@ -639,7 +250,6 @@ function closeNotesModal() {
 function saveNotes() {
     const notesContent = document.getElementById('notesContent').value;
     
-    // Here you would typically save the notes to your backend
     fetch('/save-notes', {
         method: 'POST',
         headers: {
@@ -665,7 +275,9 @@ function saveNotes() {
         showFlashMessage('Error saving notes', 'error');
     });
 }
-</script>
+
+// Resource completion handling
+function handleResourceCompletion(topic, resourceId) {
     const button = document.querySelector(`[onclick="handleResourceCompletion('${topic}', '${resourceId}')"]`);
     
     fetch(`/mark-resource-completed/${encodeURIComponent(topic)}/${resourceId}`, {
@@ -677,9 +289,8 @@ function saveNotes() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            showFlashMessage('Resource marked as completed successfully!', 'success');
+            showFlashMessage('Resource marked as completed!', 'success');
             
-            // Update button appearance immediately
             if (button) {
                 button.innerHTML = '<i class="fas fa-check mr-2"></i>Completed';
                 button.classList.remove('bg-white/5', 'text-white/70');
@@ -697,22 +308,24 @@ function saveNotes() {
     });
 }
 
+function generateSummary(resourceId) {
+    showFlashMessage('Generating summary...', 'info');
+    // Implementation will be added in the next iteration
+}
+
 function showFlashMessage(message, type = 'success') {
     const flashMessage = document.createElement('div');
-    flashMessage.className = `mb-4 p-4 rounded-xl ${type === 'success' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`;
+    flashMessage.className = `fixed top-4 right-4 mb-4 px-6 py-3 rounded-xl ${
+        type === 'success' ? 'bg-green-500/20 text-green-500' : 
+        type === 'error' ? 'bg-red-500/20 text-red-500' :
+        'bg-blue-500/20 text-blue-500'
+    }`;
     flashMessage.textContent = message;
-    const main = document.querySelector('main');
-    main.insertBefore(flashMessage, main.firstChild);
-}
-
-function openNotesModal(resourceId, resourceType, title) {
-    // Will be implemented in the next iteration
-    console.log('Opening notes modal:', { resourceId, resourceType, title });
-}
-
-function generateSummary(resourceId) {
-    // Will be implemented in the next iteration
-    console.log('Generating summary for:', resourceId);
+    document.body.appendChild(flashMessage);
+    
+    setTimeout(() => {
+        flashMessage.remove();
+    }, 3000);
 }
 </script>
 {% endblock %}
