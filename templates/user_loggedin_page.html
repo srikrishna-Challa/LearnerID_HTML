@@ -129,7 +129,44 @@
             
             <!-- Content Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Content cards will go here -->
+                <!-- Learning Journal Card -->
+                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group">
+                    <div class="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                        <i class="fas fa-book-open text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-4">Learning Journal</h3>
+                    <p class="text-white/70 mb-6">Track your progress and document your learning journey in your personal space.</p>
+                    <a href="{{ url_for('learning_journal') }}" 
+                       class="inline-flex items-center text-primary hover:text-primary/80 transition-colors">
+                        Open Journal <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+
+                <!-- AI Learning Plan Card -->
+                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group">
+                    <div class="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                        <i class="fas fa-robot text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-4">AI Learning Plan</h3>
+                    <p class="text-white/70 mb-6">Get personalized learning recommendations based on your goals and interests.</p>
+                    <a href="{{ url_for('learning_plan') }}" 
+                       class="inline-flex items-center text-primary hover:text-primary/80 transition-colors">
+                        View Plan <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+
+                <!-- Progress Analytics Card -->
+                <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group">
+                    <div class="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                        <i class="fas fa-chart-line text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-4">Progress Analytics</h3>
+                    <p class="text-white/70 mb-6">Visualize your learning progress and identify areas for improvement.</p>
+                    <a href="{{ url_for('learning_analytics') }}" 
+                       class="inline-flex items-center text-primary hover:text-primary/80 transition-colors">
+                        View Analytics <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </main>
