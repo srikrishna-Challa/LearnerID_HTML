@@ -1,309 +1,103 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="flex h-screen bg-background">
-    <!-- Sidebar -->
-    <aside class="fixed top-0 left-0 z-40 w-56 h-screen transition-transform -translate-x-full md:translate-x-0">
-        <div class="h-full bg-surface">
-            <!-- User Profile Section -->
-            <div class="flex flex-col items-center p-4 border-b border-white/10">
-                <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-3">
-                    <i class="fas fa-user text-2xl text-primary"></i>
+<div class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-white mb-4">My Learning Journal</h1>
+                    <p class="text-white/70">Document your learning journey, one entry at a time.</p>
                 </div>
-                <h2 class="text-base font-semibold text-white">{{ user.name if user else 'User Name' }}</h2>
-                <p class="text-xs text-white/70">{{ user.email if user else 'user@example.com' }}</p>
+                <a href="{{ url_for('user_loggedin_page') }}" 
+                   class="px-4 py-2 bg-surface hover:bg-white/5 rounded-xl text-white transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Home
+                </a>
             </div>
-            
-            <!-- Navigation -->
-            <nav class="p-3">
-                <ul class="space-y-1.5">
-                    <li>
-                        <a href="{{ url_for('user_loggedin_page') }}" 
-                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'user_loggedin_page' %}bg-white/10{% endif %}">
-                            <i class="fas fa-home w-5"></i>
-                            <span class="text-sm">Home</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('learning_history') }}"
-                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'learning_history' %}bg-white/10{% endif %}">
-                            <i class="fas fa-history w-5"></i>
-                            <span class="text-sm">Learning History</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('learning_credits') }}"
-                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'learning_credits' %}bg-white/10{% endif %}">
-                            <i class="fas fa-star w-5"></i>
-                            <span class="text-sm">Learning Credits</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('create_learning_journal') }}"
-                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'create_learning_journal' %}bg-white/10{% endif %}">
-                            <i class="fas fa-book w-5"></i>
-                            <span class="text-sm">Learning Journal</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('how_it_works') }}"
-                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'how_it_works' %}bg-white/10{% endif %}">
-                            <i class="fas fa-question-circle w-5"></i>
-                            <span class="text-sm">How it Works</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('about') }}"
-                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'about' %}bg-white/10{% endif %}">
-                            <i class="fas fa-info-circle w-5"></i>
-                            <span class="text-sm">About LearnerID</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
 
-            <!-- Logout Button -->
-            <div class="absolute bottom-0 left-0 right-0 p-4">
-                <form action="{{ url_for('logout') }}" method="post">
-                    <button type="submit" class="w-full flex items-center justify-center p-2 text-white rounded-lg hover:bg-white/5">
-                        <i class="fas fa-sign-out-alt w-5"></i>
-                        <span class="text-sm">Logout</span>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 md:ml-56 p-4 sm:p-6 lg:p-8">
-        <!-- Header -->
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-3xl font-bold text-white">Reading Journal</h1>
-                <p class="text-white/70">Track and document your learning progress</p>
-            </div>
-            <button onclick="toggleEntryForm()" 
-                    class="px-6 py-3 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors flex items-center">
-                <i class="fas fa-plus mr-2"></i>
-                Record Reading
-            </button>
-        </div>
-
-            <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="mb-6 p-4 rounded-xl {% if category == 'success' %}bg-green-500/10 text-green-400{% else %}bg-red-500/10 text-red-400{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <!-- Entry Form (Hidden by default) -->
-        <div id="entryForm" class="hidden mb-8">
-            <form method="POST" class="bg-surface rounded-2xl p-6 border border-white/10">
-                <div class="mb-6">
-                    <label for="title" class="block text-sm font-medium text-white mb-2">Title *</label>
-                    <input type="text" 
-                           id="title" 
-                           name="title" 
-                           required
-                           class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-primary"
-                           placeholder="Enter a title for your reading">
-                </div>
-                
-                <div class="mb-6">
-                    <label for="topic" class="block text-sm font-medium text-white mb-2">Topic/Category</label>
-                    <input type="text" 
-                           id="topic" 
-                           name="topic" 
-                           class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-primary"
-                           placeholder="e.g., Machine Learning, Web Development">
-                </div>
-
-                <div class="mb-6">
-                    <label for="urls" class="block text-sm font-medium text-white mb-2">Reference URLs</label>
-                    <div id="urlInputs" class="space-y-2">
-                        <div class="flex gap-2">
-                            <input type="url" 
-                                   name="urls[]" 
-                                   class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-primary"
-                                   placeholder="https://example.com">
-                            <button type="button" 
-                                    onclick="addUrlInput()"
-                                    class="px-3 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white">
-                                <i class="fas fa-plus"></i>
-                            </button>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="mb-6 p-4 rounded-xl {% if category == 'success' %}bg-green-500/10 text-green-400{% else %}bg-red-500/10 text-red-400{% endif %}">
+                            {{ message }}
+                            {% if category == 'success' %}
+                                <a href="{{ url_for('learning_history') }}" class="ml-2 underline">View in Learning History</a>
+                            {% endif %}
                         </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Add New Entry Form -->
+            <form method="POST" class="mb-8">
+                <div class="bg-surface rounded-2xl p-6 border border-white/10">
+                    <div class="mb-4">
+                        <label for="title" class="block text-sm font-medium text-white/70 mb-2">Entry Title</label>
+                        <input type="text" 
+                               id="title" 
+                               name="title" 
+                               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white"
+                               placeholder="What did you learn today?">
                     </div>
-                </div>
+                    
+                    <div class="mb-4">
+                        <label for="category" class="block text-sm font-medium text-white/70 mb-2">Category (Optional)</label>
+                        <input type="text" 
+                               id="category" 
+                               name="category" 
+                               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white"
+                               placeholder="e.g., Programming, Design, Mathematics">
+                    </div>
 
-                <div class="mb-6">
-                    <label for="description" class="block text-sm font-medium text-white mb-2">Description</label>
-                    <textarea id="description" 
-                              name="description" 
-                              rows="3" 
-                              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-primary"
-                              placeholder="Brief description of what you learned..."></textarea>
-                </div>
+                    <div class="mb-6">
+                        <label for="content" class="block text-sm font-medium text-white/70 mb-2">What did you learn?</label>
+                        <textarea id="content" 
+                                  name="content" 
+                                  rows="6" 
+                                  class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white"
+                                  placeholder="Share your learnings, insights, and reflections..."></textarea>
+                    </div>
 
-                <div class="mb-6">
-                    <label for="notes" class="block text-sm font-medium text-white mb-2">Notes</label>
-                    <textarea id="notes" 
-                              name="notes" 
-                              rows="6" 
-                              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-primary"
-                              placeholder="Your detailed notes, key takeaways, and insights..."></textarea>
-                </div>
-
-                <div class="flex justify-end space-x-4">
-                    <button type="button" 
-                            onclick="toggleEntryForm()"
-                            class="px-6 py-2 border border-white/10 rounded-xl text-white hover:bg-white/5">
-                        Cancel
-                    </button>
-                    <button type="submit" 
-                            class="px-6 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white">
-                        Save Reading Entry
-                    </button>
+                    <div class="flex items-center justify-end">
+                        <button type="submit" 
+                                class="px-6 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
+                            Save Entry
+                        </button>
+                    </div>
                 </div>
             </form>
-        </div>
 
-        <!-- Entries List -->
-        <div class="space-y-4">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-semibold text-white">Reading Entries</h2>
-                <div class="flex items-center space-x-4">
-                    <input type="text" 
-                           placeholder="Search entries..."
-                           class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white">
-                    <select class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white">
-                        <option value="">All Topics</option>
-                        {% for topic in topics %}
-                            <option value="{{ topic }}">{{ topic }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            {% if entries %}
-                {% for entry in entries %}
-                <div class="bg-surface hover:bg-surface/80 rounded-xl p-6 border border-white/10 transition-colors">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="flex-1">
-                            <div class="flex items-center space-x-3">
-                                <h3 class="text-lg font-medium text-white hover:text-primary">
-                                    <a href="#" onclick="toggleEntryDetails('{{ entry.id }}')">{{ entry.title }}</a>
-                                </h3>
-                                {% if entry.topic %}
-                                <span class="px-3 py-1 bg-primary/20 rounded-full text-primary text-sm">
-                                    {{ entry.topic }}
+            <!-- Previous Entries -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-white">Previous Entries</h2>
+                {% if entries %}
+                    {% for entry in entries %}
+                    <div class="bg-surface rounded-2xl p-6 border border-white/10">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-lg font-medium text-white">{{ entry.title }}</h3>
+                                {% if entry.category %}
+                                <span class="inline-block px-3 py-1 bg-primary/20 rounded-full text-primary text-sm mt-2">
+                                    {{ entry.category }}
                                 </span>
                                 {% endif %}
                             </div>
-                            <p class="text-white/70 mt-2">{{ entry.description }}</p>
+                            <span class="text-sm text-white/50">{{ entry.created_at.strftime('%B %d, %Y') }}</span>
                         </div>
-                        <div class="text-sm text-white/50">{{ entry.created_at.strftime('%B %d, %Y') }}</div>
+                        <p class="text-white/70 whitespace-pre-wrap">{{ entry.content }}</p>
                     </div>
-                    
-                    <!-- Collapsible Details -->
-                    <div id="entry-{{ entry.id }}" class="hidden mt-4 pt-4 border-t border-white/10">
-                        {% if entry.urls %}
-                        <div class="mb-4">
-                            <h4 class="text-sm font-medium text-white mb-2">Reference Links:</h4>
-                            <ul class="space-y-1">
-                                {% for url in entry.urls %}
-                                <li>
-                                    <a href="{{ url }}" 
-                                       target="_blank" 
-                                       class="text-primary hover:text-primary/90">
-                                        {{ url }}
-                                    </a>
-                                </li>
-                                {% endfor %}
-                            </ul>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
+                            <i class="fas fa-book-open text-2xl text-white/50"></i>
                         </div>
-                        {% endif %}
-                        
-                        {% if entry.notes %}
-                        <div class="mb-4">
-                            <h4 class="text-sm font-medium text-white mb-2">Notes:</h4>
-                            <div class="text-white/70 whitespace-pre-wrap">{{ entry.notes }}</div>
-                        </div>
-                        {% endif %}
-                        
-                        <div class="flex justify-end space-x-4">
-                            <button onclick="editEntry('{{ entry.id }}')"
-                                    class="text-primary hover:text-primary/90">
-                                <i class="fas fa-edit mr-1"></i>Edit
-                            </button>
-                            <form action="{{ url_for('delete_entry', entry_id=entry.id) }}" 
-                                  method="POST" 
-                                  class="inline"
-                                  onsubmit="return confirm('Are you sure you want to delete this entry?')">
-                                <button type="submit" class="text-red-500 hover:text-red-400">
-                                    <i class="fas fa-trash mr-1"></i>Delete
-                                </button>
-                            </form>
-                        </div>
+                        <p class="text-white/50">No entries yet. Start documenting your learning journey!</p>
                     </div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <div class="text-center py-12 bg-surface rounded-xl border border-white/10">
-                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
-                        <i class="fas fa-book-open text-2xl text-white/50"></i>
-                    </div>
-                    <p class="text-white/50">No entries yet. Start documenting your reading journey!</p>
-                </div>
-            {% endif %}
+                {% endif %}
+            </div>
         </div>
-        </main>
+    </div>
 </div>
-
-<script>
-function toggleEntryForm() {
-    const form = document.getElementById('entryForm');
-    form.classList.toggle('hidden');
-}
-
-function addUrlInput() {
-    const urlInputs = document.getElementById('urlInputs');
-    const newInput = document.createElement('div');
-    newInput.className = 'flex gap-2';
-    newInput.innerHTML = `
-        <input type="url" 
-               name="urls[]" 
-               class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-primary"
-               placeholder="https://example.com">
-        <button type="button" 
-                onclick="removeUrlInput(this)"
-                class="px-3 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white">
-            <i class="fas fa-minus"></i>
-        </button>
-    `;
-    urlInputs.appendChild(newInput);
-}
-
-function removeUrlInput(button) {
-    button.parentElement.remove();
-}
-
-function toggleEntryDetails(entryId) {
-    const details = document.getElementById(`entry-${entryId}`);
-    details.classList.toggle('hidden');
-}
-
-function editEntry(entryId) {
-    // Implement edit functionality in the future
-    console.log('Edit entry:', entryId);
-}
-
-// Initialize tooltips and other UI enhancements
-document.addEventListener('DOMContentLoaded', function() {
-    // Add any initialization code here
-});
-</script>
 {% endblock %}
