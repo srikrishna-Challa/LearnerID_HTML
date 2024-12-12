@@ -1,4 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_from_directory
+
+ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'txt'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -13,28 +20,98 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///learnerid.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Mock data for quizzes and recommendations
+# Initialize data structures
 quiz_attempts = {}
+quiz_data = {}
+topic_details = {}
+user_materials = {}
+
+# Mock data for quizzes and recommendations
 recommendations_data = {
     'Technology and Computer Science': {
-        'Core Materials': [
+        'Video Resources': [
             {
-                'id': 'intro_1',
+                'id': 'video_1',
                 'title': 'Introduction to Programming Concepts',
                 'type': 'video',
+                'description': 'A comprehensive overview of basic programming concepts',
                 'url': 'https://example.com/intro-programming',
+                'duration': '45 mins',
                 'completed': False,
-                'credits_unlocked': False
+                'credits_unlocked': False,
+                'notes': []
+            },
+            {
+                'id': 'video_2',
+                'title': 'Object-Oriented Programming Explained',
+                'type': 'video',
+                'description': 'Learn about classes, objects, and OOP principles',
+                'url': 'https://example.com/oop-basics',
+                'duration': '30 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
             }
         ],
-        'Additional Resources': [
+        'Reading Materials': [
             {
-                'id': 'resource_1',
-                'title': 'Programming Practice Exercises',
+                'id': 'reading_1',
+                'title': 'Programming Best Practices Guide',
                 'type': 'article',
-                'url': 'https://example.com/programming-exercises',
+                'description': 'Essential coding practices and conventions',
+                'url': 'https://example.com/programming-practices',
+                'reading_time': '15 mins',
                 'completed': False,
-                'credits_unlocked': False
+                'credits_unlocked': False,
+                'notes': []
+            },
+            {
+                'id': 'reading_2',
+                'title': 'Algorithm Design Fundamentals',
+                'type': 'article',
+                'description': 'Introduction to algorithm design and analysis',
+                'url': 'https://example.com/algo-basics',
+                'reading_time': '20 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            }
+        ],
+        'Practice Resources': [
+            {
+                'id': 'practice_1',
+                'title': 'Programming Exercises Collection',
+                'type': 'exercise',
+                'description': 'Hands-on coding exercises for practice',
+                'url': 'https://example.com/programming-exercises',
+                'estimated_time': '1 hour',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            }
+        ]
+    }
+}
+
+# Initialize topic details
+topic_details = {
+    'Technology and Computer Science': {
+        'title': 'Technology and Computer Science',
+        'level': 'Intermediate',
+        'progress': 65,
+        'start_date': '2024-12-01',
+        'topics': [
+            {
+                'title': 'Introduction to Programming',
+                'week': 1,
+                'status': 'Completed',
+                'progress': 100
+            },
+            {
+                'title': 'Data Structures',
+                'week': 2,
+                'status': 'In Progress',
+                'progress': 45
             }
         ]
     }
@@ -99,6 +176,15 @@ class LearningJournalEntry(db.Model):
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+class UserNote(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    resource_id = db.Column(db.String(100), nullable=False)
+    resource_type = db.Column(db.String(50), nullable=False)
+    note_content = db.Column(db.Text, nullable=False)
+    summary = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 with app.app_context():
     db.create_all()
