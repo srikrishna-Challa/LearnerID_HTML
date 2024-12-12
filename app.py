@@ -902,6 +902,25 @@ def submit_quiz(topic, item_id):
         flash(f'You got {correct_count} answers correct. You need {quiz_data[topic]["passing_score"]} to pass. You have {attempts_left} attempts left!', 'error')
         return redirect(url_for('learning_recommendations', topic=topic))
 
+@app.route('/weekly-reading-details/<week_start>')
+def weekly_reading_details(week_start):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    # Find the specific week's readings from the weekly_readings data
+    week_data = None
+    for week in weekly_readings:
+        if week['start_date'] == week_start:
+            week_data = week
+            break
+    
+    if not week_data:
+        flash('Week not found', 'error')
+        return redirect(url_for('learning_history'))
+    
+    return render_template('weekly_reading_details.html', 
+                         week=week_data,
+                         user=get_current_user())
 @app.route('/all-reading-history')
 def all_reading_history():
     if 'user_id' not in session:
