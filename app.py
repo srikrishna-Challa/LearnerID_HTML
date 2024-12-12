@@ -189,7 +189,6 @@ def learning_history():
         return redirect(url_for('login'))
     
     user = User.query.get(session['user_id'])
-
     return render_template('learning_history.html', user=user)
 
 @app.route('/learning-credits')
@@ -199,6 +198,22 @@ def learning_credits():
     
     user = User.query.get(session['user_id'])
     return render_template('learning_credits.html', user=user)
+
+@app.route('/learning-plan')
+def learning_plan():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    user = User.query.get(session['user_id'])
+    return render_template('learning_plan.html', user=user)
+
+@app.route('/learning-recommendations/<topic>')
+def learning_recommendations(topic):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    user = User.query.get(session['user_id'])
+    return render_template('learning_recommendations.html', user=user, topic=topic)
 
 @app.route('/how-it-works')
 def how_it_works():
