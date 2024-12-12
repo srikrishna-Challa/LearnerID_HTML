@@ -78,18 +78,32 @@ def signup():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    # If user is already logged in, redirect to dashboard
+    if 'user_id' in session:
+        return redirect(url_for('user_loggedin_page'))
+    
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
+        
+        if not email or not password:
+            flash('Please enter both email and password', 'error')
+            return render_template('login.html')
         
         user = User.query.filter_by(email=email).first()
         
         if user and check_password_hash(user.password_hash, password):
             session['user_id'] = user.id
             flash('Logged in successfully!', 'success')
+            
+            # Redirect to the page user was trying to access, or dashboard by default
+            next_page = request.args.get('next')
+            if next_page:
+                return redirect(next_page)
             return redirect(url_for('user_loggedin_page'))
         
         flash('Invalid email or password', 'error')
+        app.logger.info(f"Failed login attempt for email: {email}")
     
     return render_template('login.html')
 
