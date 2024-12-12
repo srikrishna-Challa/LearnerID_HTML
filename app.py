@@ -1305,7 +1305,8 @@ def mark_topic_completed(topic):
             'message': 'Topic not found'
         }), 404
 
-@app.route('/learning_history')
+@app.route('/learning-history')
+@app.route('/learning_history')  # Adding both URL formats for compatibility
 def learning_history():
     if 'user_id' not in session:
         return redirect(url_for('login'))
@@ -1360,6 +1361,7 @@ def learning_history():
         'active_courses': 2
     }
 
+    app.logger.debug("Rendering learning history template")
     return render_template('learning_history.html', 
                          learning_history=learning_history,
                          recent_activities=recent_activities,
