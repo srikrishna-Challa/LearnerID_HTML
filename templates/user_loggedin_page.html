@@ -1,154 +1,605 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Header Navigation -->
-<header class="fixed top-0 left-0 right-0 bg-surface/95 backdrop-blur-sm border-b border-white/10 z-50">
-    <div class="container mx-auto px-4">
-        <div class="flex items-center justify-between h-16">
-            <!-- Logo -->
-            <a href="{{ url_for('user_loggedin_page') }}" class="flex items-center space-x-2">
-                <i class="fas fa-graduation-cap text-primary text-2xl"></i>
-                <span class="text-xl font-bold text-white">LearnerID</span>
-            </a>
-
-            <!-- User Profile Dropdown -->
-            <div class="relative">
-                <button onclick="toggleDropdown()" 
-                        class="flex items-center space-x-3 hover:bg-white/5 rounded-lg px-3 py-2 transition-colors">
-                    <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                        <i class="fas fa-user text-sm text-primary"></i>
-                    </div>
-                    <span class="text-sm text-white">{{ user.name if user else 'User Name' }}</span>
-                    <i class="fas fa-chevron-down text-white/70"></i>
-                </button>
-
-                <!-- Dropdown Menu -->
-                <div id="userDropdown" 
-                     class="absolute right-0 mt-2 w-48 bg-surface border border-white/10 rounded-lg shadow-lg hidden">
-                    <div class="py-2">
+<div class="flex h-screen bg-background">
+    <!-- Sidebar -->
+    <aside class="fixed top-0 left-0 z-40 w-56 h-screen transition-transform -translate-x-full md:translate-x-0">
+        <div class="h-full bg-surface">
+            <!-- User Profile Section -->
+            <div class="flex flex-col items-center p-4 border-b border-white/10">
+                <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-3">
+                    <i class="fas fa-user text-2xl text-primary"></i>
+                </div>
+                <h2 class="text-base font-semibold text-white">{{ user.name if user else 'User Name' }}</h2>
+                <p class="text-xs text-white/70">{{ user.email if user else 'user@example.com' }}</p>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="p-3">
+                <ul class="space-y-1.5">
+                    <li>
                         <a href="{{ url_for('user_loggedin_page') }}" 
-                           class="flex items-center px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 transition-colors {% if request.endpoint == 'user_loggedin_page' %}text-white bg-white/5{% endif %}">
+                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'user_loggedin_page' %}bg-white/10{% endif %}">
                             <i class="fas fa-home w-5"></i>
-                            <span>Home</span>
+                            <span class="text-sm">Home</span>
                         </a>
+                    </li>
+                    <li>
                         <a href="{{ url_for('learning_history') }}" 
-                           class="flex items-center px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 transition-colors {% if request.endpoint == 'learning_history' %}text-white bg-white/5{% endif %}">
-                            <i class="fas fa-history w-5"></i>
-                            <span>History</span>
+                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'learning_history' %}bg-white/10{% endif %}">
+                            <i class="fas fa-history w-6"></i>
+                            <span>Learning History</span>
                         </a>
+                    </li>
+                    <li>
                         <a href="{{ url_for('learning_credits') }}" 
-                           class="flex items-center px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 transition-colors {% if request.endpoint == 'learning_credits' %}text-white bg-white/5{% endif %}">
-                            <i class="fas fa-star w-5"></i>
-                            <span>Credits</span>
+                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'learning_credits' %}bg-white/10{% endif %}">
+                            <i class="fas fa-star w-6"></i>
+                            <span>Learning Credits</span>
                         </a>
+                    </li>
+                    <li>
                         <a href="{{ url_for('about') }}" 
-                           class="flex items-center px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 transition-colors {% if request.endpoint == 'about' %}text-white bg-white/5{% endif %}">
-                            <i class="fas fa-info-circle w-5"></i>
-                            <span>About</span>
+                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'about' %}bg-white/10{% endif %}">
+                            <i class="fas fa-info-circle w-6"></i>
+                            <span>About Us</span>
                         </a>
+                    </li>
+                    <li>
                         <a href="{{ url_for('how_it_works') }}" 
-                           class="flex items-center px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 transition-colors {% if request.endpoint == 'how_it_works' %}text-white bg-white/5{% endif %}">
-                            <i class="fas fa-question-circle w-5"></i>
+                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'how_it_works' %}bg-white/10{% endif %}">
+                            <i class="fas fa-question-circle w-6"></i>
                             <span>How it Works</span>
                         </a>
-                        <div class="border-t border-white/10 my-1"></div>
-                        <form action="{{ url_for('logout') }}" method="POST" class="block">
-                            <button type="submit" 
-                                    class="w-full flex items-center px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 transition-colors">
-                                <i class="fas fa-sign-out-alt w-5"></i>
-                                <span>Logout</span>
-                            </button>
-                        </form>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Logout Button -->
+            <div class="absolute bottom-0 left-0 right-0 p-4">
+                <form action="{{ url_for('logout') }}" method="POST" class="w-full">
+                    <button type="submit" 
+                            class="w-full flex items-center justify-center p-3 text-white rounded-xl hover:bg-white/5 transition-colors">
+                        <i class="fas fa-sign-out-alt w-6"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 md:ml-56 p-4 sm:p-6 lg:p-8">
+        <div class="container mx-auto">
+            <h1 class="text-3xl font-bold text-white mb-8">Never.Stop.Learning</h1>
+            
+            <!-- Three Main Options -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
+                <!-- Your Learning Journal -->
+                <div class="bg-surface p-8 rounded-2xl border border-white/10 hover:bg-white/5 transition-all duration-300 hover:scale-105 group flex flex-col h-[400px]">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                            <i class="fas fa-book-open text-3xl text-primary"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-4">Your Learning Journal</h3>
+                        <p class="text-white/70 text-base">Document your learning journey, and reflect on your learning experiences in a personalized space.</p>
+                    </div>
+                    <a href="{{ url_for('create_learning_journal') }}" 
+                       class="mt-6 w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
+                        Start Journal <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+
+                <!-- AI-Guided Learning -->
+                <div class="bg-surface p-8 rounded-2xl border border-white/10 hover:bg-white/5 transition-all duration-300 hover:scale-105 group flex flex-col h-[400px]">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                            <i class="fas fa-robot text-3xl text-primary"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-4">AI-Guided Learning</h3>
+                        <p class="text-white/70 text-base">Experience personalized learning paths crafted by AI based on your goals, interests, and learning style.</p>
+                    </div>
+                    <button onclick="openModal()" 
+                            class="mt-6 w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
+                        Create Plan <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </div>
+
+                <!-- AI Learning Assistant -->
+                <div class="bg-surface p-8 rounded-2xl border border-white/10 hover:bg-white/5 transition-all duration-300 hover:scale-105 group flex flex-col h-[400px]">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
+                            <i class="fas fa-comments text-3xl text-primary"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-4">AI Learning Assistant</h3>
+                        <p class="text-white/70 text-base">Chat with AI to get instant answers about learning paths, courses, and study techniques.</p>
+                    </div>
+                    <button onclick="openChatModal()" 
+                            class="mt-6 w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
+                        Start Chat <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Structured Learning Plan -->
+            <div id="learning-paths" class="bg-surface p-6 rounded-2xl border border-white/10">
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-white">Structured Learning Paths</h2>
+                    <p class="text-white/70 text-sm mt-1">Click on a category to explore learning paths</p>
+                </div>
+                <!-- Categories Container -->
+                <div class="relative overflow-hidden" style="min-height: 400px;">
+                    <!-- Main Categories -->
+                    <div id="mainCategories" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 transition-transform duration-500 ease-in-out">
+                        <!-- Technology & Programming -->
+                        <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group" 
+                             onclick="showSubcategories('tech')">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-laptop-code text-primary text-xl"></i>
+                                        <div>
+                                            <h3 class="text-white font-medium">Technology & Programming</h3>
+                                            <p class="text-white/70 text-sm mt-2">Web development, mobile apps, software engineering</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-right text-primary transform group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+
+                        <!-- Data Science & Analytics -->
+                        <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group"
+                             onclick="showSubcategories('data')">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-chart-line text-primary text-xl"></i>
+                                        <div>
+                                            <h3 class="text-white font-medium">Data Science & Analytics</h3>
+                                            <p class="text-white/70 text-sm mt-2">Data analysis, machine learning, statistics</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-right text-primary transform group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+
+                        <!-- Design & Creative -->
+                        <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group"
+                             onclick="showSubcategories('design')">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-paint-brush text-primary text-xl"></i>
+                                        <div>
+                                            <h3 class="text-white font-medium">Design & Creative</h3>
+                                            <p class="text-white/70 text-sm mt-2">UI/UX design, graphic design, digital art</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-right text-primary transform group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+
+                        <!-- Business & Management -->
+                        <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group"
+                             onclick="showSubcategories('business')">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-briefcase text-primary text-xl"></i>
+                                        <div>
+                                            <h3 class="text-white font-medium">Business & Management</h3>
+                                            <p class="text-white/70 text-sm mt-2">Project management, leadership, entrepreneurship</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-right text-primary transform group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+
+                        <!-- Language Learning -->
+                        <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group"
+                             onclick="showSubcategories('language')">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-language text-primary text-xl"></i>
+                                        <div>
+                                            <h3 class="text-white font-medium">Language Learning</h3>
+                                            <p class="text-white/70 text-sm mt-2">Programming languages, foreign languages, communication</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-right text-primary transform group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+
+                        <!-- Personal Development -->
+                        <div class="p-6 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group"
+                             onclick="showSubcategories('personal')">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-user-graduate text-primary text-xl"></i>
+                                        <div>
+                                            <h3 class="text-white font-medium">Personal Development</h3>
+                                            <p class="text-white/70 text-sm mt-2">Soft skills, time management, productivity</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-right text-primary transform group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technology Subcategories Panel -->
+                    <div id="techSubcategories" class="absolute inset-0 transform translate-x-full transition-transform duration-500 ease-in-out">
+                        <div class="bg-surface p-6 rounded-2xl h-full">
+                            <div class="flex items-center space-x-4 mb-6">
+                                <button onclick="hideSubcategories('tech')" class="text-white hover:text-primary transition-colors">
+                                    <i class="fas fa-arrow-left text-xl"></i>
+                                </button>
+                                <div>
+                                    <h3 class="text-xl font-semibold text-white">Technology & Programming</h3>
+                                    <p class="text-white/70 text-sm">Select your learning path</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 gap-4">
+                                <a href="{{ url_for('learning_plan') }}?path=web-development" 
+                                   class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                    <h4 class="text-white font-medium mb-2">Web Development</h4>
+                                    <p class="text-white/70 text-sm">Master front-end and back-end development</p>
+                                </a>
+                                <a href="{{ url_for('learning_plan') }}?path=mobile-development" 
+                                   class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                    <h4 class="text-white font-medium mb-2">Mobile Development</h4>
+                                    <p class="text-white/70 text-sm">Build iOS and Android applications</p>
+                                </a>
+                                <a href="{{ url_for('learning_plan') }}?path=cloud-computing" 
+                                   class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                    <h4 class="text-white font-medium mb-2">Cloud Computing</h4>
+                                    <p class="text-white/70 text-sm">Learn AWS, Azure, and Google Cloud</p>
+                                </a>
+                                <a href="{{ url_for('learning_plan') }}?path=cybersecurity" 
+                                   class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                    <h4 class="text-white font-medium mb-2">Cybersecurity</h4>
+                                    <p class="text-white/70 text-sm">Master security principles and practices</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Science Subcategories Panel -->
+                    <div id="dataSubcategories" class="absolute inset-0 transform translate-x-full transition-transform duration-500 ease-in-out">
+                        <div class="bg-surface p-6 rounded-2xl h-full">
+                            <div class="flex items-center space-x-4 mb-6">
+                                <button onclick="hideSubcategories('data')" class="text-white hover:text-primary transition-colors">
+                                    <i class="fas fa-arrow-left text-xl"></i>
+                                </button>
+                                <div>
+                                    <h3 class="text-xl font-semibold text-white">Data Science & Analytics</h3>
+                                    <p class="text-white/70 text-sm">Select your learning path</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 gap-4">
+                                <a href="{{ url_for('learning_plan') }}?path=machine-learning" 
+                                   class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                    <h4 class="text-white font-medium mb-2">Machine Learning</h4>
+                                    <p class="text-white/70 text-sm">Build intelligent systems and models</p>
+                                </a>
+                                <a href="{{ url_for('learning_plan') }}?path=data-analysis" 
+                                   class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                    <h4 class="text-white font-medium mb-2">Data Analysis</h4>
+                                    <p class="text-white/70 text-sm">Master data processing and visualization</p>
+                                </a>
+                                <a href="{{ url_for('learning_plan') }}?path=big-data" 
+                                   class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                    <h4 class="text-white font-medium mb-2">Big Data</h4>
+                                    <p class="text-white/70 text-sm">Handle and analyze large-scale datasets</p>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</header>
+    </main>
+</div>
 
-<!-- Main Content -->
-<main class="pt-24 px-4 min-h-screen bg-background">
-    <div class="container mx-auto">
-        <h1 class="text-3xl font-bold text-white mb-8">Never.Stop.Learning</h1>
+<!-- AI Chat Modal -->
+<div id="aiChatModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="bg-surface rounded-2xl p-8 max-w-2xl w-full mx-4 relative h-[600px] flex flex-col">
+        <button onclick="closeChatModal()" class="absolute top-4 right-4 text-white/70 hover:text-white">
+            <i class="fas fa-times"></i>
+        </button>
         
-        <!-- Feature Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            <!-- Learning Journal Card -->
-            <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group">
-                <div class="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
-                    <i class="fas fa-book-open text-2xl text-primary"></i>
+        <h2 class="text-2xl font-bold text-white mb-6">Chat with AI Learning Assistant</h2>
+        
+        <!-- Chat Messages Container -->
+        <div id="chatMessages" class="flex-1 overflow-y-auto mb-6 space-y-4">
+            <!-- AI Welcome Message -->
+            <div class="flex items-start space-x-4">
+                <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-robot text-primary text-sm"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-white mb-4">Learning Journal</h3>
-                <p class="text-white/70 mb-6">Track your progress and document your learning journey in your personal space.</p>
-                <a href="{{ url_for('create_learning_journal') }}" 
-                   class="inline-flex items-center text-primary hover:text-primary/80 transition-colors">
-                    Open Journal <i class="fas fa-arrow-right ml-2"></i>
-                </a>
-            </div>
-
-            <!-- AI Learning Plan Card -->
-            <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group">
-                <div class="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
-                    <i class="fas fa-robot text-2xl text-primary"></i>
+                <div class="flex-1 bg-white/5 rounded-xl p-4">
+                    <p class="text-white">Hi! I'm your AI Learning Assistant. Ask me anything about learning paths, courses, or study techniques!</p>
                 </div>
-                <h3 class="text-xl font-semibold text-white mb-4">AI Learning Plan</h3>
-                <p class="text-white/70 mb-6">Get personalized learning recommendations based on your goals and interests.</p>
-                <a href="{{ url_for('learning_plan') }}" 
-                   class="inline-flex items-center text-primary hover:text-primary/80 transition-colors">
-                    View Plan <i class="fas fa-arrow-right ml-2"></i>
-                </a>
-            </div>
-
-            <!-- Progress Analytics Card -->
-            <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group">
-                <div class="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors">
-                    <i class="fas fa-chart-line text-2xl text-primary"></i>
-                </div>
-                <h3 class="text-xl font-semibold text-white mb-4">Progress Analytics</h3>
-                <p class="text-white/70 mb-6">Visualize your learning progress and identify areas for improvement.</p>
-                <a href="{{ url_for('learning_history') }}" 
-                   class="inline-flex items-center text-primary hover:text-primary/80 transition-colors">
-                    View Progress <i class="fas fa-arrow-right ml-2"></i>
-                </a>
             </div>
         </div>
+        
+        <!-- Chat Input -->
+        <form id="chatForm" class="flex items-end gap-4">
+            <div class="flex-1">
+                <input type="text" 
+                       id="chatInput"
+                       placeholder="Type your message..."
+                       class="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-white placeholder:text-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+            </div>
+            <button type="submit" 
+                    class="px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl transition-colors flex items-center">
+                <span>Send</span>
+                <i class="fas fa-paper-plane ml-2"></i>
+            </button>
+        </form>
     </div>
-</main>
+</div>
+
+<!-- AI Learning Plan Modal -->
+<div id="aiLearningModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4 overflow-y-auto">
+    <div class="bg-surface rounded-xl p-5 max-w-lg w-full mx-auto my-4 relative">
+        <!-- Close Button -->
+        <button onclick="closeModal()" class="absolute -top-3 -right-3 w-7 h-7 flex items-center justify-center bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-lg z-10">
+            <i class="fas fa-times text-sm"></i>
+        </button>
+        
+        <!-- Modal Content -->
+        <h2 class="text-lg font-bold text-white mb-3">Create Your AI-Powered Learning Plan</h2>
+        
+        <div class="mb-4">
+            <form id="learningSearchForm" class="space-y-3">
+                <!-- Search Bar -->
+                <div class="space-y-2">
+                    <label for="learning-search" class="block text-base text-white font-medium">What would you like to learn?</label>
+                    <div class="relative">
+                        <input type="text" 
+                               id="learning-search"
+                               placeholder="e.g., Web Development, Data Science, AI"
+                               class="w-full h-10 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white text-base placeholder:text-white/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20"
+                               required>
+                        <button type="button" 
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80">
+                            <i class="fas fa-search text-base"></i>
+                        </button>
+                    </div>
+                    <p class="text-white/70 text-sm">Our AI will create a personalized learning path based on your interests</p>
+                </div>
+
+                <!-- Additional Options -->
+                <div class="space-y-3 mt-4">
+                    <h3 class="text-base font-medium text-white">Customize Your Plan</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-white/5 p-3 rounded-lg">
+                            <label class="block text-xs font-medium text-white/70 mb-1">Experience Level</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="bg-white/5 p-3 rounded-lg">
+                            <label class="block text-xs font-medium text-white/70 mb-1">Time Commitment</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white">
+                                <option value="1-2">1-2 hours/week</option>
+                                <option value="3-5">3-5 hours/week</option>
+                                <option value="5+">5+ hours/week</option>
+                            </select>
+                        </div>
+                        <div class="bg-white/5 p-3 rounded-lg">
+                            <label class="block text-xs font-medium text-white/70 mb-1">Learning Style</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white">
+                                <option value="visual">Visual (Videos & Graphics)</option>
+                                <option value="reading">Reading & Writing</option>
+                                <option value="auditory">Auditory (Lectures)</option>
+                                <option value="hands-on">Hands-on Practice</option>
+                            </select>
+                        </div>
+                        <div class="bg-white/5 p-3 rounded-lg">
+                            <label class="block text-xs font-medium text-white/70 mb-1">Content Format</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white">
+                                <option value="video">Video Tutorials</option>
+                                <option value="interactive">Interactive Exercises</option>
+                                <option value="text">Text-based Materials</option>
+                                <option value="mixed">Mixed Format</option>
+                            </select>
+                        </div>
+                        <div class="bg-white/5 p-3 rounded-lg">
+                            <label class="block text-xs font-medium text-white/70 mb-1">Learning Goals</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white">
+                                <option value="career">Career Development</option>
+                                <option value="academic">Academic Achievement</option>
+                                <option value="personal">Personal Interest</option>
+                                <option value="certification">Professional Certification</option>
+                            </select>
+                        </div>
+                        <div class="bg-white/5 p-3 rounded-lg">
+                            <label class="block text-xs font-medium text-white/70 mb-1">Topic Knowledge</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white">
+                                <option value="none">No Prior Knowledge</option>
+                                <option value="basic">Basic Understanding</option>
+                                <option value="intermediate">Some Experience</option>
+                                <option value="advanced">Advanced Knowledge</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button type="submit" 
+                            class="px-6 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors flex items-center text-sm font-medium">
+                        <span>Generate Learning Plan</span>
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Nav Toggle -->
+<button type="button" 
+        class="fixed top-4 left-4 z-50 md:hidden text-white text-2xl bg-transparent border-none cursor-pointer"
+        onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+</button>
 
 <script>
-function toggleDropdown() {
-    const dropdown = document.getElementById('userDropdown');
-    const isShown = !dropdown.classList.contains('hidden');
-    
-    // Close dropdown if clicking outside
-    if (!isShown) {
-        dropdown.classList.remove('hidden');
-        document.addEventListener('click', closeDropdownOutside);
-    } else {
-        dropdown.classList.add('hidden');
-        document.removeEventListener('click', closeDropdownOutside);
+// Chat Modal Functions
+function openChatModal() {
+    const modal = document.getElementById('aiChatModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        // Focus chat input
+        setTimeout(() => {
+            document.getElementById('chatInput')?.focus();
+        }, 100);
     }
 }
 
-function closeDropdownOutside(e) {
-    const dropdown = document.getElementById('userDropdown');
-    const button = dropdown.previousElementSibling;
-    
-    if (!dropdown.contains(e.target) && !button.contains(e.target)) {
-        dropdown.classList.add('hidden');
-        document.removeEventListener('click', closeDropdownOutside);
+function closeChatModal() {
+    const modal = document.getElementById('aiChatModal');
+    if (modal) {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
     }
 }
 
-// Close dropdown when clicking outside
-document.addEventListener('DOMContentLoaded', function() {
-    document.addEventListener('click', function(e) {
-        const dropdown = document.getElementById('userDropdown');
-        const button = document.querySelector('[onclick="toggleDropdown()"]');
+// Handle chat form submission
+document.getElementById('chatForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const input = document.getElementById('chatInput');
+    const messagesContainer = document.getElementById('chatMessages');
+    
+    if (input && messagesContainer && input.value.trim()) {
+        // Add user message
+        const userMessage = `
+            <div class="flex items-start space-x-4 justify-end">
+                <div class="flex-1 bg-primary/10 rounded-xl p-4">
+                    <p class="text-white">${input.value}</p>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-user text-primary text-sm"></i>
+                </div>
+            </div>
+        `;
+        messagesContainer.insertAdjacentHTML('beforeend', userMessage);
         
-        if (dropdown && !dropdown.classList.contains('hidden') && 
-            !dropdown.contains(e.target) && !button.contains(e.target)) {
-            dropdown.classList.add('hidden');
+        // Simulate AI response (replace with actual API call)
+        setTimeout(() => {
+            const aiResponse = `
+                <div class="flex items-start space-x-4">
+                    <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-primary text-sm"></i>
+                    </div>
+                    <div class="flex-1 bg-white/5 rounded-xl p-4">
+                        <p class="text-white">I'd be happy to help you with that! Let me provide some guidance about learning paths and resources.</p>
+                    </div>
+                </div>
+            `;
+            messagesContainer.insertAdjacentHTML('beforeend', aiResponse);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 1000);
+        
+        // Clear input
+        input.value = '';
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+});
+
+function toggleSidebar() {
+    const sidebar = document.querySelector('aside');
+    sidebar.classList.toggle('-translate-x-full');
+}
+
+function openModal() {
+    const modal = document.getElementById('aiLearningModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    const modal = document.getElementById('aiLearningModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = 'auto';
+}
+
+function showSubcategories(category) {
+    const mainCategories = document.getElementById('mainCategories');
+    const subcategories = document.getElementById(category + 'Subcategories');
+    
+    mainCategories.style.transform = 'translateX(-100%)';
+    subcategories.style.transform = 'translateX(0)';
+}
+
+function hideSubcategories(category) {
+    const mainCategories = document.getElementById('mainCategories');
+    const subcategories = document.getElementById(category + 'Subcategories');
+    
+    mainCategories.style.transform = 'translateX(0)';
+    subcategories.style.transform = 'translateX(100%)';
+}
+
+function generateLearningPlan() {
+    // Get search input value and all select values
+    const searchInput = document.getElementById('learning-search');
+    const selects = document.querySelectorAll('#aiLearningModal select');
+    const params = new URLSearchParams();
+    
+    // Add search query
+    if (searchInput && searchInput.value) {
+        params.append('search_query', searchInput.value);
+    }
+    
+    // Add all select values
+    selects.forEach(select => {
+        const label = select.previousElementSibling.textContent.toLowerCase().replace(/\s+/g, '_');
+        params.append(label, select.value);
+    });
+    
+    // Submit to learning plan route with all parameters
+    window.location.href = `/learning-plan?${params.toString()}`;
+}
+
+// Handle form submission
+document.getElementById('learningSearchForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    generateLearningPlan();
+});
+
+// Focus search input when modal opens
+function openModal() {
+    const modal = document.getElementById('aiLearningModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        // Focus the search input when modal opens
+        setTimeout(() => {
+            document.getElementById('learning-search')?.focus();
+        }, 100);
+    }
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('aiLearningModal');
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
         }
     });
 });
