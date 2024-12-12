@@ -108,34 +108,16 @@
                     {% for entry in entries %}
                     <div class="bg-surface rounded-2xl p-6 border border-white/10">
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-lg font-medium text-white">{{ entry.title }}</h3>
+                            <h3 class="text-xl font-semibold text-white">{{ entry.title }}</h3>
                             <span class="text-sm text-white/50">{{ entry.created_at.strftime('%B %d, %Y') }}</span>
                         </div>
                         
-                        {% if entry.description %}
-                            <p class="text-white/70 mb-4">{{ entry.description }}</p>
-                        {% endif %}
-                        
-                        {% if entry.urls %}
-                            <div class="mb-4">
-                                <h4 class="text-sm font-medium text-white/70 mb-2">References:</h4>
-                                <div class="space-y-2">
-                                    {% for url in entry.urls.split('\n') %}
-                                        <a href="{{ url }}" target="_blank" 
-                                           class="block text-primary hover:text-primary/80 truncate">
-                                            {{ url }}
-                                        </a>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        {% endif %}
-                        
-                        {% if entry.notes %}
-                            <div class="mt-4 pt-4 border-t border-white/10">
-                                <h4 class="text-sm font-medium text-white/70 mb-2">Notes:</h4>
-                                <p class="text-white/70 whitespace-pre-wrap">{{ entry.notes }}</p>
-                            </div>
-                        {% endif %}
+                        <div class="mt-4">
+                            <a href="#" onclick="openJournalDetails('{{ entry.id }}')" 
+                               class="block text-center px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
+                                View Details
+                            </a>
+                        </div>
                     </div>
                     {% endfor %}
                 {% else %}

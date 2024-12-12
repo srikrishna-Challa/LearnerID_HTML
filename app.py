@@ -853,7 +853,8 @@ def create_learning_journal():
         except Exception as e:
             db.session.rollback()
             app.logger.error(f"Error adding journal entry: {str(e)}")
-            flash('Error adding journal entry', 'error')
+            app.logger.error(f"Error adding journal entry: {str(e)}")
+            return redirect(url_for('create_learning_journal'))
         
         return redirect(url_for('create_learning_journal'))
     
