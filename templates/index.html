@@ -1,40 +1,53 @@
 {% extends "base.html" %}
 
 {% block content %}
-<button class="fixed top-4 left-4 md:hidden text-white text-2xl bg-transparent border-none cursor-pointer">
-    <i class="fas fa-bars"></i>
-</button>
+<!-- Header Navigation -->
+<header class="fixed top-0 left-0 right-0 bg-surface/95 backdrop-blur-sm border-b border-white/10 z-50">
+    <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+            <!-- Logo -->
+            <a href="/" class="flex items-center space-x-2">
+                <i class="fas fa-graduation-cap text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-white">LearnerID</span>
+            </a>
 
-<nav class="fixed top-0 left-0 h-full w-64 bg-surface transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-50">
-    <div class="p-4">
-        <a class="text-3xl font-bold text-primary" href="#">LearnerID</a>
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="/" class="text-white/70 hover:text-white transition-colors">Home</a>
+                <a href="/about" class="text-white/70 hover:text-white transition-colors">About Us</a>
+                <a href="/how-it-works" class="text-white/70 hover:text-white transition-colors">How it Works</a>
+            </nav>
+
+            <!-- Auth Buttons -->
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="/login" class="px-4 py-2 text-white/70 hover:text-white transition-colors">Login</a>
+                <a href="/signup" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors">Sign up</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-white/70 hover:text-white" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
     </div>
-    <ul class="space-y-2 mt-8">
-        <li>
-            <a class="flex items-center px-4 py-2 text-white/70 hover:text-white hover:bg-white/5" href="/">
-                <i class="fas fa-house mr-3"></i> Home
-            </a>
-        </li>
-        <li>
-            <a class="flex items-center px-4 py-2 text-white/70 hover:text-white hover:bg-white/5" href="/about">
-                <i class="fas fa-info-circle mr-3"></i> About Us
-            </a>
-        </li>
-        <li>
-            <a class="flex items-center px-4 py-2 text-white/70 hover:text-white hover:bg-white/5" href="/how-it-works">
-                <i class="fas fa-cog mr-3"></i> How it Works
-            </a>
-        </li>
-        <li class="mt-auto">
-            <a class="block px-4 py-2 mt-4 text-center bg-primary text-white rounded-lg hover:bg-primary/90" href="/signup">Sign up</a>
-        </li>
-        <li>
-            <a class="block px-4 py-2 mt-2 text-center border border-white/20 text-white rounded-lg hover:bg-white/5" href="/login">Login</a>
-        </li>
-    </ul>
-</nav>
+</header>
 
-<main class="min-h-screen bg-background p-8 dark:bg-background dark:text-white">
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="fixed inset-0 bg-background z-40 transform translate-y-full transition-transform duration-300 md:hidden">
+    <div class="flex flex-col h-full pt-20 px-6">
+        <nav class="flex flex-col space-y-4">
+            <a href="/" class="text-white/70 hover:text-white text-lg transition-colors">Home</a>
+            <a href="/about" class="text-white/70 hover:text-white text-lg transition-colors">About Us</a>
+            <a href="/how-it-works" class="text-white/70 hover:text-white text-lg transition-colors">How it Works</a>
+        </nav>
+        <div class="flex flex-col space-y-4 mt-8">
+            <a href="/login" class="px-4 py-3 text-center text-white/70 hover:text-white border border-white/10 rounded-lg transition-colors">Login</a>
+            <a href="/signup" class="px-4 py-3 text-center bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors">Sign up</a>
+        </div>
+    </div>
+</div>
+
+<main class="min-h-screen bg-background pt-24 px-4 dark:bg-background dark:text-white">
     <section class="container mx-auto px-4 text-center pt-16">
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">Your AI powered Learning Bank</h1>
         <p class="text-white/70 text-lg mb-12 max-w-2xl mx-auto">Personalized learning experiences powered by artificial intelligence</p>
@@ -221,17 +234,20 @@ function closeModal() {
 }</script>
 
 <script>
-// Mobile menu toggle
-document.addEventListener('DOMContentLoaded', function() {
-    const menuButton = document.querySelector('button.fixed.top-4.left-4');
-    const nav = document.querySelector('nav.fixed');
-    
-    if (menuButton && nav) {
-        menuButton.addEventListener('click', () => {
-            nav.classList.toggle('-translate-x-full');
-        });
+function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (mobileMenu) {
+        if (mobileMenu.classList.contains('translate-y-full')) {
+            // Open menu
+            mobileMenu.classList.remove('translate-y-full');
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Close menu
+            mobileMenu.classList.add('translate-y-full');
+            document.body.style.overflow = '';
+        }
     }
-});
+}
 
 // Modal functions
 function openModal() {
