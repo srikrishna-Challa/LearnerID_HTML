@@ -900,6 +900,58 @@ def submit_quiz(topic, item_id):
     else:
         attempts_left = quiz_attempts[topic]['max_attempts'] - quiz_attempts[topic]['attempts']
         flash(f'You got {correct_count} answers correct. You need {quiz_data[topic]["passing_score"]} to pass. You have {attempts_left} attempts left!', 'error')
+        return redirect(url_for('learning_recommendations', topic=topic))
+
+@app.route('/all-reading-history')
+def all_reading_history():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    # Get all weekly readings without the 5-item limit
+    weekly_readings = [
+        {
+            'start_date': '2024-12-09',
+            'end_date': '2024-12-15',
+            'total_readings': 8,
+            'total_duration': '4 hours',
+            'topics': ['Python', 'Web Development', 'Data Science'],
+            'readings': [
+                {
+                    'title': 'Introduction to Flask',
+                    'summary': 'Learn the basics of Flask web framework...'
+                },
+                {
+                    'title': 'Database Design Patterns',
+                    'summary': 'Understanding common database design patterns...'
+                },
+                {
+                    'title': 'RESTful API Design',
+                    'summary': 'Best practices for designing REST APIs...'
+                }
+            ]
+        },
+        {
+            'start_date': '2024-12-02',
+            'end_date': '2024-12-08',
+            'total_readings': 6,
+            'total_duration': '3 hours',
+            'topics': ['JavaScript', 'React', 'Node.js'],
+            'readings': [
+                {
+                    'title': 'Modern JavaScript Features',
+                    'summary': 'Exploring ES6+ features and their applications...'
+                },
+                {
+                    'title': 'React Hooks Deep Dive',
+                    'summary': 'Understanding React hooks and state management...'
+                }
+            ]
+        }
+    ]
+    
+    return render_template('all_reading_history.html', 
+                         weekly_readings=weekly_readings,
+                         user=get_current_user())
     
     return redirect(url_for('learning_recommendations', topic=topic))
 
