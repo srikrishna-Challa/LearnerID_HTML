@@ -348,85 +348,85 @@
 </div>
 
 <!-- AI Learning Plan Modal -->
-<div id="aiLearningModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
-    <div class="bg-surface rounded-2xl p-6 max-w-xl w-full relative">
+<div id="aiLearningModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4 overflow-y-auto">
+    <div class="bg-surface rounded-xl p-5 max-w-lg w-full mx-auto my-4 relative">
         <!-- Close Button -->
-        <button onclick="closeModal()" class="absolute -top-2 -right-2 w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-lg">
-            <i class="fas fa-times"></i>
+        <button onclick="closeModal()" class="absolute -top-3 -right-3 w-7 h-7 flex items-center justify-center bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-lg z-10">
+            <i class="fas fa-times text-sm"></i>
         </button>
         
         <!-- Modal Content -->
-        <h2 class="text-xl font-bold text-white mb-4">Create Your AI-Powered Learning Plan</h2>
+        <h2 class="text-lg font-bold text-white mb-3">Create Your AI-Powered Learning Plan</h2>
         
-        <div class="mb-6">
-            <form id="learningSearchForm" class="space-y-4">
+        <div class="mb-4">
+            <form id="learningSearchForm" class="space-y-3">
                 <!-- Search Bar -->
-                <div class="space-y-3">
-                    <label for="learning-search" class="block text-lg text-white font-medium">What would you like to learn?</label>
+                <div class="space-y-2">
+                    <label for="learning-search" class="block text-base text-white font-medium">What would you like to learn?</label>
                     <div class="relative">
                         <input type="text" 
                                id="learning-search"
                                placeholder="e.g., Web Development, Data Science, AI"
-                               class="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-white text-lg placeholder:text-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                               class="w-full h-10 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white text-base placeholder:text-white/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20"
                                required>
                         <button type="button" 
-                                class="absolute right-4 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80">
-                            <i class="fas fa-search text-xl"></i>
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80">
+                            <i class="fas fa-search text-base"></i>
                         </button>
                     </div>
-                    <p class="text-white/70 text-base">Our AI will create a personalized learning path based on your interests</p>
+                    <p class="text-white/70 text-sm">Our AI will create a personalized learning path based on your interests</p>
                 </div>
 
                 <!-- Additional Options -->
-                <div class="space-y-4 mt-6">
-                    <h3 class="text-lg font-medium text-white">Customize Your Plan</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-white/5 p-4 rounded-xl">
-                            <label class="block text-sm font-medium text-white/70 mb-2">Experience Level</label>
-                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                <div class="space-y-3 mt-4">
+                    <h3 class="text-base font-medium text-white">Customize Your Plan</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-white/5 p-3 rounded-lg">
+                            <label class="block text-xs font-medium text-white/70 mb-1">Experience Level</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white">
                                 <option value="beginner">Beginner</option>
                                 <option value="intermediate">Intermediate</option>
                                 <option value="advanced">Advanced</option>
                             </select>
                         </div>
-                        <div class="bg-white/5 p-4 rounded-xl">
-                            <label class="block text-sm font-medium text-white/70 mb-2">Time Commitment</label>
-                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                        <div class="bg-white/5 p-3 rounded-lg">
+                            <label class="block text-xs font-medium text-white/70 mb-1">Time Commitment</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white">
                                 <option value="1-2">1-2 hours/week</option>
                                 <option value="3-5">3-5 hours/week</option>
                                 <option value="5+">5+ hours/week</option>
                             </select>
                         </div>
-                        <div class="bg-white/5 p-4 rounded-xl">
-                            <label class="block text-sm font-medium text-white/70 mb-2">Learning Style</label>
-                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                        <div class="bg-white/5 p-3 rounded-lg">
+                            <label class="block text-xs font-medium text-white/70 mb-1">Learning Style</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white">
                                 <option value="visual">Visual (Videos & Graphics)</option>
                                 <option value="reading">Reading & Writing</option>
-                                <option value="auditory">Auditory (Lectures & Discussions)</option>
+                                <option value="auditory">Auditory (Lectures)</option>
                                 <option value="hands-on">Hands-on Practice</option>
                             </select>
                         </div>
-                        <div class="bg-white/5 p-4 rounded-xl">
-                            <label class="block text-sm font-medium text-white/70 mb-2">Content Format</label>
-                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                        <div class="bg-white/5 p-3 rounded-lg">
+                            <label class="block text-xs font-medium text-white/70 mb-1">Content Format</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white">
                                 <option value="video">Video Tutorials</option>
                                 <option value="interactive">Interactive Exercises</option>
                                 <option value="text">Text-based Materials</option>
                                 <option value="mixed">Mixed Format</option>
                             </select>
                         </div>
-                        <div class="bg-white/5 p-4 rounded-xl">
-                            <label class="block text-sm font-medium text-white/70 mb-2">Learning Goals</label>
-                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                        <div class="bg-white/5 p-3 rounded-lg">
+                            <label class="block text-xs font-medium text-white/70 mb-1">Learning Goals</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white">
                                 <option value="career">Career Development</option>
                                 <option value="academic">Academic Achievement</option>
                                 <option value="personal">Personal Interest</option>
                                 <option value="certification">Professional Certification</option>
                             </select>
                         </div>
-                        <div class="bg-white/5 p-4 rounded-xl">
-                            <label class="block text-sm font-medium text-white/70 mb-2">Topic Knowledge</label>
-                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white">
+                        <div class="bg-white/5 p-3 rounded-lg">
+                            <label class="block text-xs font-medium text-white/70 mb-1">Topic Knowledge</label>
+                            <select class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white">
                                 <option value="none">No Prior Knowledge</option>
                                 <option value="basic">Basic Understanding</option>
                                 <option value="intermediate">Some Experience</option>
@@ -436,11 +436,11 @@
                     </div>
                 </div>
 
-                <div class="flex justify-end pt-6">
+                <div class="flex justify-end pt-4">
                     <button type="submit" 
-                            class="px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-xl transition-colors flex items-center text-lg font-medium">
+                            class="px-6 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors flex items-center text-sm font-medium">
                         <span>Generate Learning Plan</span>
-                        <i class="fas fa-arrow-right ml-3"></i>
+                        <i class="fas fa-arrow-right ml-2"></i>
                     </button>
                 </div>
             </form>
