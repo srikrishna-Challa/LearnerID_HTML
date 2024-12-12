@@ -41,8 +41,10 @@ class UserNote(db.Model):
 class LearningJournalEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer)  # We'll link this to users once auth is implemented
-    title = db.Column(db.String(200), nullable=False)
-    content = db.Column(db.Text, nullable=False)
+    topic_name = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    urls = db.Column(db.Text)
+    notes = db.Column(db.Text)
     category = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
@@ -823,18 +825,22 @@ def create_learning_journal():
         return redirect(url_for('login'))
         
     if request.method == 'POST':
-        title = request.form.get('title')
-        content = request.form.get('content')
+        topic_name = request.form.get('topic_name')
+        description = request.form.get('description')
+        urls = request.form.get('urls')
+        notes = request.form.get('notes')
         category = request.form.get('category')
         
-        if not title or not content:
-            flash('Title and content are required', 'error')
+        if not topic_name:
+            flash('Topic name is required', 'error')
             return redirect(url_for('create_learning_journal'))
         
         entry = LearningJournalEntry(
             user_id=session['user_id'],
-            title=title,
-            content=content,
+            topic_name=topic_name,
+            description=description,
+            urls=urls,
+            notes=notes,
             category=category
         )
         
