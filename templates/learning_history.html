@@ -95,53 +95,6 @@
                             <h3 class="text-xl font-semibold text-white mb-1">{{ item.topic }}</h3>
                             <span class="text-white/70">{{ item.level }}</span>
                         </div>
-                        <span class="px-3 py-1 bg-primary/20 rounded-full text-primary text-sm">{{ item.status }}</span>
-                    </div>
-                    
-                    <div class="space-y-4 mt-6">
-                        <div>
-                            <div class="flex justify-between text-sm mb-2">
-                                <span class="text-white/70">Progress</span>
-                                <span class="text-white">{{ item.progress }}%</span>
-                            </div>
-                            <div class="w-full bg-white/5 rounded-full h-2">
-                                <div class="bg-primary h-2 rounded-full" style="width: {{ item.progress }}%"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex justify-between text-sm">
-                            <div>
-                                <p class="text-white/50">Duration</p>
-                                <p class="text-white">{{ item.total_duration }}</p>
-                            </div>
-                            <div>
-                                <p class="text-white/50">Started</p>
-                                <p class="text-white">{{ item.start_date }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <a href="{{ url_for('my_learning_details', topic=item.topic) }}" 
-                       class="mt-6 block text-center px-4 py-2 border border-white/10 rounded-xl bg-white/5 hover:bg-white/10 text-white transition-colors">
-                        View Details
-                    </a>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- Previously Learnt Section -->
-        <div class="mb-12">
-            <h2 class="text-2xl font-semibold text-white mb-6">Previously Learnt</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% for item in learning_history if item.status == 'Completed' %}
-                <div class="bg-surface rounded-2xl p-6 border border-white/10">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-xl font-semibold text-white mb-1">{{ item.topic }}</h3>
-                            <span class="text-white/70">{{ item.level }}</span>
-                        </div>
-                        <span class="px-3 py-1 bg-green-500/20 rounded-full text-green-500 text-sm">{{ item.status }}</span>
                     </div>
                     
                     <div class="space-y-4 mt-6">
@@ -179,6 +132,52 @@
         <!-- Regular Reading Section -->
         <div class="mb-12">
             <h2 class="text-2xl font-semibold text-white mb-6">Regular Reading</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for item in learning_history if item.status == 'Reading' %}
+                <div class="bg-surface rounded-2xl p-6 border border-white/10">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-xl font-semibold text-white mb-1">{{ item.topic }}</h3>
+                            <span class="text-white/70">{{ item.level }}</span>
+                        </div>
+                        <span class="px-3 py-1 bg-blue-500/20 rounded-full text-blue-500 text-sm">{{ item.status }}</span>
+                    </div>
+                    
+                    <div class="space-y-4 mt-6">
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-white/70">Progress</span>
+                                <span class="text-white">{{ item.progress }}%</span>
+                            </div>
+                            <div class="w-full bg-white/5 rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: {{ item.progress }}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between text-sm">
+                            <div>
+                                <p class="text-white/50">Duration</p>
+                                <p class="text-white">{{ item.total_duration }}</p>
+                            </div>
+                            <div>
+                                <p class="text-white/50">Started</p>
+                                <p class="text-white">{{ item.start_date }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="{{ url_for('my_learning_details', topic=item.topic) }}" 
+                       class="mt-6 block text-center px-4 py-2 border border-white/10 rounded-xl bg-white/5 hover:bg-white/10 text-white transition-colors">
+                        View Details
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Previously Learnt Section -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-white mb-6">Previously Learnt</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {% for item in learning_history if item.status == 'Reading' %}
                 <div class="bg-surface rounded-2xl p-6 border border-white/10">
