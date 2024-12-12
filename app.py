@@ -835,32 +835,20 @@ def create_learning_journal():
             flash('Topic name is required', 'error')
             return redirect(url_for('create_learning_journal'))
         
-        entry = LearningJournalEntry(
-            user_id=session['user_id'],
-            topic_name=topic_name,
-            description=description,
-            urls=urls,
-            notes=notes,
-            category=category
-        )
-        
         try:
             # Add to learning journal
+            entry = LearningJournalEntry(
+                user_id=session['user_id'],
+                topic_name=topic_name,
+                description=description,
+                urls=urls,
+                notes=notes,
+                category=category
+            )
+            
             db.session.add(entry)
-            
-            # Add to learning history
-            if category not in topic_details:
-                topic_details[category] = {
-                    'topics': [{
-                        'title': title,
-                        'week': 1,
-                        'status': 'Completed',
-                        'progress': 100
-                    }]
-                }
-            
             db.session.commit()
-            flash('Journal entry has been added successfully! You can view it in your Learning History.', 'success')
+            flash('Journal entry has been added successfully!', 'success')
             
         except Exception as e:
             db.session.rollback()
