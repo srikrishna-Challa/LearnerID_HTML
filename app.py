@@ -1306,6 +1306,7 @@ def mark_topic_completed(topic):
         }), 404
 
 @app.route('/learning-history')
+@app.route('/learning_history')  # Support both formats for backward compatibility
 def learning_history():
     if 'user_id' not in session:
         return redirect(url_for('login'))
