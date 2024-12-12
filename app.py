@@ -907,7 +907,47 @@ def weekly_reading_details(week_start):
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
-    # Find the specific week's readings from the weekly_readings data
+    # Mock weekly readings data (replace with database query in production)
+    weekly_readings = [
+        {
+            'start_date': '2024-12-09',
+            'end_date': '2024-12-15',
+            'total_readings': 8,
+            'total_duration': '4 hours',
+            'topics': ['Python', 'Web Development', 'Data Science'],
+            'readings': [
+                {
+                    'title': 'Introduction to Flask',
+                    'summary': 'Learn the basics of Flask web framework including routing, templates, and database integration.',
+                    'date': '2024-12-09',
+                    'duration': '45 minutes',
+                    'topic': 'Python',
+                    'tags': ['Web Development', 'Backend'],
+                    'notes': 'Key concepts: Routes, Templates, Jinja2, SQLAlchemy'
+                },
+                {
+                    'title': 'Database Design Patterns',
+                    'summary': 'Understanding common database design patterns and their implementation in real-world applications.',
+                    'date': '2024-12-10',
+                    'duration': '60 minutes',
+                    'topic': 'Database',
+                    'tags': ['SQL', 'Architecture'],
+                    'notes': 'Covered: Normalization, Indexing, Relationships'
+                },
+                {
+                    'title': 'RESTful API Design',
+                    'summary': 'Best practices for designing REST APIs with proper endpoint structure and response formats.',
+                    'date': '2024-12-11',
+                    'duration': '30 minutes',
+                    'topic': 'API',
+                    'tags': ['REST', 'HTTP'],
+                    'notes': 'Focus on: Status codes, Authentication, Versioning'
+                }
+            ]
+        }
+    ]
+    
+    # Find the specific week's readings
     week_data = None
     for week in weekly_readings:
         if week['start_date'] == week_start:
