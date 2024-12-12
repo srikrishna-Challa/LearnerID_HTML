@@ -44,66 +44,99 @@ def index():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    app.logger.debug("Entering signup route")
+    
     if request.method == 'POST':
         name = request.form.get('name')
         email = request.form.get('email')
         password = request.form.get('password')
         
+        app.logger.debug(f"Signup attempt for email: {email}")
+        
         if not all([name, email, password]):
             flash('All fields are required', 'error')
-            return redirect(url_for('signup'))
+            return render_template('signup.html')
         
         if User.query.filter_by(email=email).first():
             flash('Email already registered', 'error')
-            return redirect(url_for('signup'))
-        
-        user = User(
-            name=name,
-            email=email,
-            password_hash=generate_password_hash(password)
-        )
+            return render_template('signup.html')
         
         try:
+            user = User(
+                name=name,
+                email=email,
+                password_hash=generate_password_hash(password)
+            )
             db.session.add(user)
             db.session.commit()
-            flash('Account created successfully!', 'success')
-            return redirect(url_for('login'))
+            app.logger.info(f"Successfully created user with email: {email}")
+            
+            # Log the user in immediately after signup
+            session['user_id'] = user.id
+            session.modified = True
+            flash('Account created successfully! You are now logged in.', 'success')
+            return redirect(url_for('user_loggedin_page'))
+            
         except Exception as e:
             db.session.rollback()
             app.logger.error(f"Error creating user: {str(e)}")
             flash('Error creating account', 'error')
-            return redirect(url_for('signup'))
+            return render_template('signup.html')
     
     return render_template('signup.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    app.logger.debug("Entering login route")
+    
     # If user is already logged in, redirect to dashboard
     if 'user_id' in session:
+        app.logger.debug(f"User already logged in with session id: {session['user_id']}")
         return redirect(url_for('user_loggedin_page'))
     
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
+        app.logger.debug(f"Login attempt for email: {email}")
         
         if not email or not password:
             flash('Please enter both email and password', 'error')
             return render_template('login.html')
         
-        user = User.query.filter_by(email=email).first()
+        # Create test user if it doesn't exist
+        test_user = User.query.filter_by(email='test@example.com').first()
+        if not test_user:
+            app.logger.debug("Creating test user")
+            test_user = User(
+                name="Test User",
+                email="test@example.com",
+                password_hash=generate_password_hash("password123")
+            )
+            db.session.add(test_user)
+            db.session.commit()
         
-        if user and check_password_hash(user.password_hash, password):
-            session['user_id'] = user.id
-            flash('Logged in successfully!', 'success')
-            
-            # Redirect to the page user was trying to access, or dashboard by default
-            next_page = request.args.get('next')
-            if next_page:
-                return redirect(next_page)
-            return redirect(url_for('user_loggedin_page'))
+        user = User.query.filter_by(email=email).first()
+        app.logger.debug(f"Found user: {user is not None}")
+        
+        if user:
+            app.logger.debug("Checking password hash")
+            if check_password_hash(user.password_hash, password):
+                app.logger.debug("Password matched")
+                session['user_id'] = user.id
+                session.modified = True
+                flash('Logged in successfully!', 'success')
+                
+                # Redirect to the page user was trying to access, or dashboard by default
+                next_page = request.args.get('next')
+                app.logger.debug(f"Next page: {next_page}")
+                if next_page:
+                    return redirect(next_page)
+                return redirect(url_for('user_loggedin_page'))
+            else:
+                app.logger.debug("Password mismatch")
         
         flash('Invalid email or password', 'error')
-        app.logger.info(f"Failed login attempt for email: {email}")
+        app.logger.warning(f"Failed login attempt for email: {email}")
     
     return render_template('login.html')
 
