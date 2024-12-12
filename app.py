@@ -20,11 +20,300 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///learnerid.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Initialize data structures
+# Initialize all data structures at the top
 quiz_attempts = {}
-quiz_data = {}
-topic_details = {}
+topic_details = {
+    'Technology and Computer Science': {
+        'title': 'Technology and Computer Science',
+        'level': 'Intermediate',
+        'progress': 65,
+        'status': 'In Progress',
+        'total_duration': '12 weeks',
+        'start_date': '2024-01-01',
+        'topics': [
+            {
+                'title': 'Introduction to Programming',
+                'week': 1,
+                'status': 'Completed',
+                'progress': 100
+            },
+            {
+                'title': 'Data Structures',
+                'week': 2,
+                'status': 'In Progress',
+                'progress': 45
+            }
+        ]
+    },
+    'Data Science': {
+        'title': 'Data Science',
+        'level': 'Beginner',
+        'progress': 25,
+        'status': 'Just Started',
+        'total_duration': '8 weeks',
+        'start_date': '2024-02-01',
+        'topics': [
+            {
+                'title': 'Python Basics',
+                'week': 1,
+                'status': 'In Progress',
+                'progress': 30
+            }
+        ]
+    }
+}
+
+# Initialize recommendations data
+recommendations_data = {
+    'Technology and Computer Science': {
+        'Video Resources': [
+            {
+                'id': 'video_1',
+                'title': 'Introduction to Programming Concepts',
+                'type': 'video',
+                'description': 'A comprehensive overview of basic programming concepts',
+                'url': 'https://example.com/intro-programming',
+                'duration': '45 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            },
+            {
+                'id': 'video_2',
+                'title': 'Object-Oriented Programming Explained',
+                'type': 'video',
+                'description': 'Learn about classes, objects, and OOP principles',
+                'url': 'https://example.com/oop-basics',
+                'duration': '30 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            }
+        ],
+        'Reading Materials': [
+            {
+                'id': 'reading_1',
+                'title': 'Programming Best Practices Guide',
+                'type': 'article',
+                'description': 'Essential coding practices and conventions',
+                'url': 'https://example.com/programming-practices',
+                'reading_time': '15 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            },
+            {
+                'id': 'reading_2',
+                'title': 'Algorithm Design Fundamentals',
+                'type': 'article',
+                'description': 'Introduction to algorithm design and analysis',
+                'url': 'https://example.com/algo-basics',
+                'reading_time': '20 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            }
+        ],
+        'Practice Resources': [
+            {
+                'id': 'practice_1',
+                'title': 'Programming Exercises Collection',
+                'type': 'exercise',
+                'description': 'Hands-on coding exercises for practice',
+                'url': 'https://example.com/programming-exercises',
+                'estimated_time': '1 hour',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            }
+        ]
+    }
+}
+
+learning_journals = []  # Initialize empty list for learning journals
+user_materials = {}  # Initialize empty dict for user materials
+
+# Initialize quiz attempts for each topic
+for course in topic_details.values():
+    for topic in course['topics']:
+        quiz_attempts[topic['title']] = {
+            'attempts': 0,
+            'scores': [],
+            'max_attempts': 3
+        }
+
+quiz_data = {
+    'Introduction to Programming': {
+        'questions': [
+            {
+                'question': 'What is a variable?',
+                'options': ['A container for data', 'A programming language', 'A computer', 'A website'],
+                'correct': 0
+            }
+        ],
+        'passing_score': 1
+    }
+}
+
+topic_details = {
+    'Technology and Computer Science': {
+        'title': 'Technology and Computer Science',
+        'level': 'Intermediate',
+        'progress': 65,
+        'status': 'In Progress',
+        'total_duration': '12 weeks',
+        'start_date': '2024-01-01',
+        'topics': [
+            {
+                'title': 'Introduction to Programming',
+                'week': 1,
+                'status': 'Completed',
+                'progress': 100
+            },
+            {
+                'title': 'Data Structures',
+                'week': 2,
+                'status': 'In Progress',
+                'progress': 45
+            }
+        ]
+    }
+}
+
+recommendations_data = {
+    'Technology and Computer Science': {
+        'Video Resources': [
+            {
+                'id': 'video_1',
+                'title': 'Introduction to Programming Concepts',
+                'type': 'video',
+                'description': 'A comprehensive overview of basic programming concepts',
+                'url': 'https://example.com/intro-programming',
+                'duration': '45 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            },
+            {
+                'id': 'video_2',
+                'title': 'Object-Oriented Programming Explained',
+                'type': 'video',
+                'description': 'Learn about classes, objects, and OOP principles',
+                'url': 'https://example.com/oop-basics',
+                'duration': '30 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            }
+        ],
+        'Reading Materials': [
+            {
+                'id': 'reading_1',
+                'title': 'Programming Best Practices Guide',
+                'type': 'article',
+                'description': 'Essential coding practices and conventions',
+                'url': 'https://example.com/programming-practices',
+                'reading_time': '15 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            },
+            {
+                'id': 'reading_2',
+                'title': 'Algorithm Design Fundamentals',
+                'type': 'article',
+                'description': 'Introduction to algorithm design and analysis',
+                'url': 'https://example.com/algo-basics',
+                'reading_time': '20 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            }
+        ],
+        'Practice Resources': [
+            {
+                'id': 'practice_1',
+                'title': 'Programming Exercises Collection',
+                'type': 'exercise',
+                'description': 'Hands-on coding exercises for practice',
+                'url': 'https://example.com/programming-exercises',
+                'estimated_time': '1 hour',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            }
+        ]
+    }
+}
+
 user_materials = {}
+
+# Mock data for quizzes and recommendations
+recommendations_data = {
+    'Technology and Computer Science': {
+        'Video Resources': [
+            {
+                'id': 'video_1',
+                'title': 'Introduction to Programming Concepts',
+                'type': 'video',
+                'description': 'A comprehensive overview of basic programming concepts',
+                'url': 'https://example.com/intro-programming',
+                'duration': '45 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            },
+            {
+                'id': 'video_2',
+                'title': 'Object-Oriented Programming Explained',
+                'type': 'video',
+                'description': 'Learn about classes, objects, and OOP principles',
+                'url': 'https://example.com/oop-basics',
+                'duration': '30 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            }
+        ],
+        'Reading Materials': [
+            {
+                'id': 'reading_1',
+                'title': 'Programming Best Practices Guide',
+                'type': 'article',
+                'description': 'Essential coding practices and conventions',
+                'url': 'https://example.com/programming-practices',
+                'reading_time': '15 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            },
+            {
+                'id': 'reading_2',
+                'title': 'Algorithm Design Fundamentals',
+                'type': 'article',
+                'description': 'Introduction to algorithm design and analysis',
+                'url': 'https://example.com/algo-basics',
+                'reading_time': '20 mins',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            }
+        ],
+        'Practice Resources': [
+            {
+                'id': 'practice_1',
+                'title': 'Programming Exercises Collection',
+                'type': 'exercise',
+                'description': 'Hands-on coding exercises for practice',
+                'url': 'https://example.com/programming-exercises',
+                'estimated_time': '1 hour',
+                'completed': False,
+                'credits_unlocked': False,
+                'notes': []
+            }
+        ]
+    }
+}
 
 # Mock data for quizzes and recommendations
 recommendations_data = {
