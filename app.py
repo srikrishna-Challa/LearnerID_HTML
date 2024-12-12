@@ -13,6 +13,49 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///learnerid.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Mock data for learning topics and details
+topic_details = {
+    'Technology and Computer Science': {
+        'title': 'Technology and Computer Science',
+        'level': 'Intermediate',
+        'progress': 65,
+        'start_date': '2024-12-01',
+        'topics': [
+            {
+                'title': 'Introduction to Programming',
+                'week': 1,
+                'status': 'Completed',
+                'progress': 100
+            },
+            {
+                'title': 'Data Structures',
+                'week': 2,
+                'status': 'In Progress',
+                'progress': 45
+            }
+        ]
+    },
+    'Data Science and Analytics': {
+        'title': 'Data Science and Analytics',
+        'level': 'Beginner',
+        'progress': 25,
+        'start_date': '2024-11-15',
+        'topics': [
+            {
+                'title': 'Python for Data Science',
+                'week': 1,
+                'status': 'In Progress',
+                'progress': 30
+            },
+            {
+                'title': 'Statistical Analysis',
+                'week': 2,
+                'status': 'Not Started',
+                'progress': 0
+            }
+        ]
+    }
+}
 db = SQLAlchemy(app)
 
 class User(db.Model):
@@ -250,24 +293,17 @@ def learning_plan():
 
 @app.route('/my-learning-details/<topic>')
 def my_learning_details(topic):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+        
     details = topic_details.get(topic)
     if not details:
         flash('Topic not found', 'error')
         return redirect(url_for('learning_history'))
     
-    # Initialize quiz attempts for all topics if not exists
-    for week_topic in details['topics']:
-        topic_name = week_topic['title']
-        if topic_name not in quiz_attempts:
-            quiz_attempts[topic_name] = {
-                'attempts': 0,
-                'scores': [],
-                'max_attempts': 3
-            }
-    
     return render_template('my_learning_details.html', 
                          details=details,
-                         quiz_attempts=quiz_attempts)
+                         user=get_current_user())
 
 @app.route('/learning-recommendations/<topic>')
 def learning_recommendations(topic):
