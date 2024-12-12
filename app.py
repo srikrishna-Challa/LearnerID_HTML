@@ -13,6 +13,33 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///learnerid.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Mock data for quizzes and recommendations
+quiz_attempts = {}
+recommendations_data = {
+    'Technology and Computer Science': {
+        'Core Materials': [
+            {
+                'id': 'intro_1',
+                'title': 'Introduction to Programming Concepts',
+                'type': 'video',
+                'url': 'https://example.com/intro-programming',
+                'completed': False,
+                'credits_unlocked': False
+            }
+        ],
+        'Additional Resources': [
+            {
+                'id': 'resource_1',
+                'title': 'Programming Practice Exercises',
+                'type': 'article',
+                'url': 'https://example.com/programming-exercises',
+                'completed': False,
+                'credits_unlocked': False
+            }
+        ]
+    }
+}
+user_materials = {}
 # Mock data for learning topics and details
 topic_details = {
     'Technology and Computer Science': {
