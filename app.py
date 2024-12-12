@@ -1305,7 +1305,7 @@ def mark_topic_completed(topic):
             'message': 'Topic not found'
         }), 404
 
-@app.route('/learning_history')
+@app.route('/learning-history')
 def learning_history():
     if 'user_id' not in session:
         return redirect(url_for('login'))
