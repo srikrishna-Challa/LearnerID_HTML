@@ -348,20 +348,20 @@
 </div>
 
 <!-- AI Learning Plan Modal -->
-<div id="aiLearningModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-    <div class="bg-surface rounded-2xl p-8 max-w-2xl w-full mx-4 relative">
+<div id="aiLearningModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-surface rounded-2xl p-6 max-w-xl w-full relative">
         <!-- Close Button -->
-        <button onclick="closeModal()" class="absolute top-4 right-4 text-white/70 hover:text-white">
-            <i class="fas fa-times text-xl"></i>
+        <button onclick="closeModal()" class="absolute -top-2 -right-2 w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-lg">
+            <i class="fas fa-times"></i>
         </button>
         
         <!-- Modal Content -->
-        <h2 class="text-2xl font-bold text-white mb-6">Create Your AI-Powered Learning Plan</h2>
+        <h2 class="text-xl font-bold text-white mb-4">Create Your AI-Powered Learning Plan</h2>
         
-        <div class="mb-8">
-            <form id="learningSearchForm" class="space-y-6">
+        <div class="mb-6">
+            <form id="learningSearchForm" class="space-y-4">
                 <!-- Search Bar -->
-                <div class="space-y-4">
+                <div class="space-y-3">
                     <label for="learning-search" class="block text-lg text-white font-medium">What would you like to learn?</label>
                     <div class="relative">
                         <input type="text" 
