@@ -52,46 +52,62 @@ def create_learning_journal():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
+    # Create placeholder entries
+    placeholder_entries = [
+        {
+            'id': 1,
+            'title': 'Introduction to Python Programming',
+            'description': 'Learning the basics of Python programming language',
+            'created_at': datetime.now()
+        },
+        {
+            'id': 2,
+            'title': 'Web Development Fundamentals',
+            'description': 'Understanding HTML, CSS, and JavaScript basics',
+            'created_at': datetime.now()
+        },
+        {
+            'id': 3,
+            'title': 'Data Structures and Algorithms',
+            'description': 'Exploring fundamental computer science concepts',
+            'created_at': datetime.now()
+        }
+    ]
+    
     if request.method == 'POST':
         title = request.form.get('title')
         description = request.form.get('description')
-        
         if title:
-            entry = LearningJournalEntry(
-                title=title,
-                description=description,
-                user_id=session['user_id']
-            )
-            try:
-                db.session.add(entry)
-                db.session.commit()
-                return redirect(url_for('learning_journal_details', entry_id=entry.id))
-            except Exception as e:
-                app.logger.error(f"Error creating journal entry: {str(e)}")
-                db.session.rollback()
+            new_entry = {
+                'id': len(placeholder_entries) + 1,
+                'title': title,
+                'description': description,
+                'created_at': datetime.now()
+            }
+            placeholder_entries.append(new_entry)
+            return redirect(url_for('learning_journal_details', entry_id=new_entry['id']))
                 
-    return render_template('learning_journal.html', user=get_current_user())
+    return render_template('learning_journal.html', entries=placeholder_entries, user=get_current_user())
 
 @app.route('/learning-journal/<int:entry_id>', methods=['GET', 'POST'])
 def learning_journal_details(entry_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
-    entry = LearningJournalEntry.query.get_or_404(entry_id)
-    
-    if entry.user_id != session['user_id']:
-        return redirect(url_for('create_learning_journal'))
+    # Create a placeholder entry for demonstration
+    entry = {
+        'id': entry_id,
+        'title': 'Introduction to Python Programming' if entry_id == 1 else 'Web Development Fundamentals',
+        'description': 'Learning the basics of Python programming language' if entry_id == 1 else 'Understanding HTML, CSS, and JavaScript basics',
+        'notes': '',
+        'created_at': datetime.now()
+    }
     
     if request.method == 'POST':
         new_notes = request.form.get('additional_notes')
         if new_notes:
-            current_notes = entry.notes if entry.notes else ''
-            entry.notes = current_notes + '\n\n' + new_notes
-            try:
-                db.session.commit()
-            except Exception as e:
-                app.logger.error(f"Error updating notes: {str(e)}")
-                db.session.rollback()
+            current_notes = entry['notes'] if entry['notes'] else ''
+            entry['notes'] = current_notes + '\n\n' + new_notes
     
     return render_template('learning_journal_details.html', entry=entry, user=get_current_user())
 
