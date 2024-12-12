@@ -1,154 +1,144 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 import os
 import logging
 
-app = Flask(__name__)
-app.secret_key = 'your-secret-key-here'  # Change this to a secure secret key
 logging.basicConfig(level=logging.DEBUG)
 
-# File upload configuration
-UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
-
-# Ensure upload directory exists
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-# Configure database
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///learning.db')
+app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///learnerid.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
 
-# Models
-class UserNote(db.Model):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)  # We'll link this to users once auth is implemented
-    resource_id = db.Column(db.String(50), nullable=False)
-    resource_type = db.Column(db.String(20), nullable=False)  # 'video', 'article', or 'paper'
-    note_content = db.Column(db.Text, nullable=False)
-    summary = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    learning_journals = db.relationship('LearningJournalEntry', backref='author', lazy=True)
 
 class LearningJournalEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)  # We'll link this to users once auth is implemented
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
-    urls = db.Column(db.Text)
     notes = db.Column(db.Text)
-    category = db.Column(db.String(100))
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-# Create tables
 with app.app_context():
     db.create_all()
 
-# Initialize data structures
-user_materials = {}
-quiz_attempts = {}
-recommendations_data = {
-    'Technology and Computer Science': {
-        'videos': [
-            {
-                'id': 'v1',
-                'title': 'Introduction to Variables',
-                'description': 'Learn about variables and data types',
-                'duration': '10 mins',
-                'url': 'https://example.com/video1',
-                'completed': False,
-                'credits_unlocked': False
-            }
-        ],
-        'articles': [
-            {
-                'id': 'a1',
-                'title': 'Programming Fundamentals',
-                'description': 'Basic concepts in programming',
-                'reading_time': '5 mins',
-                'url': 'https://example.com/article1',
-                'completed': False,
-                'credits_unlocked': False
-            }
-        ],
-        'papers': [
-            {
-                'id': 'p1',
-                'title': 'Understanding Algorithms',
-                'authors': 'John Doe, Jane Smith',
-                'abstract': 'A comprehensive look at algorithmic thinking',
-                'published_date': '2024-01-15',
-                'url': 'https://example.com/paper1',
-                'completed': False,
-                'credits_unlocked': False
-            }
-        ]
-    }
-}
+def get_current_user():
+    if 'user_id' in session:
+        return User.query.get(session['user_id'])
+    return None
 
-topic_details = {
-    'Technology and Computer Science': {
-        'topics': [
-            {
-                'title': 'Introduction to Programming',
-                'week': 1,
-                'status': 'In Progress',
-                'progress': 30
-            }
-        ]
-    }
-}
-
-quiz_data = {
-    'Introduction to Programming': {
-        'questions': [
-            {
-                'text': 'What is a variable?',
-                'options': [
-                    'A container for storing data values',
-                    'A mathematical equation',
-                    'A programming language',
-                    'A type of computer'
-                ],
-                'correct': 0
-            },
-            {
-                'text': 'Which of these is a loop structure?',
-                'options': [
-                    'if-else',
-                    'try-catch',
-                    'for',
-                    'switch'
-                ],
-                'correct': 2
-            }
-        ],
-        'passing_score': 1
-    }
-}
-
-
-# Routes
 @app.route('/')
 def index():
-    if 'user_id' in session:
-        return redirect(url_for('user_loggedin_page'))
     return render_template('index.html')
 
-@app.route('/user_loggedin_page')
+@app.route('/create-learning-journal', methods=['GET', 'POST'])
+def create_learning_journal():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        title = request.form.get('title')
+        description = request.form.get('description')
+        
+        if title:
+            entry = LearningJournalEntry(
+                title=title,
+                description=description,
+                user_id=session['user_id']
+            )
+            try:
+                db.session.add(entry)
+                db.session.commit()
+                return redirect(url_for('learning_journal_details', entry_id=entry.id))
+            except Exception as e:
+                app.logger.error(f"Error creating journal entry: {str(e)}")
+                db.session.rollback()
+                
+    return render_template('learning_journal.html', user=get_current_user())
+
+@app.route('/learning-journal/<int:entry_id>', methods=['GET', 'POST'])
+def learning_journal_details(entry_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    entry = LearningJournalEntry.query.get_or_404(entry_id)
+    
+    if entry.user_id != session['user_id']:
+        return redirect(url_for('create_learning_journal'))
+    
+    if request.method == 'POST':
+        new_notes = request.form.get('additional_notes')
+        if new_notes:
+            current_notes = entry.notes if entry.notes else ''
+            entry.notes = current_notes + '\n\n' + new_notes
+            try:
+                db.session.commit()
+            except Exception as e:
+                app.logger.error(f"Error updating notes: {str(e)}")
+                db.session.rollback()
+    
+    return render_template('learning_journal_details.html', entry=entry, user=get_current_user())
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        user = User.query.filter_by(email=email).first()
+        if user and check_password_hash(user.password, password):
+            session['user_id'] = user.id
+            return redirect(url_for('user_loggedin_page'))
+            
+    return render_template('login.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        if User.query.filter_by(email=email).first():
+            flash('Email already exists')
+            return redirect(url_for('signup'))
+            
+        hashed_password = generate_password_hash(password)
+        new_user = User(name=name, email=email, password=hashed_password)
+        
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            session['user_id'] = new_user.id
+            return redirect(url_for('user_loggedin_page'))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred during registration')
+            return redirect(url_for('signup'))
+            
+    return render_template('signup.html')
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('index'))
+
+@app.route('/user-loggedin')
 def user_loggedin_page():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    return render_template('user_loggedin_page.html')
+    return render_template('user_loggedin_page.html', user=get_current_user())
 
 @app.route('/mails')
 def mails():
@@ -162,10 +152,6 @@ def learning_credits():
         return redirect(url_for('login'))
     return render_template('learning_credits.html')
 
-@app.route('/logout', methods=['POST'])
-def logout():
-    session.clear()
-    return redirect(url_for('index'))
 
 @app.route('/about')
 def about():
@@ -175,34 +161,6 @@ def about():
 def how_it_works():
     return render_template('index.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        remember = request.form.get('remember') == 'on'
-        
-        # Mock login for demonstration
-        session['user_id'] = 1  # Mock user ID
-        flash('Successfully logged in!', 'success')
-        return redirect(url_for('user_loggedin_page'))
-    
-    return render_template('login.html')
-
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        first_name = request.form.get('first_name')
-        last_name = request.form.get('last_name')
-        email = request.form.get('email')
-        mobile = request.form.get('mobile')
-        password = request.form.get('password')
-        
-        # TODO: Add user registration logic
-        flash('Registration functionality will be implemented soon.')
-        return redirect(url_for('login'))
-    
-    return render_template('signup.html')
 
 @app.route('/add-to-learning-goals', methods=['POST'])
 def add_to_learning_goals():
@@ -671,6 +629,8 @@ def delete_material(material_id):
                 return redirect(url_for('learning_recommendations', topic=topic))
     
     flash('Material not found', 'error')
+    return redirect(request.referrer)
+
 @app.route('/inbox')
 def inbox():
     if 'user_id' not in session:
@@ -703,7 +663,6 @@ def inbox():
 
     return render_template('inbox.html', emails=emails)
 
-    return redirect(request.referrer)
 
 @app.route('/mark-resource-completed/<topic>/<resource_id>', methods=['POST'])
 def mark_resource_completed(topic, resource_id):
@@ -819,110 +778,6 @@ def learning_history():
                          recent_activities=recent_activities,
                          progress_stats=progress_stats)
 
-@app.route('/learning-journal', methods=['GET', 'POST'])
-def create_learning_journal():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-        
-    if request.method == 'POST':
-        title = request.form.get('title')
-        description = request.form.get('description')
-        urls = request.form.get('urls')
-        notes = request.form.get('notes')
-        category = request.form.get('category')
-        
-        if not title:
-            flash('Title is required', 'error')
-            return redirect(url_for('create_learning_journal'))
-        
-        try:
-            entry = LearningJournalEntry(
-                user_id=session['user_id'],
-                title=title,
-                description=description,
-                urls=urls,
-                notes=notes,
-                category=category
-            )
-            
-            db.session.add(entry)
-            db.session.commit()
-            flash('Journal entry has been added successfully!', 'success')
-            return redirect(url_for('create_learning_journal'))
-            
-        except Exception as e:
-            db.session.rollback()
-            app.logger.error(f"Error adding journal entry: {str(e)}")
-            return redirect(url_for('create_learning_journal'))
-    
-    # Get existing entries for the user, sorted by created_at (newest first)
-    entries = LearningJournalEntry.query.filter_by(
-        user_id=session['user_id']
-    ).order_by(LearningJournalEntry.created_at.desc()).all()
-    
-    return render_template('learning_journal.html', entries=entries)
-    
-
-@app.route('/learning-journal-details/<int:entry_id>', methods=['GET', 'POST'])
-def learning_journal_details(entry_id):
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    
-    entry = LearningJournalEntry.query.get_or_404(entry_id)
-    
-    if request.method == 'POST':
-        additional_notes = request.form.get('additional_notes')
-        if additional_notes:
-            if entry.notes:
-                entry.notes = entry.notes + "\n\n" + additional_notes
-            else:
-                entry.notes = additional_notes
-            try:
-                db.session.commit()
-                flash('Notes added successfully!', 'success')
-            except Exception as e:
-                db.session.rollback()
-                app.logger.error(f"Error updating notes: {str(e)}")
-                flash('Error updating notes', 'error')
-    
-    return render_template('learning_journal_details.html', entry=entry)
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    
-    entry = LearningJournalEntry.query.get_or_404(entry_id)
-    
-    if request.method == 'POST':
-        additional_notes = request.form.get('additional_notes')
-        if additional_notes:
-            entry.notes = (entry.notes or '') + '\n\n' + additional_notes
-            try:
-                db.session.commit()
-                flash('Notes added successfully!', 'success')
-            except Exception as e:
-                db.session.rollback()
-                app.logger.error(f"Error updating notes: {str(e)}")
-                flash('Error updating notes', 'error')
-        return redirect(url_for('learning_journal_details', entry_id=entry_id))
-    
-    return render_template('learning_journal_details.html', entry=entry)
-        return redirect(url_for('login'))
-
-    entry = LearningJournalEntry.query.get_or_404(entry_id)
-    
-    if request.method == 'POST':
-        new_notes = request.form.get('additional_notes')
-        if new_notes:
-            current_notes = entry.notes if entry.notes else ''
-            entry.notes = current_notes + '\n\n' + new_notes
-            try:
-                db.session.commit()
-                flash('Notes updated successfully!', 'success')
-            except Exception as e:
-                db.session.rollback()
-                app.logger.error(f"Error updating notes: {str(e)}")
-                flash('An error occurred while updating notes.', 'error')
-    
-    return render_template('learning_journal_details.html', entry=entry, user=get_current_user())
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
