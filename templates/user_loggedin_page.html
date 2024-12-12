@@ -1,75 +1,117 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="flex h-screen bg-background">
-    <!-- Sidebar -->
-    <aside class="fixed top-0 left-0 z-40 w-56 h-screen transition-transform -translate-x-full md:translate-x-0">
-        <div class="h-full bg-surface">
-            <!-- User Profile Section -->
-            <div class="flex flex-col items-center p-4 border-b border-white/10">
-                <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-3">
-                    <i class="fas fa-user text-2xl text-primary"></i>
+<div class="min-h-screen bg-background">
+    <!-- Header Navigation -->
+    <header class="fixed top-0 left-0 right-0 bg-surface/95 backdrop-blur-sm border-b border-white/10 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="{{ url_for('user_loggedin_page') }}" class="flex items-center space-x-2">
+                    <i class="fas fa-graduation-cap text-primary text-2xl"></i>
+                    <span class="text-xl font-bold text-white">LearnerID</span>
+                </a>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="{{ url_for('user_loggedin_page') }}" 
+                       class="text-white/70 hover:text-white transition-colors {% if request.endpoint == 'user_loggedin_page' %}text-white{% endif %}">
+                        <i class="fas fa-home mr-2"></i>Home
+                    </a>
+                    <a href="{{ url_for('learning_history') }}" 
+                       class="text-white/70 hover:text-white transition-colors {% if request.endpoint == 'learning_history' %}text-white{% endif %}">
+                        <i class="fas fa-history mr-2"></i>History
+                    </a>
+                    <a href="{{ url_for('learning_credits') }}" 
+                       class="text-white/70 hover:text-white transition-colors {% if request.endpoint == 'learning_credits' %}text-white{% endif %}">
+                        <i class="fas fa-star mr-2"></i>Credits
+                    </a>
+                    <a href="{{ url_for('about') }}" 
+                       class="text-white/70 hover:text-white transition-colors {% if request.endpoint == 'about' %}text-white{% endif %}">
+                        <i class="fas fa-info-circle mr-2"></i>About
+                    </a>
+                    <a href="{{ url_for('how_it_works') }}" 
+                       class="text-white/70 hover:text-white transition-colors {% if request.endpoint == 'how_it_works' %}text-white{% endif %}">
+                        <i class="fas fa-question-circle mr-2"></i>How it Works
+                    </a>
+                </nav>
+
+                <!-- User Profile & Logout -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                            <i class="fas fa-user text-sm text-primary"></i>
+                        </div>
+                        <span class="text-sm text-white">{{ user.name if user else 'User Name' }}</span>
+                    </div>
+                    <form action="{{ url_for('logout') }}" method="POST">
+                        <button type="submit" 
+                                class="px-4 py-2 text-white/70 hover:text-white transition-colors">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </button>
+                    </form>
                 </div>
-                <h2 class="text-base font-semibold text-white">{{ user.name if user else 'User Name' }}</h2>
-                <p class="text-xs text-white/70">{{ user.email if user else 'user@example.com' }}</p>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-white/70 hover:text-white" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 bg-background z-40 transform translate-y-full transition-transform duration-300 md:hidden">
+        <div class="flex flex-col h-full pt-20 px-6">
+            <!-- User Profile -->
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                    <i class="fas fa-user text-xl text-primary"></i>
+                </div>
+                <div>
+                    <h3 class="text-white font-medium">{{ user.name if user else 'User Name' }}</h3>
+                    <p class="text-white/70 text-sm">{{ user.email if user else 'user@example.com' }}</p>
+                </div>
             </div>
             
-            <!-- Navigation -->
-            <nav class="p-3">
-                <ul class="space-y-1.5">
-                    <li>
-                        <a href="{{ url_for('user_loggedin_page') }}" 
-                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'user_loggedin_page' %}bg-white/10{% endif %}">
-                            <i class="fas fa-home w-5"></i>
-                            <span class="text-sm">Home</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('learning_history') }}" 
-                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'learning_history' %}bg-white/10{% endif %}">
-                            <i class="fas fa-history w-6"></i>
-                            <span>Learning History</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('learning_credits') }}" 
-                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'learning_credits' %}bg-white/10{% endif %}">
-                            <i class="fas fa-star w-6"></i>
-                            <span>Learning Credits</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('about') }}" 
-                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'about' %}bg-white/10{% endif %}">
-                            <i class="fas fa-info-circle w-6"></i>
-                            <span>About Us</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('how_it_works') }}" 
-                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'how_it_works' %}bg-white/10{% endif %}">
-                            <i class="fas fa-question-circle w-6"></i>
-                            <span>How it Works</span>
-                        </a>
-                    </li>
-                </ul>
+            <!-- Mobile Navigation -->
+            <nav class="flex flex-col space-y-4">
+                <a href="{{ url_for('user_loggedin_page') }}" 
+                   class="text-white/70 hover:text-white text-lg transition-colors {% if request.endpoint == 'user_loggedin_page' %}text-white{% endif %}">
+                    <i class="fas fa-home mr-3"></i>Home
+                </a>
+                <a href="{{ url_for('learning_history') }}" 
+                   class="text-white/70 hover:text-white text-lg transition-colors {% if request.endpoint == 'learning_history' %}text-white{% endif %}">
+                    <i class="fas fa-history mr-3"></i>Learning History
+                </a>
+                <a href="{{ url_for('learning_credits') }}" 
+                   class="text-white/70 hover:text-white text-lg transition-colors {% if request.endpoint == 'learning_credits' %}text-white{% endif %}">
+                    <i class="fas fa-star mr-3"></i>Learning Credits
+                </a>
+                <a href="{{ url_for('about') }}" 
+                   class="text-white/70 hover:text-white text-lg transition-colors {% if request.endpoint == 'about' %}text-white{% endif %}">
+                    <i class="fas fa-info-circle mr-3"></i>About Us
+                </a>
+                <a href="{{ url_for('how_it_works') }}" 
+                   class="text-white/70 hover:text-white text-lg transition-colors {% if request.endpoint == 'how_it_works' %}text-white{% endif %}">
+                    <i class="fas fa-question-circle mr-3"></i>How it Works
+                </a>
             </nav>
             
-            <!-- Logout Button -->
-            <div class="absolute bottom-0 left-0 right-0 p-4">
-                <form action="{{ url_for('logout') }}" method="POST" class="w-full">
+            <!-- Mobile Logout -->
+            <div class="mt-8">
+                <form action="{{ url_for('logout') }}" method="POST">
                     <button type="submit" 
-                            class="w-full flex items-center justify-center p-3 text-white rounded-xl hover:bg-white/5 transition-colors">
-                        <i class="fas fa-sign-out-alt w-6"></i>
-                        <span>Logout</span>
+                            class="w-full px-4 py-3 text-center text-white/70 hover:text-white border border-white/10 rounded-lg transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
                     </button>
                 </form>
             </div>
         </div>
-    </aside>
+    </div>
 
     <!-- Main Content -->
-    <main class="flex-1 md:ml-56 p-4 sm:p-6 lg:p-8">
+    <main class="pt-24 px-4 sm:px-6 lg:px-8">
         <div class="container mx-auto">
             <h1 class="text-3xl font-bold text-white mb-8">Never.Stop.Learning</h1>
             
@@ -450,12 +492,35 @@
 
 <!-- Mobile Nav Toggle -->
 <button type="button" 
-        class="fixed top-4 left-4 z-50 md:hidden text-white text-2xl bg-transparent border-none cursor-pointer"
-        onclick="toggleSidebar()">
-    <i class="fas fa-bars"></i>
-</button>
+        <script>
+function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (mobileMenu) {
+        if (mobileMenu.classList.contains('translate-y-full')) {
+            // Open menu
+            mobileMenu.classList.remove('translate-y-full');
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Close menu
+            mobileMenu.classList.add('translate-y-full');
+            document.body.style.overflow = '';
+        }
+    }
+}
 
-<script>
+// Close mobile menu when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (mobileMenu) {
+        document.addEventListener('click', function(e) {
+            if (e.target === mobileMenu) {
+                mobileMenu.classList.add('translate-y-full');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+});
+
 // Chat Modal Functions
 function openChatModal() {
     const modal = document.getElementById('aiChatModal');
