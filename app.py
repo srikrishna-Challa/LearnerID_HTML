@@ -41,7 +41,7 @@ class UserNote(db.Model):
 class LearningJournalEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer)  # We'll link this to users once auth is implemented
-    topic_name = db.Column(db.String(200), nullable=False)
+    title = db.Column(db.String(200), nullable=False)  # This matches the DB schema
     description = db.Column(db.Text)
     urls = db.Column(db.Text)
     notes = db.Column(db.Text)
@@ -825,13 +825,13 @@ def create_learning_journal():
         return redirect(url_for('login'))
         
     if request.method == 'POST':
-        topic_name = request.form.get('topic_name')
+        title = request.form.get('topic_name')  # Get from form's topic_name field
         description = request.form.get('description')
         urls = request.form.get('urls')
         notes = request.form.get('notes')
         category = request.form.get('category')
         
-        if not topic_name:
+        if not title:
             flash('Topic name is required', 'error')
             return redirect(url_for('create_learning_journal'))
         
@@ -839,7 +839,7 @@ def create_learning_journal():
             # Add to learning journal
             entry = LearningJournalEntry(
                 user_id=session['user_id'],
-                topic_name=topic_name,
+                title=title,  # Use title instead of topic_name
                 description=description,
                 urls=urls,
                 notes=notes,
