@@ -113,7 +113,7 @@
                         </div>
                         
                         <div class="mt-4">
-                            <a href="#" onclick="openJournalDetails('{{ entry.id }}')" 
+                            <a href="{{ url_for('learning_journal_details', entry_id=entry.id) }}" 
                                class="block text-center px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
                                 View Details
                             </a>

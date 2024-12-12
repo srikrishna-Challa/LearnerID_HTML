@@ -41,7 +41,7 @@ class UserNote(db.Model):
 class LearningJournalEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer)  # We'll link this to users once auth is implemented
-    title = db.Column(db.String(200), nullable=False)  # This matches the DB schema
+    title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
     urls = db.Column(db.Text)
     notes = db.Column(db.Text)
@@ -825,21 +825,20 @@ def create_learning_journal():
         return redirect(url_for('login'))
         
     if request.method == 'POST':
-        title = request.form.get('topic_name')  # Get from form's topic_name field
+        title = request.form.get('title')
         description = request.form.get('description')
         urls = request.form.get('urls')
         notes = request.form.get('notes')
         category = request.form.get('category')
         
         if not title:
-            flash('Topic name is required', 'error')
+            flash('Title is required', 'error')
             return redirect(url_for('create_learning_journal'))
         
         try:
-            # Add to learning journal
             entry = LearningJournalEntry(
                 user_id=session['user_id'],
-                title=title,  # Use title instead of topic_name
+                title=title,
                 description=description,
                 urls=urls,
                 notes=notes,
@@ -849,14 +848,12 @@ def create_learning_journal():
             db.session.add(entry)
             db.session.commit()
             flash('Journal entry has been added successfully!', 'success')
+            return redirect(url_for('create_learning_journal'))
             
         except Exception as e:
             db.session.rollback()
             app.logger.error(f"Error adding journal entry: {str(e)}")
-            app.logger.error(f"Error adding journal entry: {str(e)}")
             return redirect(url_for('create_learning_journal'))
-        
-        return redirect(url_for('create_learning_journal'))
     
     # Get existing entries for the user, sorted by created_at (newest first)
     entries = LearningJournalEntry.query.filter_by(
@@ -864,63 +861,68 @@ def create_learning_journal():
     ).order_by(LearningJournalEntry.created_at.desc()).all()
     
     return render_template('learning_journal.html', entries=entries)
+    
+
+@app.route('/learning-journal-details/<int:entry_id>', methods=['GET', 'POST'])
+def learning_journal_details(entry_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
+    
+    entry = LearningJournalEntry.query.get_or_404(entry_id)
+    
+    if request.method == 'POST':
+        additional_notes = request.form.get('additional_notes')
+        if additional_notes:
+            if entry.notes:
+                entry.notes = entry.notes + "\n\n" + additional_notes
+            else:
+                entry.notes = additional_notes
+            try:
+                db.session.commit()
+                flash('Notes added successfully!', 'success')
+            except Exception as e:
+                db.session.rollback()
+                app.logger.error(f"Error updating notes: {str(e)}")
+                flash('Error updating notes', 'error')
+    
+    return render_template('learning_journal_details.html', entry=entry)
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    entry = LearningJournalEntry.query.get_or_404(entry_id)
+    
+    if request.method == 'POST':
+        additional_notes = request.form.get('additional_notes')
+        if additional_notes:
+            entry.notes = (entry.notes or '') + '\n\n' + additional_notes
+            try:
+                db.session.commit()
+                flash('Notes added successfully!', 'success')
+            except Exception as e:
+                db.session.rollback()
+                app.logger.error(f"Error updating notes: {str(e)}")
+                flash('Error updating notes', 'error')
+        return redirect(url_for('learning_journal_details', entry_id=entry_id))
+    
+    return render_template('learning_journal_details.html', entry=entry)
+        return redirect(url_for('login'))
 
-    # Mock data for learning history and progress
-    learning_history = [
-        {
-            'topic': 'Technology and Computer Science',
-            'level': 'Intermediate',
-            'total_duration': '8 weeks',
-            'progress': 65,
-            'start_date': '2024-12-01',
-            'status': 'In Progress'
-        },
-        {
-            'topic': 'Data Science and Analytics',
-            'level': 'Beginner',
-            'total_duration': '12 weeks',
-            'progress': 25,
-            'start_date': '2024-11-15',
-            'status': 'In Progress'
-        }
-    ]
-
-    # Mock recent activity data
-    recent_activities = [
-        {
-            'type': 'completion',
-            'icon': 'book-open',
-            'text': 'Completed Module: Introduction to Programming',
-            'time': '2 hours ago'
-        },
-        {
-            'type': 'achievement',
-            'icon': 'trophy',
-            'text': 'Earned Badge: Python Basics',
-            'time': 'Yesterday'
-        },
-        {
-            'type': 'course',
-            'icon': 'tasks',
-            'text': 'Started New Course: Data Structures',
-            'time': '2 days ago'
-        }
-    ]
-
-    # Mock progress statistics
-    progress_stats = {
-        'current_progress': 65,
-        'current_course': 'Technology and Computer Science',
-        'learning_credits': 750,
-        'active_courses': 2
-    }
-
-    return render_template('learning_history.html', 
-                         learning_history=learning_history,
-                         recent_activities=recent_activities,
-                         progress_stats=progress_stats)
+    entry = LearningJournalEntry.query.get_or_404(entry_id)
+    
+    if request.method == 'POST':
+        new_notes = request.form.get('additional_notes')
+        if new_notes:
+            current_notes = entry.notes if entry.notes else ''
+            entry.notes = current_notes + '\n\n' + new_notes
+            try:
+                db.session.commit()
+                flash('Notes updated successfully!', 'success')
+            except Exception as e:
+                db.session.rollback()
+                app.logger.error(f"Error updating notes: {str(e)}")
+                flash('An error occurred while updating notes.', 'error')
+    
+    return render_template('learning_journal_details.html', entry=entry, user=get_current_user())
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

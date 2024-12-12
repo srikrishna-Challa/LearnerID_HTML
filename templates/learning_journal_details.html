@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex h-screen bg-background">
+    <!-- Sidebar -->
+    <aside class="fixed top-0 left-0 z-40 w-56 h-screen transition-transform -translate-x-full md:translate-x-0">
+        <div class="h-full bg-surface">
+            <!-- User Profile Section -->
+            <div class="flex flex-col items-center p-4 border-b border-white/10">
+                <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-3">
+                    <i class="fas fa-user text-2xl text-primary"></i>
+                </div>
+                <h2 class="text-base font-semibold text-white">{{ user.name if user else 'User Name' }}</h2>
+                <p class="text-xs text-white/70">{{ user.email if user else 'user@example.com' }}</p>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="p-3">
+                <ul class="space-y-1.5">
+                    <li>
+                        <a href="{{ url_for('user_loggedin_page') }}" 
+                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5">
+                            <i class="fas fa-home w-5"></i>
+                            <span class="text-sm">Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('learning_history') }}"
+                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5">
+                            <i class="fas fa-history w-5"></i>
+                            <span class="text-sm">Learning History</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('learning_credits') }}"
+                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5">
+                            <i class="fas fa-star w-5"></i>
+                            <span class="text-sm">Learning Credits</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('create_learning_journal') }}"
+                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5">
+                            <i class="fas fa-book w-5"></i>
+                            <span class="text-sm">Learning Journal</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 md:ml-56 p-4 sm:p-6 lg:p-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">Journal Entry Details</h1>
+                <p class="text-white/70">View and update your learning journey</p>
+            </div>
+            <a href="{{ url_for('create_learning_journal') }}" 
+               class="px-6 py-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-colors">
+                Back to Journal
+            </a>
+        </div>
+
+        <!-- Entry Details -->
+        <div class="bg-surface rounded-2xl p-6 border border-white/10">
+            <div class="space-y-6">
+                <!-- Title (Uneditable) -->
+                <div>
+                    <label class="block text-sm font-medium text-white/70 mb-2">Title</label>
+                    <div class="w-full bg-white/5 rounded-xl px-4 py-3 text-white">
+                        {{ entry.title }}
+                    </div>
+                </div>
+
+                <!-- Description (Uneditable) -->
+                <div>
+                    <label class="block text-sm font-medium text-white/70 mb-2">Description</label>
+                    <div class="w-full bg-white/5 rounded-xl px-4 py-3 text-white min-h-[100px]">
+                        {{ entry.description or 'No description provided' }}
+                    </div>
+                </div>
+
+                <!-- URLs (Uneditable) -->
+                <div>
+                    <label class="block text-sm font-medium text-white/70 mb-2">URLs/References</label>
+                    <div class="w-full bg-white/5 rounded-xl px-4 py-3 text-white">
+                        {{ entry.urls or 'No URLs provided' }}
+                    </div>
+                </div>
+
+                <!-- Existing Notes -->
+                <div>
+                    <label class="block text-sm font-medium text-white/70 mb-2">Current Notes</label>
+                    <div class="w-full bg-white/5 rounded-xl px-4 py-3 text-white min-h-[100px]">
+                        {{ entry.notes or 'No notes added yet' }}
+                    </div>
+                </div>
+
+                <!-- Add More Notes -->
+                <form method="POST" class="space-y-4">
+                    <div>
+                        <label for="additional_notes" class="block text-sm font-medium text-white/70 mb-2">Add More Notes</label>
+                        <textarea id="additional_notes" 
+                                name="additional_notes" 
+                                rows="4" 
+                                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white"
+                                placeholder="Add new notes or insights..."></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" 
+                                class="px-6 py-2 bg-primary hover:bg-primary/90 text-white rounded-xl transition-colors">
+                            Add Notes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
