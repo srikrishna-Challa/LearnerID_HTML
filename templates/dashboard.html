@@ -18,17 +18,10 @@
             <nav class="p-4">
                 <ul class="space-y-2">
                     <li>
-                        <a href="{{ url_for('dashboard') }}" 
-                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'dashboard' %}bg-white/10{% endif %}">
+                        <a href="{{ url_for('user_loggedin_page') }}" 
+                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'user_loggedin_page' %}bg-white/10{% endif %}">
                             <i class="fas fa-home w-6"></i>
                             <span>Home</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('mails') }}" 
-                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'mails' %}bg-white/10{% endif %}">
-                            <i class="fas fa-envelope w-6"></i>
-                            <span>Mails</span>
                         </a>
                     </li>
                     <li>
@@ -46,10 +39,10 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url_for('about') }}" 
-                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'about' %}bg-white/10{% endif %}">
-                            <i class="fas fa-info-circle w-6"></i>
-                            <span>About Us</span>
+                        <a href="{{ url_for('create_learning_journal') }}" 
+                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'create_learning_journal' %}bg-white/10{% endif %}">
+                            <i class="fas fa-book w-6"></i>
+                            <span>Learning Journal</span>
                         </a>
                     </li>
                     <li>
@@ -57,6 +50,13 @@
                            class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'how_it_works' %}bg-white/10{% endif %}">
                             <i class="fas fa-question-circle w-6"></i>
                             <span>How it Works</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('about') }}" 
+                           class="flex items-center p-3 text-white rounded-xl hover:bg-white/5 {% if request.endpoint == 'about' %}bg-white/10{% endif %}">
+                            <i class="fas fa-info-circle w-6"></i>
+                            <span>About LearnerID</span>
                         </a>
                     </li>
                 </ul>

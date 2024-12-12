@@ -32,10 +32,10 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url_for('learning_plan') }}"
-                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'learning_plan' %}bg-white/10{% endif %}">
-                            <i class="fas fa-graduation-cap w-5"></i>
-                            <span class="text-sm">Learning Plan</span>
+                        <a href="{{ url_for('learning_credits') }}"
+                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'learning_credits' %}bg-white/10{% endif %}">
+                            <i class="fas fa-star w-5"></i>
+                            <span class="text-sm">Learning Credits</span>
                         </a>
                     </li>
                     <li>
@@ -46,10 +46,17 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url_for('inbox') }}"
-                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'inbox' %}bg-white/10{% endif %}">
-                            <i class="fas fa-inbox w-5"></i>
-                            <span class="text-sm">Inbox</span>
+                        <a href="{{ url_for('how_it_works') }}"
+                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'how_it_works' %}bg-white/10{% endif %}">
+                            <i class="fas fa-question-circle w-5"></i>
+                            <span class="text-sm">How it Works</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('about') }}"
+                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'about' %}bg-white/10{% endif %}">
+                            <i class="fas fa-info-circle w-5"></i>
+                            <span class="text-sm">About LearnerID</span>
                         </a>
                     </li>
                 </ul>
