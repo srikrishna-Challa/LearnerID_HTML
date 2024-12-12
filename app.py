@@ -475,18 +475,6 @@ class UserNote(db.Model):
     summary = db.Column(db.Text)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-class UserMaterial(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    topic = db.Column(db.String(200), nullable=False)
-    title = db.Column(db.String(200), nullable=False)
-    description = db.Column(db.Text)
-    material_type = db.Column(db.String(50), nullable=False)  # 'video_url', 'document', 'website_url'
-    content = db.Column(db.Text, nullable=False)  # URL or file path
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    completed = db.Column(db.Boolean, default=False)
-    notes = db.relationship('UserNote', backref='material', lazy=True)
-
 with app.app_context():
     db.create_all()
 
@@ -895,135 +883,23 @@ def submit_quiz(topic, item_id):
     score = (correct_count / len(questions)) * 100
     
     # Update attempts tracking
-# Handle resource completion marking
-@app.route('/mark-resource-completed/<topic>/<resource_id>', methods=['POST'])
-def mark_resource_completed(topic, resource_id):
-    app.logger.debug(f"Marking resource {resource_id} as completed for topic: {topic}")
-    
-    # Find the resource in recommendations data
-    for course, resources in recommendations_data.items():
-        for resource_type, resource_list in resources.items():
-            for resource in resource_list:
-                if resource['id'] == resource_id:
-                    resource['completed'] = True
-                    return jsonify({'status': 'success'})
-    
-    # Check user materials
-    if topic in user_materials:
-        for material in user_materials[topic]:
-            if material['id'] == resource_id:
-                material['completed'] = True
-                return jsonify({'status': 'success'})
-    
-    return jsonify({'status': 'error', 'message': 'Resource not found'}), 404
-
-@app.route('/save-notes', methods=['POST'])
-def save_notes():
-    if 'user_id' not in session:
-        return jsonify({'status': 'error', 'message': 'User not logged in'}), 401
-        
-    data = request.get_json()
-    resource_id = data.get('resourceId')
-    resource_type = data.get('resourceType')
-    notes_content = data.get('notes')
-    
-    if not all([resource_id, resource_type, notes_content]):
-        return jsonify({'status': 'error', 'message': 'Missing required fields'}), 400
-        
-    new_note = UserNote(
-        user_id=session['user_id'],
-        resource_id=resource_id,
-        resource_type=resource_type,
-        note_content=notes_content
-    )
-    
-    try:
-        db.session.add(new_note)
-        db.session.commit()
-        return jsonify({'status': 'success'})
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-@app.route('/upload-material/<topic>', methods=['POST'])
-def upload_material(topic):
-    if 'user_id' not in session:
-        return jsonify({'status': 'error', 'message': 'User not logged in'}), 401
-        
-    title = request.form.get('title')
-    description = request.form.get('description')
-    material_type = request.form.get('material_type')
-    content = request.form.get('content')  # URL for video/website
-    
-    if not all([title, description, material_type]):
-        return jsonify({'status': 'error', 'message': 'Missing required fields'}), 400
-        
-    if material_type == 'document' and 'file' not in request.files:
-        return jsonify({'status': 'error', 'message': 'No file uploaded'}), 400
-        
-    if material_type == 'document':
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            content = filename
-        else:
-            return jsonify({'status': 'error', 'message': 'Invalid file type'}), 400
-            
-    new_material = UserMaterial(
-        user_id=session['user_id'],
-        topic=topic,
-        title=title,
-        description=description,
-        material_type=material_type,
-        content=content
-    )
-    
-    try:
-        db.session.add(new_material)
-        db.session.commit()
-        return jsonify({'status': 'success'})
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
-
-@app.route('/submit_quiz/<topic>', methods=['POST'])
-def submit_quiz(topic):
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-        
-    if topic not in quiz_attempts:
-        quiz_attempts[topic] = {'attempts': 0, 'scores': [], 'max_attempts': 3}
-    
-    # Update attempts tracking
     quiz_attempts[topic]['attempts'] += 1
-    score = int(request.form.get('score', 0))
     quiz_attempts[topic]['scores'].append(score)
     
     # Check if passed
-    correct_count = int(request.form.get('correct_count', 0))
-    passing_score = quiz_data.get(topic, {}).get('passing_score', 70)
-    passed = correct_count >= passing_score
-    item_id = request.form.get('item_id')
+    passed = correct_count >= quiz_data[topic]['passing_score']
     
     if passed:
-        # Update knowledge assessment status
-        if topic in recommendations_data:
-            for resource_type, resources in recommendations_data[topic].items():
-                if resource_type == 'knowledge_assessment':
-                    for resource in resources:
-                        if resource['id'] == item_id:
-                            resource['completed'] = True
-                            resource['credits_unlocked'] = True
-                            break
+        # Find and update the item's credits status
+        for section in recommendations_data[topic].values():
+            for item in section:
+                if item['id'] == item_id:
+                    item['credits_unlocked'] = True
         
         flash(f'Congratulations! You passed the quiz with {correct_count} correct answers. Learning credits have been unlocked!', 'success')
     else:
         attempts_left = quiz_attempts[topic]['max_attempts'] - quiz_attempts[topic]['attempts']
-        flash(f'You got {correct_count} answers correct. You need {passing_score} to pass. You have {attempts_left} attempts left!', 'error')
+        flash(f'You got {correct_count} answers correct. You need {quiz_data[topic]["passing_score"]} to pass. You have {attempts_left} attempts left!', 'error')
     
     return redirect(url_for('learning_recommendations', topic=topic))
 
@@ -1251,33 +1127,33 @@ def inbox():
     return render_template('inbox.html', emails=emails)
 
 
-# Unified resource completion marking
 @app.route('/mark-resource-completed/<topic>/<resource_id>', methods=['POST'])
 def mark_resource_completed(topic, resource_id):
     app.logger.debug(f"Marking resource {resource_id} as completed for topic: {topic}")
     
-    # Check in recommendations data
-    for course, resources in recommendations_data.items():
-        for resource_type, resource_list in resources.items():
-            for resource in resource_list:
-                if resource['id'] == resource_id:
-                    resource['completed'] = True
-                    flash('Resource marked as completed!', 'success')
-                    return jsonify({'status': 'success'})
+    # Find and mark the resource as completed
+    resource_found = False
+    for section in recommendations_data.get(topic, {}).values():
+        for item in section:
+            if item['id'] == resource_id:
+                item['completed'] = True
+                resource_found = True
+                break
+        if resource_found:
+            break
     
-    # Check in user materials
-    if topic in user_materials:
-        for material in user_materials[topic]:
-            if material['id'] == resource_id:
-                material['completed'] = True
-                flash('Resource marked as completed!', 'success')
-                return jsonify({'status': 'success'})
-    
-    flash('Resource not found', 'error')
-    return jsonify({
-        'status': 'error',
-        'message': 'Resource not found'
-    }), 404
+    if resource_found:
+        flash('Resource has been marked as completed!', 'success')
+        return jsonify({
+            'status': 'success',
+            'message': 'Resource marked as completed'
+        })
+    else:
+        flash('Resource not found', 'error')
+        return jsonify({
+            'status': 'error',
+            'message': 'Resource not found'
+        }), 404
 @app.route('/mark-topic-completed/<topic>', methods=['POST'])
 def mark_topic_completed(topic):
     app.logger.debug(f"Marking topic as completed: {topic}")
@@ -1306,13 +1182,10 @@ def mark_topic_completed(topic):
         }), 404
 
 @app.route('/learning-history')
-@app.route('/learning_history')  # Support both formats for backward compatibility
 def learning_history():
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
-    app.logger.debug("Accessing learning history route")
-    
     # Mock data for learning history and progress
     learning_history = [
         {
@@ -1363,7 +1236,6 @@ def learning_history():
         'active_courses': 2
     }
 
-    app.logger.debug("Rendering learning history template")
     return render_template('learning_history.html', 
                          learning_history=learning_history,
                          recent_activities=recent_activities,

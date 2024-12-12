@@ -26,7 +26,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url_for('learning-history') }}"
+                        <a href="{{ url_for('learning_history') }}"
                            class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'learning_history' %}bg-white/10{% endif %}">
                             <i class="fas fa-history w-5"></i>
                             <span class="text-sm">Learning History</span>
@@ -115,13 +115,6 @@
                 </div>
             </div>
             
-            <div class="mb-4">
-                <button onclick="openUploadModal()"
-                        class="px-6 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
-                    <i class="fas fa-plus mr-2"></i>Add Learning Material
-                </button>
-            </div>
-            
             {% if video_resources %}
                 <div class="space-y-4">
                     {% for video in video_resources %}
@@ -151,127 +144,12 @@
                     </div>
                     {% endfor %}
                 </div>
-            {% endif %}
-            
-            {% if reading_materials %}
-                <div class="space-y-4">
-                    {% for material in reading_materials %}
-                    <div class="p-4 bg-white/5 rounded-xl">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h3 class="text-lg font-medium text-white">{{ material.title }}</h3>
-                                <p class="text-white/70">Reading Time: {{ material.reading_time }}</p>
-                                <p class="text-white/70">{{ material.description }}</p>
-                            </div>
-                            <div class="flex space-x-2">
-                                <button onclick="openNotesModal('{{ material.id }}', 'reading', '{{ material.title }}')"
-                                        class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
-                                    <i class="fas fa-note-sticky mr-2"></i>Add Notes
-                                </button>
-                                <button onclick="generateSummary('{{ material.id }}')"
-                                        class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
-                                    <i class="fas fa-magic mr-2"></i>Generate Summary
-                                </button>
-                                <button onclick="handleResourceCompletion('{{ topic }}', '{{ material.id }}')"
-                                        class="px-4 py-2 {% if material.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} rounded-xl transition-colors">
-                                    <i class="fas {% if material.completed %}fa-check{% else %}fa-circle{% endif %} mr-2"></i>
-                                    {% if material.completed %}Completed{% else %}Mark Complete{% endif %}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            
-            {% if user_materials %}
-                <div class="mt-6">
-                    <h3 class="text-xl font-semibold text-white mb-4">My Uploaded Materials</h3>
-                    <div class="space-y-4">
-                        {% for material in user_materials %}
-                        <div class="p-4 bg-white/5 rounded-xl">
-                            <div class="flex justify-between items-start mb-3">
-                                <div>
-                                    <h3 class="text-lg font-medium text-white">{{ material.title }}</h3>
-                                    <p class="text-white/70">Type: {{ material.material_type }}</p>
-                                    <p class="text-white/70">{{ material.description }}</p>
-                                </div>
-                                <div class="flex space-x-2">
-                                    <button onclick="openNotesModal('{{ material.id }}', 'user_material', '{{ material.title }}')"
-                                            class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
-                                        <i class="fas fa-note-sticky mr-2"></i>Add Notes
-                                    </button>
-                                    <button onclick="generateSummary('{{ material.id }}')"
-                                            class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
-                                        <i class="fas fa-magic mr-2"></i>Generate Summary
-                                    </button>
-                                    <button onclick="handleResourceCompletion('{{ topic }}', '{{ material.id }}')"
-                                            class="px-4 py-2 {% if material.completed %}bg-green-500/20 text-green-500{% else %}bg-white/5 text-white/70{% endif %} rounded-xl transition-colors">
-                                        <i class="fas {% if material.completed %}fa-check{% else %}fa-circle{% endif %} mr-2"></i>
-                                        {% if material.completed %}Completed{% else %}Mark Complete{% endif %}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
+            {% else %}
+                <p class="text-white/70">No video resources available for this topic.</p>
             {% endif %}
         </div>
 
         <!-- Reading Materials Section -->
-<!-- Upload Material Modal -->
-<div id="uploadModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
-    <div class="bg-surface rounded-2xl p-6 max-w-2xl w-full mx-4">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-semibold text-white">Add Learning Material</h3>
-            <button onclick="closeUploadModal()" class="text-white/70 hover:text-white">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <form id="uploadForm" class="space-y-4">
-            <div>
-                <label class="block text-white mb-2">Title</label>
-                <input type="text" name="title" required
-                       class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40">
-            </div>
-            <div>
-                <label class="block text-white mb-2">Description</label>
-                <textarea name="description" rows="3" required
-                          class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40"></textarea>
-            </div>
-            <div>
-                <label class="block text-white mb-2">Material Type</label>
-                <select name="material_type" onchange="toggleUploadFields()" required
-                        class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white">
-                    <option value="video_url">Video URL</option>
-                    <option value="document">Document (PDF/DOC)</option>
-                    <option value="website_url">Website URL</option>
-                </select>
-            </div>
-            <div id="urlField">
-                <label class="block text-white mb-2">URL</label>
-                <input type="url" name="content"
-                       class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40">
-            </div>
-            <div id="fileField" class="hidden">
-                <label class="block text-white mb-2">File</label>
-                <input type="file" name="file" accept=".pdf,.doc,.docx,.txt"
-                       class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white">
-            </div>
-            <div class="flex justify-end space-x-4">
-                <button type="button" onclick="closeUploadModal()"
-                        class="px-6 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white transition-colors">
-                    Cancel
-                </button>
-                <button type="submit"
-                        class="px-6 py-2 bg-primary hover:bg-primary/90 rounded-xl text-white transition-colors">
-                    Upload Material
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
         <div class="bg-surface rounded-2xl p-6 mb-6 border border-white/10">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center">
@@ -343,62 +221,6 @@
     </div>
 </div>
 
-<script>
-// Modal handling for upload
-function openUploadModal() {
-    const modal = document.getElementById('uploadModal');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-}
-
-function closeUploadModal() {
-    const modal = document.getElementById('uploadModal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-}
-
-function toggleUploadFields() {
-    const materialType = document.querySelector('select[name="material_type"]').value;
-    const urlField = document.getElementById('urlField');
-    const fileField = document.getElementById('fileField');
-    
-    if (materialType === 'document') {
-        urlField.classList.add('hidden');
-        fileField.classList.remove('hidden');
-    } else {
-        urlField.classList.remove('hidden');
-        fileField.classList.add('hidden');
-    }
-}
-
-// Form submission
-document.getElementById('uploadForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const materialType = formData.get('material_type');
-    
-    fetch(`/upload-material/{{ topic }}`, {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showFlashMessage('Material uploaded successfully!', 'success');
-            closeUploadModal();
-            setTimeout(() => location.reload(), 1000);
-        } else {
-            showFlashMessage(data.message || 'Error uploading material', 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showFlashMessage('Error uploading material', 'error');
-    });
-});
-</script>
-                      
 <script>
 // Modal handling
 let currentResourceId = '';
