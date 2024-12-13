@@ -37,6 +37,13 @@ class LearningHistory(db.Model):
     start_date = db.Column(db.DateTime, default=db.func.current_timestamp())
     completion_date = db.Column(db.DateTime)
 
+class LearningCredit(db.Model):
+    __tablename__ = 'learning_credits'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    credits = db.Column(db.Integer, default=0)
+    last_updated = db.Column(db.DateTime, default=db.func.current_timestamp())
+
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
@@ -79,6 +86,12 @@ def login():
                         progress=progress
                     )
                     db.session.add(history)
+                
+                # Create initial learning credits
+                if not LearningCredit.query.filter_by(user_id=user.id).first():
+                    credits = LearningCredit(user_id=user.id, credits=100)  # Start with 100 credits
+                    db.session.add(credits)
+                
                 db.session.commit()
             
             flash('Successfully logged in!', 'success')
@@ -105,6 +118,17 @@ def learning_history():
                          user=current_user,
                          learning_history=history_items,
                          weekly_readings=[])
+
+@app.route('/learning-credits')
+@login_required
+def learning_credits():
+    # Get user's learning credits
+    credits = LearningCredit.query.filter_by(user_id=current_user.id).first()
+    if not credits:
+        credits = LearningCredit(user_id=current_user.id, credits=0)
+        db.session.add(credits)
+        db.session.commit()
+    return render_template('learning_credits.html', user=current_user, credits=credits)
 
 @app.route('/logout', methods=['POST'])
 @login_required
