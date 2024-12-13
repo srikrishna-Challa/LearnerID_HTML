@@ -568,15 +568,12 @@ def login():
         name = request.form.get('name', '')
         
         if email and name:
-            try:
-                # Always create a new user session
-                session['user_id'] = 1  # Use a dummy ID
-                session['user_name'] = name
-                session['user_email'] = email
-                return redirect(url_for('user_loggedin_page'))
-            except Exception as e:
-                app.logger.error(f"Login error: {e}")
-                flash('An error occurred during login. Please try again.')
+            # Create user session with provided details
+            session['user_id'] = 1  # Dummy ID for testing
+            session['user_name'] = name
+            session['user_email'] = email
+            app.logger.info(f"User logged in successfully: {email}")
+            return redirect(url_for('user_loggedin_page'))
         else:
             flash('Please enter both email and name')
             
@@ -617,7 +614,12 @@ def logout():
 def user_loggedin_page():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    return render_template('user_loggedin_page.html', user=get_current_user())
+    user = {
+        'id': session.get('user_id'),
+        'name': session.get('user_name'),
+        'email': session.get('user_email')
+    }
+    return render_template('user_loggedin_page.html', user=user)
 
 @app.route('/mails')
 def mails():
