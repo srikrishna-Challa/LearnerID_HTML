@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}LearnerID{% endblock %}</title>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -32,8 +33,71 @@
     </style>
 </head>
 <body class="bg-background text-white min-h-screen overflow-y-auto overflow-x-hidden">
-    <div id="ai-loading" class="ai-loading fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden"></div>
-    {% block content %}{% endblock %}
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 bg-surface/95 backdrop-blur-sm border-b border-white/10 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-2">
+                    <i class="fas fa-graduation-cap text-primary text-2xl"></i>
+                    <span class="text-xl font-bold text-white">LearnerID</span>
+                </a>
+
+                <!-- Navigation -->
+                <div class="flex items-center space-x-4">
+                    {% if current_user.is_authenticated %}
+                        <!-- User Avatar & Dropdown -->
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" class="flex items-center space-x-2">
+                                <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                                    <i class="fas fa-user text-primary"></i>
+                                </div>
+                            </button>
+                            
+                            <!-- Dropdown Menu -->
+                            <div x-show="open" 
+                                 @click.away="open = false"
+                                 class="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg py-1 border border-white/10"
+                                 style="display: none;">
+                                <a href="{{ url_for('user_loggedin_page') }}" class="block px-4 py-2 text-sm text-white hover:bg-white/5">
+                                    <i class="fas fa-home w-5"></i> Home
+                                </a>
+                                <a href="{{ url_for('profile') }}" class="block px-4 py-2 text-sm text-white hover:bg-white/5">
+                                    <i class="fas fa-user w-5"></i> Profile
+                                </a>
+                                <a href="{{ url_for('learning_paths') }}" class="block px-4 py-2 text-sm text-white hover:bg-white/5">
+                                    <i class="fas fa-graduation-cap w-5"></i> Learning Hub
+                                </a>
+                                <a href="{{ url_for('learning_journal') }}" class="block px-4 py-2 text-sm text-white hover:bg-white/5">
+                                    <i class="fas fa-book w-5"></i> Learning Journal
+                                </a>
+                                <a href="{{ url_for('learning_credits') }}" class="block px-4 py-2 text-sm text-white hover:bg-white/5">
+                                    <i class="fas fa-star w-5"></i> Learning Credits
+                                </a>
+                                <div class="border-t border-white/10 mt-1 pt-1">
+                                    <form action="{{ url_for('logout') }}" method="post" class="block">
+                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/5">
+                                            <i class="fas fa-sign-out-alt w-5"></i> Logout
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Auth Buttons -->
+                        <a href="{{ url_for('login') }}" class="px-4 py-2 text-white/70 hover:text-white transition-colors">Login</a>
+                        <a href="{{ url_for('signup') }}" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors">Sign up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content with top padding for header -->
+    <div class="pt-16">
+        <div id="ai-loading" class="ai-loading fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden"></div>
+        {% block content %}{% endblock %}
+    </div>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
         // Show loading animation on page transitions
