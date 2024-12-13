@@ -1314,6 +1314,26 @@ def learning_history():
             'progress': 25,
             'start_date': '2024-11-15',
             'status': 'In Progress'
+        },
+        {
+            'topic': 'Web Development Fundamentals',
+            'level': 'Intermediate',
+            'total_duration': '10 weeks',
+            'progress': 100,
+            'start_date': '2024-10-01',
+            'completion_date': '2024-12-10',
+            'status': 'Completed',
+            'achievements': ['Full Stack Developer', 'Code Quality Expert']
+        },
+        {
+            'topic': 'Python Programming',
+            'level': 'Advanced',
+            'total_duration': '6 weeks',
+            'progress': 100,
+            'start_date': '2024-09-15',
+            'completion_date': '2024-10-30',
+            'status': 'Completed',
+            'achievements': ['Python Master', 'Algorithm Specialist']
         }
     ]
 
