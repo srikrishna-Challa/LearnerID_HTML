@@ -20,7 +20,16 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/ai-theme.css') }}" rel="stylesheet">
+    <!-- Base styles moved inline for simplicity -->
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    </style>
 </head>
 <body class="bg-background text-white min-h-screen overflow-y-auto overflow-x-hidden">
     <div id="ai-loading" class="ai-loading fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden"></div>
