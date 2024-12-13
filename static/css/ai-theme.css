@@ -59,12 +59,35 @@
 /* AI Pattern Background */
 .bg-background {
   position: relative;
-  background: linear-gradient(to bottom right, #121212, #1a1a1a);
+  background: linear-gradient(to bottom right, #0a0f2c, #1a1f3c);
   background-image: 
-    radial-gradient(circle at 25px 25px, rgba(147, 51, 234, 0.15) 2%, transparent 0%),
-    radial-gradient(circle at 75px 75px, rgba(147, 51, 234, 0.1) 2%, transparent 0%);
-  background-size: 100px 100px;
-  animation: backgroundShift 15s infinite linear;
+    radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+    radial-gradient(2px 2px at 10px 10px, rgba(255, 255, 255, 0.05) 50%, transparent 0%),
+    radial-gradient(2px 2px at 30px 30px, rgba(255, 255, 255, 0.03) 50%, transparent 0%);
+  background-size: 100% 100%, 100% 100%, 50px 50px, 30px 30px;
+  animation: backgroundShift 20s infinite linear;
+  overflow: hidden;
+}
+
+.bg-background::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, transparent 30%, rgba(99, 102, 241, 0.03) 60%, transparent 70%);
+  animation: rotateBackground 30s infinite linear;
+}
+
+@keyframes rotateBackground {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes backgroundShift {

@@ -29,18 +29,38 @@
     <script>
         // Show loading animation on page transitions
         document.addEventListener('click', function(e) {
-            if (e.target.tagName === 'A' && !e.target.getAttribute('href').startsWith('#')) {
-                document.getElementById('ai-loading').classList.remove('hidden');
+            if (e.target.tagName === 'A' && e.target.getAttribute('href') && !e.target.getAttribute('href').startsWith('#')) {
+                const loader = document.getElementById('ai-loading');
+                loader.classList.remove('hidden');
+                // Hide loader if page hasn't changed after 2 seconds
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                }, 2000);
             }
         });
 
-        // Add entrance animation to cards
-        window.addEventListener('load', function() {
+        // Add entrance animation to cards with improved visibility
+        function animateCards() {
             document.querySelectorAll('.bg-surface').forEach((card, index) => {
-                card.classList.add('animate-card-entrance');
-                card.style.animationDelay = `${index * 0.1}s`;
+                // Reset animation
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                // Force reflow
+                card.offsetHeight;
+                
+                // Add animation with delay
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease-out';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
             });
-        });
+        }
+
+        // Run animation on initial load and after any dynamic content updates
+        window.addEventListener('load', animateCards);
+        document.addEventListener('DOMContentLoaded', animateCards);
     </script>
 </body>
 </html>
