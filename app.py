@@ -27,11 +27,13 @@ login_manager.login_view = 'login'
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
 
-    def __init__(self, name, email, password_hash):
+    def __init__(self, username, name, email, password_hash):
+        self.username = username
         self.name = name
         self.email = email
         self.password_hash = password_hash
@@ -79,36 +81,41 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     if request.method == 'POST':
-        email = request.form.get('email')
+        username = request.form.get('username')
         password = request.form.get('password')
         
-        if not email or not password:
-            flash('Please provide both email and password', 'error')
+        if not username or not password:
+            flash('Please provide both username and password', 'error')
             return render_template('login.html')
             
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(username=username).first()
         
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
-            flash('Successfully logged in!', 'success')
-            return redirect(url_for('index'))
+            next_page = request.args.get('next')
+            return redirect(next_page if next_page else url_for('index'))
             
-        flash('Invalid email or password', 'error')
+        flash('Invalid username or password', 'error')
     return render_template('login.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
+        username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
-        name = request.form.get('name')
+        name = request.form.get('first_name', '') + ' ' + request.form.get('last_name', '')
         
+        if User.query.filter_by(username=username).first():
+            flash('Username already taken', 'error')
+            return redirect(url_for('signup'))
+            
         if User.query.filter_by(email=email).first():
             flash('Email already registered', 'error')
             return redirect(url_for('signup'))
             
         hashed_password = generate_password_hash(password)
-        user = User(name=name, email=email, password_hash=hashed_password)
+        user = User(username=username, name=name, email=email, password_hash=hashed_password)
         db.session.add(user)
         db.session.commit()
         
