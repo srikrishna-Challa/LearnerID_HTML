@@ -130,6 +130,10 @@ def learning_credits():
         db.session.commit()
     return render_template('learning_credits.html', user=current_user, credits=credits)
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 @app.route('/logout', methods=['POST'])
 @login_required
 def logout():
