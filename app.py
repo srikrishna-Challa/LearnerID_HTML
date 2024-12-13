@@ -25,6 +25,7 @@ login_manager.login_view = 'login'
 
 # Models
 class User(UserMixin, db.Model):
+    __tablename__ = 'users'  # Explicitly set table name
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
@@ -49,7 +50,7 @@ def login():
         
         user = User.query.filter_by(username=username).first()
         if not user:
-            # Create new user if doesn't exist
+            # Create new user if doesn't exist (allow any username/password)
             try:
                 user = User(username=username, password=password)
                 db.session.add(user)
