@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_from_directory
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
 ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'txt'}
 
@@ -19,6 +19,14 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///learnerid.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # Initialize all data structures at the top
 quiz_attempts = {}
@@ -451,7 +459,7 @@ topic_details = {
 }
 db = SQLAlchemy(app)
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -560,11 +568,16 @@ def learning_journal_details(entry_id):
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
-        # Set dummy session data for testing
-        session['user_id'] = 1
-        session['user_email'] = email
-        session['user_name'] = 'Test User'
-        return redirect(url_for('user_loggedin_page'))
+        password = request.form.get('password')
+        user = User.query.filter_by(email=email).first()
+        
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for('user_loggedin_page'))
+        else:
+            flash('Invalid email or password')
+            return redirect(url_for('login'))
+            
     return render_template('login.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -595,7 +608,7 @@ def signup():
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    session.pop('user_id', None)
+    logout_user()
     return redirect(url_for('index'))
 
 @app.route('/user-loggedin')
@@ -629,9 +642,7 @@ def how_it_works():
 
 @app.route('/learning-paths')
 def learning_paths():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    return render_template('learning_paths.html', user=get_current_user())
+    return render_template('learning_paths.html')
 
 @app.route('/add-to-learning-goals', methods=['POST'])
 def add_to_learning_goals():
