@@ -27,6 +27,16 @@ class User(UserMixin, db.Model):
     def __init__(self, username):
         self.username = username
 
+class LearningHistory(db.Model):
+    __tablename__ = 'learning_history'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    topic = db.Column(db.String(200), nullable=False)
+    status = db.Column(db.String(50), nullable=False)  # 'In Progress' or 'Completed'
+    progress = db.Column(db.Integer, default=0)
+    start_date = db.Column(db.DateTime, default=db.func.current_timestamp())
+    completion_date = db.Column(db.DateTime)
+
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
@@ -53,6 +63,24 @@ def login():
             
             # Log in the user
             login_user(user)
+            
+            # Create sample learning history if none exists
+            if not LearningHistory.query.filter_by(user_id=user.id).first():
+                sample_topics = [
+                    ("Python Programming", "In Progress", 65),
+                    ("Web Development", "Completed", 100),
+                    ("Data Science", "In Progress", 30)
+                ]
+                for topic, status, progress in sample_topics:
+                    history = LearningHistory(
+                        user_id=user.id,
+                        topic=topic,
+                        status=status,
+                        progress=progress
+                    )
+                    db.session.add(history)
+                db.session.commit()
+            
             flash('Successfully logged in!', 'success')
             return redirect(url_for('user_loggedin_page'))
         else:
@@ -67,6 +95,16 @@ def signup():
 @login_required
 def user_loggedin_page():
     return render_template('user_loggedin_page.html', user=current_user)
+
+@app.route('/learning-history')
+@login_required
+def learning_history():
+    # Get user's learning history
+    history_items = LearningHistory.query.filter_by(user_id=current_user.id).all()
+    return render_template('learning_history.html', 
+                         user=current_user,
+                         learning_history=history_items,
+                         weekly_readings=[])
 
 @app.route('/logout', methods=['POST'])
 @login_required
