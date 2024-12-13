@@ -46,6 +46,13 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ url_for('inbox') }}"
+                           class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'inbox' %}bg-white/10{% endif %}">
+                            <i class="fas fa-envelope w-5"></i>
+                            <span class="text-sm">Email</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ url_for('how_it_works') }}"
                            class="flex items-center p-2 text-white rounded-lg hover:bg-white/5 {% if request.endpoint == 'how_it_works' %}bg-white/10{% endif %}">
                             <i class="fas fa-question-circle w-5"></i>
