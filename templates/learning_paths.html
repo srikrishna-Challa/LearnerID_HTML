@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-background">
+    <!-- Navigation Bar -->
+    <nav class="bg-surface px-4 py-3 flex justify-between items-center">
+        <a href="{{ url_for('index') }}" class="text-2xl font-bold text-primary">LearnerID</a>
+        <div class="flex items-center space-x-4">
+            <a href="{{ url_for('index') }}" class="text-white/70 hover:text-white">Home</a>
+            <a href="{{ url_for('learning_history') }}" class="text-white/70 hover:text-white">Learning History</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-3xl font-bold text-white mb-8">Learning Paths</h1>
+            <p class="text-white/70 mb-12">Explore our curated learning paths designed to help you achieve your goals.</p>
+
+            <!-- Learning Categories Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Technology Category -->
+                <div class="bg-surface border border-white/10 rounded-2xl overflow-hidden transition-all duration-300 hover:border-primary/50 group">
+                    <div class="p-6 cursor-pointer" onclick="toggleCategory('tech')">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
+                                    <i class="fas fa-laptop-code text-primary text-xl"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold text-white">Technology</h3>
+                            </div>
+                            <i class="fas fa-chevron-down text-white/70 transition-transform duration-300" id="tech-icon"></i>
+                        </div>
+                        <p class="text-white/70 mb-4">Master modern technologies and programming languages.</p>
+                    </div>
+                    <!-- Subcategories (Hidden by default) -->
+                    <div id="tech-subcategories" class="hidden border-t border-white/10">
+                        <div class="p-6 space-y-4">
+                            <a href="#" class="block p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Web Development</h4>
+                                <p class="text-white/70 text-sm">Learn HTML, CSS, JavaScript, and modern frameworks</p>
+                            </a>
+                            <a href="#" class="block p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Mobile Development</h4>
+                                <p class="text-white/70 text-sm">Build iOS and Android applications</p>
+                            </a>
+                            <a href="#" class="block p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Cloud Computing</h4>
+                                <p class="text-white/70 text-sm">Master AWS, Azure, and cloud technologies</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Science Category -->
+                <div class="bg-surface border border-white/10 rounded-2xl overflow-hidden transition-all duration-300 hover:border-primary/50 group">
+                    <div class="p-6 cursor-pointer" onclick="toggleCategory('data')">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
+                                    <i class="fas fa-chart-bar text-primary text-xl"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold text-white">Data Science</h3>
+                            </div>
+                            <i class="fas fa-chevron-down text-white/70 transition-transform duration-300" id="data-icon"></i>
+                        </div>
+                        <p class="text-white/70 mb-4">Learn data analysis, visualization, and machine learning.</p>
+                    </div>
+                    <!-- Subcategories (Hidden by default) -->
+                    <div id="data-subcategories" class="hidden border-t border-white/10">
+                        <div class="p-6 space-y-4">
+                            <a href="#" class="block p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Data Analysis</h4>
+                                <p class="text-white/70 text-sm">Master data analysis with Python and R</p>
+                            </a>
+                            <a href="#" class="block p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Machine Learning</h4>
+                                <p class="text-white/70 text-sm">Build and deploy ML models</p>
+                            </a>
+                            <a href="#" class="block p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Big Data</h4>
+                                <p class="text-white/70 text-sm">Work with large-scale data processing</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Category -->
+                <div class="bg-surface border border-white/10 rounded-2xl overflow-hidden transition-all duration-300 hover:border-primary/50 group">
+                    <div class="p-6 cursor-pointer" onclick="toggleCategory('business')">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
+                                    <i class="fas fa-briefcase text-primary text-xl"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold text-white">Business</h3>
+                            </div>
+                            <i class="fas fa-chevron-down text-white/70 transition-transform duration-300" id="business-icon"></i>
+                        </div>
+                        <p class="text-white/70 mb-4">Develop essential business and management skills.</p>
+                    </div>
+                    <!-- Subcategories (Hidden by default) -->
+                    <div id="business-subcategories" class="hidden border-t border-white/10">
+                        <div class="p-6 space-y-4">
+                            <a href="#" class="block p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Project Management</h4>
+                                <p class="text-white/70 text-sm">Learn Agile, Scrum, and PM methodologies</p>
+                            </a>
+                            <a href="#" class="block p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Digital Marketing</h4>
+                                <p class="text-white/70 text-sm">Master modern marketing techniques</p>
+                            </a>
+                            <a href="#" class="block p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                <h4 class="text-white font-medium mb-2">Entrepreneurship</h4>
+                                <p class="text-white/70 text-sm">Start and grow your business</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+function toggleCategory(category) {
+    const subcategories = document.getElementById(`${category}-subcategories`);
+    const icon = document.getElementById(`${category}-icon`);
+    
+    if (subcategories.classList.contains('hidden')) {
+        subcategories.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+    } else {
+        subcategories.classList.add('hidden');
+        icon.style.transform = 'rotate(0deg)';
+    }
+}
+</script>
+{% endblock %}

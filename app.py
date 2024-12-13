@@ -626,6 +626,13 @@ def how_it_works():
     return render_template('index.html')
 
 
+
+@app.route('/learning-paths')
+def learning_paths():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('learning_paths.html', user=get_current_user())
+
 @app.route('/add-to-learning-goals', methods=['POST'])
 def add_to_learning_goals():
     topics = request.json.get('topics', [])
