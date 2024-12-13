@@ -81,11 +81,18 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
+        
+        if not email or not password:
+            flash('Please provide both email and password', 'error')
+            return render_template('login.html')
+            
         user = User.query.filter_by(email=email).first()
         
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
+            flash('Successfully logged in!', 'success')
             return redirect(url_for('index'))
+            
         flash('Invalid email or password', 'error')
     return render_template('login.html')
 
