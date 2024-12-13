@@ -12,13 +12,150 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <div class="max-w-6xl mx-auto">
-            <h1 class="text-3xl font-bold text-white mb-8">Learning Paths</h1>
-            <p class="text-white/70 mb-12">Explore our curated learning paths designed to help you achieve your goals.</p>
+    <main class="flex min-h-[calc(100vh-4rem)]">
+        <!-- Left Sidebar - Categories -->
+        <div class="w-64 bg-surface border-r border-white/10 p-6">
+            <h2 class="text-xl font-semibold text-white mb-6">Learning Paths</h2>
+            <div class="space-y-2">
+                <!-- Technology Category -->
+                <button onclick="showSubcategories('tech')" 
+                        class="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 transition-colors text-left group category-btn"
+                        data-category="tech">
+                    <div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center group-hover:bg-primary/30">
+                        <i class="fas fa-laptop-code text-primary"></i>
+                    </div>
+                    <span class="text-white">Technology</span>
+                </button>
 
-            <!-- Learning Categories Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Data Science Category -->
+                <button onclick="showSubcategories('data')"
+                        class="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 transition-colors text-left group category-btn"
+                        data-category="data">
+                    <div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center group-hover:bg-primary/30">
+                        <i class="fas fa-chart-bar text-primary"></i>
+                    </div>
+                    <span class="text-white">Data Science</span>
+                </button>
+
+                <!-- Business Category -->
+                <button onclick="showSubcategories('business')"
+                        class="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 transition-colors text-left group category-btn"
+                        data-category="business">
+                    <div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center group-hover:bg-primary/30">
+                        <i class="fas fa-briefcase text-primary"></i>
+                    </div>
+                    <span class="text-white">Business</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Content - Subcategories -->
+        <div class="flex-1 p-8">
+            <!-- Default Welcome Message -->
+            <div id="welcome-message" class="text-center py-12">
+                <i class="fas fa-arrows-left text-4xl text-white/20 mb-4"></i>
+                <h2 class="text-2xl font-semibold text-white mb-4">Choose a Category</h2>
+                <p class="text-white/70">Select a learning path from the left to explore available courses</p>
+            </div>
+
+            <!-- Technology Subcategories (Hidden by default) -->
+            <div id="tech-subcategories" class="hidden">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-2">Technology Paths</h2>
+                    <p class="text-white/70">Master modern technologies and programming languages</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <a href="#" class="block p-6 bg-surface border border-white/10 rounded-xl hover:border-primary/50 transition-all">
+                        <h3 class="text-lg font-semibold text-white mb-2">Web Development</h3>
+                        <p class="text-white/70 mb-4">Learn HTML, CSS, JavaScript, and modern frameworks</p>
+                        <span class="text-primary">Start Learning →</span>
+                    </a>
+                    <a href="#" class="block p-6 bg-surface border border-white/10 rounded-xl hover:border-primary/50 transition-all">
+                        <h3 class="text-lg font-semibold text-white mb-2">Mobile Development</h3>
+                        <p class="text-white/70 mb-4">Build iOS and Android applications</p>
+                        <span class="text-primary">Start Learning →</span>
+                    </a>
+                    <a href="#" class="block p-6 bg-surface border border-white/10 rounded-xl hover:border-primary/50 transition-all">
+                        <h3 class="text-lg font-semibold text-white mb-2">Cloud Computing</h3>
+                        <p class="text-white/70 mb-4">Master AWS, Azure, and cloud technologies</p>
+                        <span class="text-primary">Start Learning →</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Data Science Subcategories (Hidden by default) -->
+            <div id="data-subcategories" class="hidden">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-2">Data Science Paths</h2>
+                    <p class="text-white/70">Learn data analysis, visualization, and machine learning</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <a href="#" class="block p-6 bg-surface border border-white/10 rounded-xl hover:border-primary/50 transition-all">
+                        <h3 class="text-lg font-semibold text-white mb-2">Data Analysis</h3>
+                        <p class="text-white/70 mb-4">Master data analysis with Python and R</p>
+                        <span class="text-primary">Start Learning →</span>
+                    </a>
+                    <a href="#" class="block p-6 bg-surface border border-white/10 rounded-xl hover:border-primary/50 transition-all">
+                        <h3 class="text-lg font-semibold text-white mb-2">Machine Learning</h3>
+                        <p class="text-white/70 mb-4">Build and deploy ML models</p>
+                        <span class="text-primary">Start Learning →</span>
+                    </a>
+                    <a href="#" class="block p-6 bg-surface border border-white/10 rounded-xl hover:border-primary/50 transition-all">
+                        <h3 class="text-lg font-semibold text-white mb-2">Big Data</h3>
+                        <p class="text-white/70 mb-4">Work with large-scale data processing</p>
+                        <span class="text-primary">Start Learning →</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Business Subcategories (Hidden by default) -->
+            <div id="business-subcategories" class="hidden">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-2">Business Paths</h2>
+                    <p class="text-white/70">Develop essential business and management skills</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <a href="#" class="block p-6 bg-surface border border-white/10 rounded-xl hover:border-primary/50 transition-all">
+                        <h3 class="text-lg font-semibold text-white mb-2">Project Management</h3>
+                        <p class="text-white/70 mb-4">Learn Agile, Scrum, and PM methodologies</p>
+                        <span class="text-primary">Start Learning →</span>
+                    </a>
+                    <a href="#" class="block p-6 bg-surface border border-white/10 rounded-xl hover:border-primary/50 transition-all">
+                        <h3 class="text-lg font-semibold text-white mb-2">Digital Marketing</h3>
+                        <p class="text-white/70 mb-4">Master modern marketing techniques</p>
+                        <span class="text-primary">Start Learning →</span>
+                    </a>
+                    <a href="#" class="block p-6 bg-surface border border-white/10 rounded-xl hover:border-primary/50 transition-all">
+                        <h3 class="text-lg font-semibold text-white mb-2">Entrepreneurship</h3>
+                        <p class="text-white/70 mb-4">Start and grow your business</p>
+                        <span class="text-primary">Start Learning →</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+function showSubcategories(category) {
+    // Hide welcome message
+    document.getElementById('welcome-message').classList.add('hidden');
+    
+    // Hide all subcategories
+    const allSubcategories = document.querySelectorAll('[id$="-subcategories"]');
+    allSubcategories.forEach(el => el.classList.add('hidden'));
+    
+    // Remove active state from all category buttons
+    const allButtons = document.querySelectorAll('.category-btn');
+    allButtons.forEach(btn => btn.classList.remove('bg-white/10'));
+    
+    // Show selected subcategories
+    document.getElementById(`${category}-subcategories`).classList.remove('hidden');
+    
+    // Add active state to selected button
+    document.querySelector(`[data-category="${category}"]`).classList.add('bg-white/10');
+}
+</script>
                 <!-- Technology Category -->
                 <div class="bg-surface border border-white/10 rounded-2xl overflow-hidden transition-all duration-300 hover:border-primary/50 group">
                     <div class="p-6 cursor-pointer" onclick="toggleCategory('tech')">
