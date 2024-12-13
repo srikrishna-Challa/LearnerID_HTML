@@ -47,7 +47,7 @@
     </div>
 </div>
 
-<main class="min-h-screen bg-background pt-24 px-4 dark:bg-background dark:text-white">
+<main class="min-h-screen bg-background pt-24 px-4 dark:bg-background dark:text-white relative z-10">
     <section class="container mx-auto px-4 text-center pt-16">
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">Your AI powered Learning Bank</h1>
         <p class="text-white/70 text-lg mb-12 max-w-2xl mx-auto">Personalized learning experiences powered by artificial intelligence</p>
@@ -63,7 +63,7 @@
                         <h5 class="text-xl font-semibold text-white mb-4">Your Learning Journal</h5>
                         <p class="text-white/70 text-base">Document your learning journey, and reflect on your learning experiences in a personalized space.</p>
                     </div>
-                    <a href="{{ url_for('create_learning_journal') }}" 
+                    <a href="{{ url_for('login') }}" 
                        class="mt-6 w-full px-6 py-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors inline-flex items-center justify-center group-hover:bg-primary/30">
                         Start Journal <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                     </a>
@@ -256,21 +256,10 @@ function toggleMobileMenu() {
     }
 }
 
-// Modal functions
-function openModal() {
-    const modal = document.getElementById('aiLearningModal');
-    if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-}
-
-function closeModal() {
-    const modal = document.getElementById('aiLearningModal');
-    if (modal) {
-        modal.classList.remove('flex');
-        modal.classList.add('hidden');
-    }
-}
+// Form submission
+document.getElementById('learningSearchForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    window.location.href = "{{ url_for('login') }}";
+});
 </script>
 {% endblock %}
