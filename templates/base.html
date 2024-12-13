@@ -20,9 +20,27 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/ai-theme.css') }}" rel="stylesheet">
 </head>
 <body class="bg-background text-white min-h-screen">
+    <div id="ai-loading" class="ai-loading fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden"></div>
     {% block content %}{% endblock %}
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Show loading animation on page transitions
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' && !e.target.getAttribute('href').startsWith('#')) {
+                document.getElementById('ai-loading').classList.remove('hidden');
+            }
+        });
+
+        // Add entrance animation to cards
+        window.addEventListener('load', function() {
+            document.querySelectorAll('.bg-surface').forEach((card, index) => {
+                card.classList.add('animate-card-entrance');
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
 </body>
 </html>
