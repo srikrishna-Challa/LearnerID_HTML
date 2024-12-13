@@ -25,9 +25,10 @@ login_manager.login_view = 'login'
 
 # Models
 class User(UserMixin, db.Model):
-    __tablename__ = 'users'  # Explicitly set table name
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(120), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -52,7 +53,7 @@ def login():
         if not user:
             # Create new user if doesn't exist (allow any username/password)
             try:
-                user = User(username=username, password=password)
+                user = User(username=username, password=password, email=f"{username}@example.com")
                 db.session.add(user)
                 db.session.commit()
                 logger.info(f"Created new user: {username}")
@@ -71,9 +72,10 @@ def signup():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
+        email = request.form.get('email', f"{username}@example.com")
         
         try:
-            user = User(username=username, password=password)
+            user = User(username=username, password=password, email=email)
             db.session.add(user)
             db.session.commit()
             login_user(user)
@@ -228,13 +230,14 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
-# Create database tables
+# Drop all tables and create them again
 with app.app_context():
     try:
+        db.drop_all()
         db.create_all()
-        logger.info("Database tables created successfully")
+        logger.info("Database tables recreated successfully")
     except Exception as e:
-        logger.error(f"Error creating database tables: {str(e)}")
+        logger.error(f"Error recreating database tables: {str(e)}")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
