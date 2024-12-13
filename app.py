@@ -568,15 +568,15 @@ def learning_journal_details(entry_id):
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
-        password = request.form.get('password')
-        user = User.query.filter_by(email=email).first()
+        # Create a mock user for testing
+        mock_user = User()
+        mock_user.id = 1
+        mock_user.name = "Test User"
+        mock_user.email = email
         
-        if user and check_password_hash(user.password, password):
-            login_user(user)
-            return redirect(url_for('user_loggedin_page'))
-        else:
-            flash('Invalid email or password')
-            return redirect(url_for('login'))
+        # Log in the mock user
+        login_user(mock_user)
+        return redirect(url_for('user_loggedin_page'))
             
     return render_template('login.html')
 
