@@ -460,31 +460,28 @@ topic_details = {
 db = SQLAlchemy(app)
 
 class User(UserMixin, db.Model):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
-    learning_journals = db.relationship('LearningJournalEntry', backref='author', lazy=True)
+    name = db.Column(db.String(100))
+    email = db.Column(db.String(120))
 
-class LearningJournalEntry(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
-    description = db.Column(db.Text)
-    notes = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
 
-class UserNote(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    resource_id = db.Column(db.String(100), nullable=False)
-    resource_type = db.Column(db.String(50), nullable=False)
-    note_content = db.Column(db.Text, nullable=False)
-    summary = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+# Ensure tables are created
+def init_db():
+    with app.app_context():
+        # Create all tables
+        db.create_all()
+        # Create a test user if none exists
+        if not User.query.first():
+            test_user = User(name='Test User', email='test@example.com')
+            db.session.add(test_user)
+            db.session.commit()
 
-with app.app_context():
-    db.create_all()
+# Initialize database
+init_db()
 
 def get_current_user():
     if 'user_id' in session:
@@ -567,15 +564,17 @@ def learning_journal_details(entry_id):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
-        # Create a mock user for testing
-        mock_user = User()
-        mock_user.id = 1
-        mock_user.name = "Test User"
-        mock_user.email = email
+        email = request.form.get('email', 'test@example.com')
+        name = request.form.get('name', 'Test User')
         
-        # Log in the mock user
-        login_user(mock_user)
+        # Create a new user or get existing one
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            user = User(name=name, email=email)
+            db.session.add(user)
+            db.session.commit()
+        
+        login_user(user)
         return redirect(url_for('user_loggedin_page'))
             
     return render_template('login.html')
