@@ -47,7 +47,7 @@
     </div>
 </div>
 
-<main class="min-h-screen bg-background pt-24 px-4 dark:bg-background dark:text-white relative z-10 overflow-y-auto">
+<main class="bg-background pt-24 px-4 dark:bg-background dark:text-white relative z-10">
     <section class="container mx-auto px-4 text-center pt-16">
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">Your AI powered Learning Bank</h1>
         <p class="text-white/70 text-lg mb-12 max-w-2xl mx-auto">Personalized learning experiences powered by artificial intelligence</p>
@@ -254,7 +254,7 @@ function toggleMobileMenu() {
         } else {
             // Close menu
             mobileMenu.classList.add('translate-y-full');
-            document.body.style.overflow = '';
+            document.body.style.overflow = 'auto';
         }
     }
 }

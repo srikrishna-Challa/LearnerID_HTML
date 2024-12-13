@@ -22,7 +22,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/ai-theme.css') }}" rel="stylesheet">
 </head>
-<body class="bg-background text-white min-h-screen overflow-x-hidden">
+<body class="bg-background text-white min-h-screen overflow-y-auto overflow-x-hidden">
     <div id="ai-loading" class="ai-loading fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden"></div>
     {% block content %}{% endblock %}
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
