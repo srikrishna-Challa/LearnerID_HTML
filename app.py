@@ -462,8 +462,8 @@ db = SQLAlchemy(app)
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    email = db.Column(db.String(120))
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
 
     def __init__(self, name, email):
         self.name = name
@@ -472,13 +472,13 @@ class User(UserMixin, db.Model):
 # Ensure tables are created
 def init_db():
     with app.app_context():
-        # Create all tables
-        db.create_all()
-        # Create a test user if none exists
-        if not User.query.first():
-            test_user = User(name='Test User', email='test@example.com')
-            db.session.add(test_user)
-            db.session.commit()
+        try:
+            # Create all tables
+            db.create_all()
+            app.logger.info("Database tables created successfully")
+        except Exception as e:
+            app.logger.error(f"Database initialization error: {e}")
+            db.session.rollback()
 
 # Initialize database
 init_db()
@@ -564,18 +564,21 @@ def learning_journal_details(entry_id):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email', 'test@example.com')
-        name = request.form.get('name', 'Test User')
+        email = request.form.get('email', '')
+        name = request.form.get('name', '')
         
-        # Create a new user or get existing one
-        user = User.query.filter_by(email=email).first()
-        if not user:
-            user = User(name=name, email=email)
-            db.session.add(user)
-            db.session.commit()
-        
-        login_user(user)
-        return redirect(url_for('user_loggedin_page'))
+        if email and name:
+            try:
+                # Always create a new user session
+                session['user_id'] = 1  # Use a dummy ID
+                session['user_name'] = name
+                session['user_email'] = email
+                return redirect(url_for('user_loggedin_page'))
+            except Exception as e:
+                app.logger.error(f"Login error: {e}")
+                flash('An error occurred during login. Please try again.')
+        else:
+            flash('Please enter both email and name')
             
     return render_template('login.html')
 
