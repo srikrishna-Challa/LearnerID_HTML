@@ -47,13 +47,13 @@
     </div>
 </div>
 
-<main class="bg-background pt-24 px-4 dark:bg-background dark:text-white relative z-10">
-    <section class="container mx-auto px-4 text-center pt-16">
+<main class="bg-background min-h-screen pt-24 px-4 dark:bg-background dark:text-white relative z-10 overflow-y-auto">
+    <section class="container mx-auto px-4 text-center pt-16 pb-24">
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">Your AI powered Learning Bank</h1>
         <p class="text-white/70 text-lg mb-12 max-w-2xl mx-auto">Personalized learning experiences powered by artificial intelligence</p>
         
         <div class="mt-8">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-24 max-w-5xl mx-auto">
                 <!-- Personal Learning Journal -->
                 <a href="{{ url_for('login') }}" class="block">
                     <div class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-8 transition-all duration-300 hover:scale-105 group flex flex-col h-[400px] cursor-pointer relative z-10">
