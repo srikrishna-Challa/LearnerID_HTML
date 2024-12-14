@@ -52,6 +52,7 @@
             if (modal && overlay) {
                 modal.classList.add('active');
                 overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
             }
         }
 
@@ -61,6 +62,7 @@
             if (modal && overlay) {
                 modal.classList.remove('active');
                 overlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
             }
         }
 
@@ -71,7 +73,30 @@
                 hideModal(modal.id);
             });
         });
-    <script>
+
+        // Initialize all modals
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click listeners to all modal triggers
+            document.querySelectorAll('[data-modal-target]').forEach(trigger => {
+                trigger.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const modalId = trigger.getAttribute('data-modal-target');
+                    showModal(modalId);
+                });
+            });
+
+            // Add click listeners to all modal close buttons
+            document.querySelectorAll('[data-modal-close]').forEach(closeBtn => {
+                closeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const modal = closeBtn.closest('.modal');
+                    if (modal) {
+                        hideModal(modal.id);
+                    }
+                });
+            });
+        });
+    </script>
         // Show loading animation on page transitions
         document.addEventListener('click', function(e) {
             if (e.target.tagName === 'A' && e.target.getAttribute('href') && !e.target.getAttribute('href').startsWith('#')) {

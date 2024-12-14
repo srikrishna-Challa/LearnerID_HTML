@@ -130,22 +130,25 @@ body {
 
 /* Blur Overlay */
 .blur-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  backdrop-filter: blur(8px);
-  background: rgba(10, 15, 30, 0.4);
-  z-index: 40;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background: rgba(10, 15, 30, 0.75);
+    z-index: 40;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    visibility: hidden;
 }
 
 .blur-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
 }
 
 /* Modal Styles */
