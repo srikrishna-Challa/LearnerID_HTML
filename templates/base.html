@@ -10,9 +10,9 @@
             theme: {
                 extend: {
                     colors: {
-                        'primary': '#4F46E5',
-                        'surface': 'rgba(17, 25, 40, 0.75)',
-                        'background': '#0A0F1E'
+                        'primary': '#0052CC',
+                        'surface': '#1A1A1A',
+                        'background': '#121212'
                     }
                 }
             }
@@ -20,124 +20,54 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <!-- Base styles moved inline for simplicity -->
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    </style>
 </head>
 <body class="bg-background text-white min-h-screen overflow-y-auto overflow-x-hidden">
-    <!-- Dynamic Grid Background -->
-    <div class="grid-background"></div>
-    
-    <!-- Loading Animation -->
-    <div id="ai-loading" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden">
-        <div class="loading-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </div>
-    
-    <!-- Blur Overlay -->
-    <div id="blur-overlay" class="blur-overlay"></div>
-    
-    <!-- Main Content -->
-    <div class="relative z-10">
-        {% block content %}
-        <div class="modal">
-            <div class="modal-content">
-                {% block modal_content %}{% endblock %}
-            </div>
-        </div>
-        {% endblock %}
-    </div>
-
+    <div id="ai-loading" class="ai-loading fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden"></div>
+    {% block content %}{% endblock %}
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
-        // Modal handling functions
-        function showModal(modalId) {
-            const modal = document.getElementById(modalId);
-            const overlay = document.getElementById('blur-overlay');
-            if (modal && overlay) {
-                modal.classList.add('active');
-                overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function hideModal(modalId) {
-            const modal = document.getElementById(modalId);
-            const overlay = document.getElementById('blur-overlay');
-            if (modal && overlay) {
-                modal.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('blur-overlay').addEventListener('click', function() {
-            const activeModals = document.querySelectorAll('.modal.active');
-            activeModals.forEach(modal => {
-                hideModal(modal.id);
-            });
-        });
-
-        // Initialize all modals
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add click listeners to all modal triggers
-            document.querySelectorAll('[data-modal-target]').forEach(trigger => {
-                trigger.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const modalId = trigger.getAttribute('data-modal-target');
-                    showModal(modalId);
-                });
-            });
-
-            // Add click listeners to all modal close buttons
-            document.querySelectorAll('[data-modal-close]').forEach(closeBtn => {
-                closeBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const modal = closeBtn.closest('.modal');
-                    if (modal) {
-                        hideModal(modal.id);
-                    }
-                });
-            });
-        });
-    </script>
         // Show loading animation on page transitions
         document.addEventListener('click', function(e) {
             if (e.target.tagName === 'A' && e.target.getAttribute('href') && !e.target.getAttribute('href').startsWith('#')) {
                 const loader = document.getElementById('ai-loading');
                 loader.classList.remove('hidden');
+                // Hide loader if page hasn't changed after 2 seconds
                 setTimeout(() => {
                     loader.classList.add('hidden');
                 }, 2000);
             }
         });
 
-        // Enhanced card animations with neon effect
+        // Add entrance animation to cards with improved visibility
         function animateCards() {
-            document.querySelectorAll('.glass').forEach((card, index) => {
+            document.querySelectorAll('.bg-surface').forEach((card, index) => {
+                // Reset animation
                 card.style.opacity = '0';
                 card.style.transform = 'translateY(20px)';
+                
+                // Force reflow
                 card.offsetHeight;
                 
+                // Add animation with delay
                 setTimeout(() => {
-                    card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                    card.style.transition = 'all 0.5s ease-out';
                     card.style.opacity = '1';
                     card.style.transform = 'translateY(0)';
-                    
-                    // Add hover effect
-                    card.addEventListener('mouseenter', () => {
-                        card.classList.add('neon-border');
-                    });
-                    card.addEventListener('mouseleave', () => {
-                        card.classList.remove('neon-border');
-                    });
                 }, index * 100);
             });
         }
 
-        // Run animations
+        // Run animation on initial load and after any dynamic content updates
         window.addEventListener('load', animateCards);
         document.addEventListener('DOMContentLoaded', animateCards);
     </script>
