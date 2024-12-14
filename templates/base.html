@@ -9,13 +9,14 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-glow: rgba(0, 255, 200, 0.5);
-            --secondary-glow: rgba(0, 150, 255, 0.5);
-            --grid-color: rgba(0, 255, 200, 0.1);
+            --ai-primary: #00f5d4;
+            --ai-secondary: #7b2cbf;
+            --ai-accent: #ff0080;
+            --neural-color: rgba(0, 245, 212, 0.03);
         }
 
         body {
-            background-color: #000000;
+            background: #0a0f2c;
             color: white;
             font-family: 'Space Grotesk', sans-serif;
             min-height: 100vh;
@@ -23,52 +24,112 @@
             position: relative;
         }
 
-        /* Animated Grid Background */
-        .grid-background {
+        /* Neural Network Background */
+        .neural-background {
             position: fixed;
             top: 0;
             left: 0;
-            width: 200%;
-            height: 200%;
-            background-image: 
-                linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
-                linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
-            background-size: 50px 50px;
-            transform: translate(-25%, -25%) rotate(15deg);
-            animation: gridMove 20s linear infinite;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(123, 44, 191, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 245, 212, 0.1) 0%, transparent 25%),
+                radial-gradient(2px 2px at 10px 10px, var(--neural-color) 50%, transparent 0),
+                radial-gradient(2px 2px at 20px 20px, var(--neural-color) 50%, transparent 0),
+                radial-gradient(2px 2px at 30px 30px, var(--neural-color) 50%, transparent 0),
+                radial-gradient(2px 2px at 40px 40px, var(--neural-color) 50%, transparent 0);
+            background-size: 100% 100%, 100% 100%, 50px 50px, 60px 60px, 70px 70px, 80px 80px;
+            animation: neuralShift 15s linear infinite;
+            opacity: 0.5;
         }
 
-        @keyframes gridMove {
+        .neural-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0%,
+                transparent 49%,
+                var(--neural-color) 50%,
+                transparent 51%,
+                transparent 100%
+            );
+            background-size: 4px 100%;
+            animation: scanline 10s linear infinite;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+
+        @keyframes neuralShift {
             0% {
-                transform: translate(-25%, -25%) rotate(15deg);
+                background-position: 0% 0%, 0% 0%, 0 0, 0 0, 0 0, 0 0;
             }
             100% {
-                transform: translate(-35%, -35%) rotate(15deg);
+                background-position: 0% 0%, 0% 0%, 50px 50px, 60px 60px, 70px 70px, 80px 80px;
             }
         }
 
-        /* Card and Button Effects */
-        .card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        @keyframes scanline {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* AI Card Effect */
+        .ai-card {
+            background: rgba(10, 15, 44, 0.8);
+            border: 1px solid rgba(0, 245, 212, 0.1);
             backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .card:hover {
+        .ai-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(0, 245, 212, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .ai-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 0 30px var(--primary-glow);
-            border-color: rgba(0, 255, 200, 0.3);
+            border-color: var(--ai-primary);
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.2);
         }
 
-        /* Button Glow Effect */
-        .glow-button {
+        .ai-card:hover::before {
+            left: 100%;
+        }
+
+        /* AI Button Effect */
+        .ai-button {
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
+            background: linear-gradient(45deg, var(--ai-primary), var(--ai-secondary));
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
         }
 
-        .glow-button::before {
+        .ai-button::before {
             content: '';
             position: absolute;
             top: -2px;
@@ -76,9 +137,9 @@
             right: -2px;
             bottom: -2px;
             background: linear-gradient(45deg, 
-                var(--primary-glow), 
-                var(--secondary-glow), 
-                var(--primary-glow));
+                var(--ai-primary), 
+                var(--ai-secondary), 
+                var(--ai-accent));
             z-index: -1;
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -86,46 +147,72 @@
             filter: blur(8px);
         }
 
-        .glow-button:hover::before {
+        .ai-button:hover::before {
             opacity: 1;
         }
 
-        /* Loading Animation */
-        .loader {
-            width: 48px;
-            height: 48px;
-            border: 3px solid var(--grid-color);
-            border-right-color: var(--primary-glow);
-            border-bottom-color: var(--secondary-glow);
-            border-radius: 50%;
-            animation: rotate 1s linear infinite;
+        .ai-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.4);
         }
 
-        @keyframes rotate {
+        /* AI Processing Animation */
+        .ai-processing {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(0, 245, 212, 0.1);
+            border-top-color: var(--ai-primary);
+            border-right-color: var(--ai-secondary);
+            border-radius: 50%;
+            animation: aiProcess 1.5s linear infinite;
+        }
+
+        @keyframes aiProcess {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
-        /* Content Fade In Animation */
-        .fade-in {
-            animation: fadeIn 0.5s ease-out forwards;
+        /* AI Content Transition */
+        .ai-fade-in {
+            animation: aiFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
             opacity: 0;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes aiFadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(10px) scale(0.98);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* AI Pulse Effect */
+        .ai-pulse {
+            animation: aiPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes aiPulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Animated Grid Background -->
-    <div class="grid-background"></div>
+    <!-- Neural Network Background -->
+    <div class="neural-background"></div>
+    <div class="neural-overlay"></div>
     
-    <!-- Loading Spinner -->
-    <div id="loading" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden">
-        <div class="loader"></div>
-        <div class="mt-4 text-center text-[var(--primary-glow)]">Loading...</div>
+    <!-- AI Processing Indicator -->
+    <div id="ai-loading" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden">
+        <div class="ai-processing"></div>
+        <div class="mt-4 text-center text-[var(--ai-primary)] ai-pulse">AI Processing...</div>
     </div>
 
     <!-- Main Content Container -->
@@ -134,36 +221,39 @@
     </div>
 
     <script>
-        // Initialize animations for dynamic content
-        function initializeElements() {
-            // Add card effects
+        // Initialize AI animations for dynamic content
+        function initializeAIElements() {
+            // Add AI card effects
             document.querySelectorAll('.bg-surface').forEach((element, index) => {
-                element.classList.add('card', 'fade-in');
+                element.classList.add('ai-card', 'ai-fade-in');
                 element.style.animationDelay = `${index * 0.1}s`;
             });
 
-            // Add button effects
+            // Add AI button effects
             document.querySelectorAll('button, a').forEach(element => {
-                element.classList.add('glow-button');
+                if (!element.classList.contains('ai-button')) {
+                    element.classList.add('ai-button');
+                }
             });
         }
 
-        // Show loading animation on navigation
+        // Show AI processing animation on navigation
         document.addEventListener('click', function(e) {
-            if (e.target.closest('a') && !e.target.closest('a').getAttribute('href').startsWith('#')) {
-                document.getElementById('loading').classList.remove('hidden');
+            const link = e.target.closest('a');
+            if (link && !link.getAttribute('href').startsWith('#')) {
+                document.getElementById('ai-loading').classList.remove('hidden');
                 setTimeout(() => {
-                    document.getElementById('loading').classList.add('hidden');
-                }, 2000);
+                    document.getElementById('ai-loading').classList.add('hidden');
+                }, 1000);
             }
         });
 
         // Initialize on page load and content updates
-        document.addEventListener('DOMContentLoaded', initializeElements);
-        window.addEventListener('load', initializeElements);
+        document.addEventListener('DOMContentLoaded', initializeAIElements);
+        window.addEventListener('load', initializeAIElements);
 
         // Reinitialize on dynamic content changes
-        const observer = new MutationObserver(initializeElements);
+        const observer = new MutationObserver(initializeAIElements);
         observer.observe(document.body, { childList: true, subtree: true });
     </script>
 </body>
