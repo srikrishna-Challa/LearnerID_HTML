@@ -1,337 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}LearnerID{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#0052CC',
+                        'surface': '#1A1A1A',
+                        'background': '#121212'
+                    }
+                }
+            }
+        }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Base styles moved inline for simplicity -->
     <style>
-        :root {
-            --primary: #4285f4;
-            --primary-dark: #1a73e8;
-            --secondary: #34a853;
-            --bg-dark: #0f1624;
-            --surface: #1a1f2e;
-            --modal-bg: #1e2335;
-            --text: #ffffff;
-            --text-secondary: #8b95af;
-            --border: rgba(255, 255, 255, 0.1);
-            --gradient-1: linear-gradient(120deg, #4285f4, #34a853);
-            --gradient-2: linear-gradient(120deg, #1a73e8, #34a853);
-        }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text);
-            min-height: 100vh;
-            line-height: 1.6;
-            letter-spacing: -0.011em;
-        }
-
-        /* Clean Background */
-        .page-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 0% 0%, rgba(66, 133, 244, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(52, 168, 83, 0.08) 0%, transparent 50%);
-            z-index: -1;
-        }
-
-        @keyframes gridFlow {
-            0% {
-                background-position: 0 0;
-            }
-            100% {
-                background-position: 50px 50px;
-            }
-        }
-
-        /* Page Transitions */
-        .page-transition {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-dark);
-            transform-origin: right;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
-            pointer-events: none;
-        }
-
-        .page-transition.active {
-            transform: scaleX(0);
-        }
-
-        /* Modal Styling */
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 22, 36, 0.95);
-            backdrop-filter: blur(8px);
-            z-index: 40;
-        }
-
-        .modal-content {
-            background: #ffffff;
-            border: none;
-            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.25);
-            border-radius: 16px;
-            z-index: 50;
-            position: relative;
-            overflow: hidden;
-            color: #1a1f2e;
-            max-width: 90%;
-            margin: 2rem auto;
-        }
-
-        .modal-header {
-            border-bottom: 1px solid #f0f0f0;
-            padding: 24px;
-            background: #ffffff;
-            position: relative;
-        }
-
-        .modal-body {
-            padding: 24px;
-            background: #ffffff;
-            color: #1a1f2e;
-            position: relative;
-        }
-
-        .modal-footer {
-            border-top: 1px solid #f0f0f0;
-            padding: 24px;
-            background: #ffffff;
-            position: relative;
-        }
-
-        /* Modal Container */
-        .modal-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 45;
-        }
-
-        .modal-header h2,
-        .modal-header h3,
-        .modal-header h4 {
-            color: #1a1f2e;
-            margin: 0;
-        }
-
-        @keyframes shimmer {
-            0% {
-                transform: translateX(-100%);
-            }
-            100% {
-                transform: translateX(100%);
-            }
-        }
-
-        /* Interactive Elements */
-        .interactive-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-
-        .interactive-hover::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary);
-            transition: width 0.3s ease;
-        }
-
-        .interactive-hover:hover {
-            color: var(--primary);
-        }
-
-        .interactive-hover:hover::after {
-            width: 100%;
-        }
-
-        /* Button Styles */
-        .ai-button {
-            background: var(--gradient-1);
-            border: none;
-            border-radius: 8px;
-            padding: 12px 24px;
+            background-color: #121212;
             color: white;
-            font-weight: 500;
-            position: relative;
-            transition: all 0.2s ease;
-            font-size: 0.9375rem;
-        }
-
-        .ai-button:hover {
-            background: var(--gradient-2);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.25);
-        }
-
-        .ai-button:active {
-            transform: translateY(0);
-        }
-
-        /* Link Styles */
-        .ai-link {
-            color: var(--primary);
-            text-decoration: none;
-            transition: color 0.2s ease;
-            position: relative;
-            display: inline-block;
-        }
-
-        .ai-link::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 1px;
-            bottom: -2px;
-            left: 0;
-            background-color: var(--primary);
-            transform: scaleX(0);
-            transform-origin: bottom right;
-            transition: transform 0.2s ease;
-        }
-
-        .ai-link:hover::after {
-            transform: scaleX(1);
-            transform-origin: bottom left;
-        }
-
-        /* Loading Animation */
-        .ai-loader {
-            width: 24px;
-            height: 24px;
-            border: 2px solid rgba(66, 133, 244, 0.15);
-            border-radius: 50%;
-            border-top-color: var(--primary);
-            animation: aiSpin 0.8s linear infinite;
-        }
-
-        @keyframes aiSpin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Card Styles */
-        .ai-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            transition: all 0.2s ease;
-        }
-
-        .ai-card:hover {
-            border-color: rgba(66, 133, 244, 0.2);
-            transform: translateY(-2px);
-        }
-
-        /* Typography */
-        h1, h2, h3, h4, h5, h6 {
-            color: var(--text);
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-        }
-
-        .text-gradient {
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
     </style>
 </head>
-<body>
-    <!-- Neural Network Background -->
-    <div class="neural-network"></div>
-    
-    <!-- Animated Grid -->
-    <div class="grid-lines"></div>
-
-    <!-- Page Transition -->
-    <div class="page-transition"></div>
-
-    <!-- AI Loading Spinner -->
-    <div id="loading-spinner" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden">
-        <div class="ai-loader"></div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="relative z-10 min-h-screen">
-        {% block content %}{% endblock %}
-    </div>
-
+<body class="bg-background text-white min-h-screen overflow-y-auto overflow-x-hidden">
+    <div id="ai-loading" class="ai-loading fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden"></div>
+    {% block content %}{% endblock %}
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
-        // Initialize interactive elements
-        document.addEventListener('DOMContentLoaded', () => {
-            // Add interactive hover effect to navigation links
-            document.querySelectorAll('nav a').forEach(link => {
-                link.classList.add('interactive-hover');
-            });
-
-            // Add AI button style to primary buttons
-            document.querySelectorAll('button[type="submit"], .primary-button').forEach(button => {
-                button.classList.add('ai-button');
-            });
-
-            // Trigger page transition
-            const transition = document.querySelector('.page-transition');
-            transition.classList.add('active');
-        });
-
-        // Enhanced Navigation with Loading Effect
-        document.addEventListener('click', (e) => {
-            const link = e.target.closest('a');
-            if (link && !link.getAttribute('href').startsWith('#')) {
-                e.preventDefault();
-                const spinner = document.getElementById('loading-spinner');
-                spinner.classList.remove('hidden');
-                
-                // Add fade-out effect to current content
-                document.querySelector('.relative.z-10').style.opacity = '0.5';
-                document.querySelector('.relative.z-10').style.transition = 'opacity 0.3s ease';
-                
+        // Show loading animation on page transitions
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' && e.target.getAttribute('href') && !e.target.getAttribute('href').startsWith('#')) {
+                const loader = document.getElementById('ai-loading');
+                loader.classList.remove('hidden');
+                // Hide loader if page hasn't changed after 2 seconds
                 setTimeout(() => {
-                    window.location.href = link.href;
-                }, 600);
+                    loader.classList.add('hidden');
+                }, 2000);
             }
         });
 
-        // Smooth scroll behavior
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+        // Add entrance animation to cards with improved visibility
+        function animateCards() {
+            document.querySelectorAll('.bg-surface').forEach((card, index) => {
+                // Reset animation
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                // Force reflow
+                card.offsetHeight;
+                
+                // Add animation with delay
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease-out';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
             });
-        });
+        }
+
+        // Run animation on initial load and after any dynamic content updates
+        window.addEventListener('load', animateCards);
+        document.addEventListener('DOMContentLoaded', animateCards);
     </script>
 </body>
 </html>
