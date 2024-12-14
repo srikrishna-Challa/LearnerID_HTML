@@ -10,9 +10,28 @@
             theme: {
                 extend: {
                     colors: {
-                        'primary': '#0052CC',
-                        'surface': '#1A1A1A',
-                        'background': '#121212'
+                        'primary': '#00ff9d',
+                        'surface': '#0a0a0a',
+                        'background': '#000000'
+                    },
+                    animation: {
+                        'grid-flow': 'grid-flow 20s linear infinite',
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        'grid-flow': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(10px)' }
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: '0.6' },
+                            '50%': { opacity: '0.1' }
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        }
                     }
                 }
             }
@@ -20,21 +39,107 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Base styles moved inline for simplicity -->
     <style>
         body {
-            background-color: #121212;
+            background-color: #000000;
             color: white;
             min-height: 100vh;
             overflow-y: auto;
             overflow-x: hidden;
         }
+
+        .futuristic-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, rgba(0, 255, 157, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 255, 157, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            animation: grid-flow 20s linear infinite;
+        }
+
+        .glow-effect {
+            position: relative;
+        }
+
+        .glow-effect::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            background: linear-gradient(45deg, #00ff9d, #00a3ff);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+            filter: blur(8px);
+        }
+
+        .glow-effect:hover::before {
+            opacity: 0.5;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 <body class="bg-background text-white min-h-screen overflow-y-auto overflow-x-hidden">
-    <div id="ai-loading" class="ai-loading fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden"></div>
-    {% block content %}{% endblock %}
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Futuristic Grid Background -->
+    <div class="futuristic-grid"></div>
+    
+    <!-- Loading Animation -->
+    <div id="loading" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden">
+        <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <div class="mt-4 text-primary text-center animate-pulse">Loading...</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative z-10">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        // Show loading animation on navigation
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' && e.target.getAttribute('href')) {
+                document.getElementById('loading').classList.remove('hidden');
+            }
+        });
+
+        // Add floating animation to cards
+        function initializeAnimations() {
+            document.querySelectorAll('.bg-surface').forEach((element, index) => {
+                element.classList.add('glass-effect');
+                element.style.animationDelay = `${index * 0.2}s`;
+            });
+
+            document.querySelectorAll('button, a').forEach(element => {
+                element.classList.add('glow-effect');
+            });
+        }
+
+        // Run animations on page load and dynamic content updates
+        document.addEventListener('DOMContentLoaded', initializeAnimations);
+        window.addEventListener('load', initializeAnimations);
+    </script>
     <script>
         // Show loading animation on page transitions
         document.addEventListener('click', function(e) {
