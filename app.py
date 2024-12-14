@@ -567,18 +567,13 @@ def login():
         email = request.form.get('email', '')
         name = request.form.get('name', '')
         
-        if email and name:
-            # Create user session with provided details
-            session['user_id'] = 1  # Dummy ID for testing
-            session['user_name'] = name
-            session['user_email'] = email
-            app.logger.info(f"User logged in successfully: {email}")
-            return redirect(url_for('user_loggedin_page'))
+        # Create user session with provided details
+        session['user_id'] = 1  # Dummy ID for testing
+        session['user_name'] = name or 'Test User'
+        session['user_email'] = email or 'test@example.com'
+        app.logger.info(f"User logged in successfully: {email}")
         
-        # Even if validation fails, redirect to logged in page for testing
-        session['user_id'] = 1
-        session['user_name'] = email or 'Test User'
-        session['user_email'] = name or 'test@example.com'
+        # Always redirect to user_loggedin_page after POST
         return redirect(url_for('user_loggedin_page'))
             
     return render_template('login.html')
