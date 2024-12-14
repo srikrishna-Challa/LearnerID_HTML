@@ -5,24 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}LearnerID{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary: #4F46E5;
-            --primary-dark: #4338CA;
-            --bg-dark: #0F172A;
+            --primary: #06B6D4;
+            --primary-dark: #0891B2;
+            --secondary: #8B5CF6;
+            --bg-dark: #030712;
+            --surface: #111827;
+            --text: #F9FAFB;
+            --text-secondary: #9CA3AF;
         }
         
         body {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
-            color: #ffffff;
+            color: var(--text);
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* Page Transition Animation */
+        /* Neural Network Background */
+        .neural-network {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 35%, rgba(6, 182, 212, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 75% 44%, rgba(139, 92, 246, 0.15) 0%, transparent 20%);
+            opacity: 0.5;
+            z-index: -2;
+        }
+
+        /* Animated Grid */
+        .grid-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, rgba(6, 182, 212, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(6, 182, 212, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(500px) rotateX(60deg);
+            transform-origin: center top;
+            animation: gridFlow 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes gridFlow {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 50px 50px;
+            }
+        }
+
+        /* Page Transitions */
         .page-transition {
             position: fixed;
             top: 0;
@@ -30,30 +74,14 @@
             width: 100%;
             height: 100%;
             background: var(--bg-dark);
-            transform-origin: bottom;
-            transition: transform 0.5s ease-in-out;
+            transform-origin: right;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1000;
             pointer-events: none;
         }
 
         .page-transition.active {
-            transform: scaleY(0);
-        }
-
-        /* Grid Background Animation */
-        .grid-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(79, 70, 229, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(79, 70, 229, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
-            animation: gridMove 20s linear infinite;
-            opacity: 0.2;
-            z-index: -1;
+            transform: scaleX(0);
         }
 
         /* Modal Styling */
@@ -63,89 +91,163 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(3, 7, 18, 0.8);
             backdrop-filter: blur(8px);
             z-index: 40;
         }
 
         .modal-content {
-            background: #1E293B;  /* Solid background color */
-            border: 1px solid rgba(79, 70, 229, 0.3);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
-                       0 0 0 1px rgba(79, 70, 229, 0.1);
-            border-radius: 12px;
+            background: var(--surface);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            box-shadow: 
+                0 0 0 1px rgba(6, 182, 212, 0.1),
+                0 8px 32px rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
             z-index: 50;
+            position: relative;
+            overflow: hidden;
         }
 
         .modal-content::before {
             content: '';
             position: absolute;
-            inset: -1px;
-            background: linear-gradient(45deg, rgba(79, 70, 229, 0.1), transparent, rgba(79, 70, 229, 0.1));
-            border-radius: 13px;
-            z-index: -1;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(6, 182, 212, 0.1),
+                transparent
+            );
+            animation: shimmer 3s infinite;
         }
 
-        @keyframes gridMove {
+        @keyframes shimmer {
             0% {
-                transform: translateY(0);
+                transform: translateX(-100%);
             }
             100% {
-                transform: translateY(30px);
+                transform: translateX(100%);
             }
         }
 
-        /* Hover Effects */
-        .hover-effect {
+        /* Interactive Elements */
+        .interactive-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .interactive-hover::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .interactive-hover:hover {
+            color: var(--primary);
+        }
+
+        .interactive-hover:hover::after {
+            width: 100%;
+        }
+
+        /* Button Styles */
+        .ai-button {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        .hover-effect:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        .ai-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: all 0.5s ease;
         }
 
-        /* Loading Spinner */
-        .loading-spinner {
+        .ai-button:hover::before {
+            left: 100%;
+        }
+
+        /* Loading Animation */
+        .ai-loader {
             width: 40px;
             height: 40px;
-            border: 3px solid rgba(79, 70, 229, 0.1);
+            border: 3px solid rgba(6, 182, 212, 0.1);
             border-radius: 50%;
             border-top-color: var(--primary);
-            animation: spin 1s linear infinite;
+            border-right-color: var(--secondary);
+            animation: aiSpin 1s linear infinite;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes aiSpin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Grid Background -->
-    <div class="grid-background"></div>
+    <!-- Neural Network Background -->
+    <div class="neural-network"></div>
+    
+    <!-- Animated Grid -->
+    <div class="grid-lines"></div>
 
     <!-- Page Transition -->
     <div class="page-transition"></div>
 
-    <!-- Loading Spinner -->
+    <!-- AI Loading Spinner -->
     <div id="loading-spinner" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden">
-        <div class="loading-spinner"></div>
+        <div class="ai-loader"></div>
     </div>
 
     <!-- Main Content -->
-    <div class="relative z-10">
+    <div class="relative z-10 min-h-screen">
         {% block content %}{% endblock %}
     </div>
 
     <script>
-        // Page Transition
+        // Initialize interactive elements
         document.addEventListener('DOMContentLoaded', () => {
+            // Add interactive hover effect to navigation links
+            document.querySelectorAll('nav a').forEach(link => {
+                link.classList.add('interactive-hover');
+            });
+
+            // Add AI button style to primary buttons
+            document.querySelectorAll('button[type="submit"], .primary-button').forEach(button => {
+                button.classList.add('ai-button');
+            });
+
+            // Trigger page transition
             const transition = document.querySelector('.page-transition');
             transition.classList.add('active');
         });
 
-        // Navigation Loading Effect
+        // Enhanced Navigation with Loading Effect
         document.addEventListener('click', (e) => {
             const link = e.target.closest('a');
             if (link && !link.getAttribute('href').startsWith('#')) {
@@ -153,16 +255,24 @@
                 const spinner = document.getElementById('loading-spinner');
                 spinner.classList.remove('hidden');
                 
+                // Add fade-out effect to current content
+                document.querySelector('.relative.z-10').style.opacity = '0.5';
+                document.querySelector('.relative.z-10').style.transition = 'opacity 0.3s ease';
+                
                 setTimeout(() => {
                     window.location.href = link.href;
-                }, 500);
+                }, 600);
             }
         });
 
-        // Add hover effects to interactive elements
-        const interactiveElements = document.querySelectorAll('a, button');
-        interactiveElements.forEach(element => {
-            element.classList.add('hover-effect');
+        // Smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
         });
     </script>
 </body>
