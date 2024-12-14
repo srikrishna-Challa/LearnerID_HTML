@@ -1,0 +1,129 @@
+:root {
+  --primary: #4F46E5;
+  --primary-glow: rgba(79, 70, 229, 0.5);
+  --surface: rgba(17, 25, 40, 0.75);
+  --background: #0A0F1E;
+  --accent-1: #6EE7B7;
+  --accent-2: #3B82F6;
+  --accent-3: #8B5CF6;
+}
+
+body {
+  background-color: var(--background);
+  color: white;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Dynamic Grid Background */
+.grid-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(to right, var(--primary-glow) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--primary-glow) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-animation 20s linear infinite;
+  opacity: 0.2;
+  z-index: -1;
+}
+
+@keyframes grid-animation {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50px);
+  }
+}
+
+/* Glassmorphism */
+.glass {
+  background: var(--surface);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Neon Effects */
+.neon-text {
+  text-shadow: 0 0 10px var(--primary-glow),
+               0 0 20px var(--primary-glow),
+               0 0 30px var(--primary-glow);
+}
+
+.neon-border {
+  box-shadow: 0 0 10px var(--primary-glow),
+              inset 0 0 10px var(--primary-glow);
+}
+
+/* Gradient Buttons */
+.gradient-button {
+  background: linear-gradient(45deg, var(--accent-1), var(--accent-2), var(--accent-3));
+  background-size: 200% 200%;
+  animation: gradient-shift 5s ease infinite;
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Animated Cards */
+.hover-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(79, 70, 229, 0.2);
+}
+
+/* Loading Animation */
+.loading-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: dots 1.5s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dots {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}

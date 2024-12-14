@@ -10,9 +10,9 @@
             theme: {
                 extend: {
                     colors: {
-                        'primary': '#0052CC',
-                        'surface': '#1A1A1A',
-                        'background': '#121212'
+                        'primary': '#4F46E5',
+                        'surface': 'rgba(17, 25, 40, 0.75)',
+                        'background': '#0A0F1E'
                     }
                 }
             }
@@ -20,20 +20,26 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Base styles moved inline for simplicity -->
-    <style>
-        body {
-            background-color: #121212;
-            color: white;
-            min-height: 100vh;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-    </style>
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
 </head>
 <body class="bg-background text-white min-h-screen overflow-y-auto overflow-x-hidden">
-    <div id="ai-loading" class="ai-loading fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden"></div>
-    {% block content %}{% endblock %}
+    <!-- Dynamic Grid Background -->
+    <div class="grid-background"></div>
+    
+    <!-- Loading Animation -->
+    <div id="ai-loading" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden">
+        <div class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="relative z-10">
+        {% block content %}{% endblock %}
+    </div>
+
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
         // Show loading animation on page transitions
@@ -41,33 +47,36 @@
             if (e.target.tagName === 'A' && e.target.getAttribute('href') && !e.target.getAttribute('href').startsWith('#')) {
                 const loader = document.getElementById('ai-loading');
                 loader.classList.remove('hidden');
-                // Hide loader if page hasn't changed after 2 seconds
                 setTimeout(() => {
                     loader.classList.add('hidden');
                 }, 2000);
             }
         });
 
-        // Add entrance animation to cards with improved visibility
+        // Enhanced card animations with neon effect
         function animateCards() {
-            document.querySelectorAll('.bg-surface').forEach((card, index) => {
-                // Reset animation
+            document.querySelectorAll('.glass').forEach((card, index) => {
                 card.style.opacity = '0';
                 card.style.transform = 'translateY(20px)';
-                
-                // Force reflow
                 card.offsetHeight;
                 
-                // Add animation with delay
                 setTimeout(() => {
-                    card.style.transition = 'all 0.5s ease-out';
+                    card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
                     card.style.opacity = '1';
                     card.style.transform = 'translateY(0)';
+                    
+                    // Add hover effect
+                    card.addEventListener('mouseenter', () => {
+                        card.classList.add('neon-border');
+                    });
+                    card.addEventListener('mouseleave', () => {
+                        card.classList.remove('neon-border');
+                    });
                 }, index * 100);
             });
         }
 
-        // Run animation on initial load and after any dynamic content updates
+        // Run animations
         window.addEventListener('load', animateCards);
         document.addEventListener('DOMContentLoaded', animateCards);
     </script>
