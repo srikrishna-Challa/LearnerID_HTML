@@ -35,12 +35,42 @@
         </div>
     </div>
     
+    <!-- Blur Overlay -->
+    <div id="blur-overlay" class="blur-overlay"></div>
+    
     <!-- Main Content -->
     <div class="relative z-10">
         {% block content %}{% endblock %}
     </div>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Modal handling functions
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const overlay = document.getElementById('blur-overlay');
+            if (modal && overlay) {
+                modal.classList.add('active');
+                overlay.classList.add('active');
+            }
+        }
+
+        function hideModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const overlay = document.getElementById('blur-overlay');
+            if (modal && overlay) {
+                modal.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('blur-overlay').addEventListener('click', function() {
+            const activeModals = document.querySelectorAll('.modal.active');
+            activeModals.forEach(modal => {
+                hideModal(modal.id);
+            });
+        });
     <script>
         // Show loading animation on page transitions
         document.addEventListener('click', function(e) {
