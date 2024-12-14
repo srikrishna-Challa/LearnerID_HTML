@@ -1,180 +1,170 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}LearnerID{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary': '#00ff9d',
-                        'surface': '#0a0a0a',
-                        'background': '#000000'
-                    },
-                    animation: {
-                        'grid-flow': 'grid-flow 20s linear infinite',
-                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'float': 'float 6s ease-in-out infinite'
-                    },
-                    keyframes: {
-                        'grid-flow': {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(10px)' }
-                        },
-                        'pulse-glow': {
-                            '0%, 100%': { opacity: '0.6' },
-                            '50%': { opacity: '0.1' }
-                        },
-                        'float': {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-glow: rgba(0, 255, 200, 0.5);
+            --secondary-glow: rgba(0, 150, 255, 0.5);
+            --grid-color: rgba(0, 255, 200, 0.1);
+        }
+
         body {
             background-color: #000000;
             color: white;
+            font-family: 'Space Grotesk', sans-serif;
             min-height: 100vh;
-            overflow-y: auto;
             overflow-x: hidden;
-        }
-
-        .futuristic-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(to right, rgba(0, 255, 157, 0.1) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 255, 157, 0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            animation: grid-flow 20s linear infinite;
-        }
-
-        .glow-effect {
             position: relative;
         }
 
-        .glow-effect::before {
-            content: '';
-            position: absolute;
+        /* Animated Grid Background */
+        .grid-background {
+            position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: inherit;
-            background: linear-gradient(45deg, #00ff9d, #00a3ff);
+            width: 200%;
+            height: 200%;
+            background-image: 
+                linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: translate(-25%, -25%) rotate(15deg);
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% {
+                transform: translate(-25%, -25%) rotate(15deg);
+            }
+            100% {
+                transform: translate(-35%, -35%) rotate(15deg);
+            }
+        }
+
+        /* Card and Button Effects */
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px var(--primary-glow);
+            border-color: rgba(0, 255, 200, 0.3);
+        }
+
+        /* Button Glow Effect */
+        .glow-button {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .glow-button::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                var(--primary-glow), 
+                var(--secondary-glow), 
+                var(--primary-glow));
+            z-index: -1;
             opacity: 0;
             transition: opacity 0.3s ease;
-            z-index: -1;
+            border-radius: inherit;
             filter: blur(8px);
         }
 
-        .glow-effect:hover::before {
-            opacity: 0.5;
+        .glow-button:hover::before {
+            opacity: 1;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        /* Loading Animation */
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--grid-color);
+            border-right-color: var(--primary-glow);
+            border-bottom-color: var(--secondary-glow);
+            border-radius: 50%;
+            animation: rotate 1s linear infinite;
         }
 
-        .floating {
-            animation: float 6s ease-in-out infinite;
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        /* Content Fade In Animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="bg-background text-white min-h-screen overflow-y-auto overflow-x-hidden">
-    <!-- Futuristic Grid Background -->
-    <div class="futuristic-grid"></div>
+<body>
+    <!-- Animated Grid Background -->
+    <div class="grid-background"></div>
     
-    <!-- Loading Animation -->
+    <!-- Loading Spinner -->
     <div id="loading" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 hidden">
-        <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-        <div class="mt-4 text-primary text-center animate-pulse">Loading...</div>
+        <div class="loader"></div>
+        <div class="mt-4 text-center text-[var(--primary-glow)]">Loading...</div>
     </div>
 
-    <!-- Main Content -->
-    <div class="relative z-10">
+    <!-- Main Content Container -->
+    <div class="relative z-10 min-h-screen">
         {% block content %}{% endblock %}
     </div>
 
     <script>
-        // Show loading animation on navigation
-        document.addEventListener('click', function(e) {
-            if (e.target.tagName === 'A' && e.target.getAttribute('href')) {
-                document.getElementById('loading').classList.remove('hidden');
-            }
-        });
-
-        // Add floating animation to cards
-        function initializeAnimations() {
+        // Initialize animations for dynamic content
+        function initializeElements() {
+            // Add card effects
             document.querySelectorAll('.bg-surface').forEach((element, index) => {
-                element.classList.add('glass-effect');
-                element.style.animationDelay = `${index * 0.2}s`;
+                element.classList.add('card', 'fade-in');
+                element.style.animationDelay = `${index * 0.1}s`;
             });
 
+            // Add button effects
             document.querySelectorAll('button, a').forEach(element => {
-                element.classList.add('glow-effect');
+                element.classList.add('glow-button');
             });
         }
 
-        // Run animations on page load and dynamic content updates
-        document.addEventListener('DOMContentLoaded', initializeAnimations);
-        window.addEventListener('load', initializeAnimations);
-    </script>
-    <script>
-        // Show loading animation on page transitions
+        // Show loading animation on navigation
         document.addEventListener('click', function(e) {
-            if (e.target.tagName === 'A' && e.target.getAttribute('href') && !e.target.getAttribute('href').startsWith('#')) {
-                const loader = document.getElementById('ai-loading');
-                loader.classList.remove('hidden');
-                // Hide loader if page hasn't changed after 2 seconds
+            if (e.target.closest('a') && !e.target.closest('a').getAttribute('href').startsWith('#')) {
+                document.getElementById('loading').classList.remove('hidden');
                 setTimeout(() => {
-                    loader.classList.add('hidden');
+                    document.getElementById('loading').classList.add('hidden');
                 }, 2000);
             }
         });
 
-        // Add entrance animation to cards with improved visibility
-        function animateCards() {
-            document.querySelectorAll('.bg-surface').forEach((card, index) => {
-                // Reset animation
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                
-                // Force reflow
-                card.offsetHeight;
-                
-                // Add animation with delay
-                setTimeout(() => {
-                    card.style.transition = 'all 0.5s ease-out';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 100);
-            });
-        }
+        // Initialize on page load and content updates
+        document.addEventListener('DOMContentLoaded', initializeElements);
+        window.addEventListener('load', initializeElements);
 
-        // Run animation on initial load and after any dynamic content updates
-        window.addEventListener('load', animateCards);
-        document.addEventListener('DOMContentLoaded', animateCards);
+        // Reinitialize on dynamic content changes
+        const observer = new MutationObserver(initializeElements);
+        observer.observe(document.body, { childList: true, subtree: true });
     </script>
 </body>
 </html>
