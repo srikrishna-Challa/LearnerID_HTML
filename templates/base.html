@@ -40,7 +40,13 @@
     
     <!-- Main Content -->
     <div class="relative z-10">
-        {% block content %}{% endblock %}
+        {% block content %}
+        <div class="modal">
+            <div class="modal-content">
+                {% block modal_content %}{% endblock %}
+            </div>
+        </div>
+        {% endblock %}
     </div>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
