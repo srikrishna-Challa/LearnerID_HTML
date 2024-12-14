@@ -78,33 +78,44 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 22, 36, 0.95);
-            backdrop-filter: blur(12px);
+            background: #0f1624;
             z-index: 40;
         }
 
         .modal-content {
-            background: var(--modal-bg);
-            border: 1px solid var(--border);
-            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.5);
+            background: #ffffff;
+            border: none;
+            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.25);
             border-radius: 16px;
             z-index: 50;
             position: relative;
             overflow: hidden;
+            color: #1a1f2e;
         }
 
         .modal-header {
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #f0f0f0;
             padding: 24px;
+            background: #ffffff;
         }
 
         .modal-body {
             padding: 24px;
+            background: #ffffff;
+            color: #1a1f2e;
         }
 
         .modal-footer {
-            border-top: 1px solid var(--border);
+            border-top: 1px solid #f0f0f0;
             padding: 24px;
+            background: #ffffff;
+        }
+
+        .modal-header h2,
+        .modal-header h3,
+        .modal-header h4 {
+            color: #1a1f2e;
+            margin: 0;
         }
 
         @keyframes shimmer {
